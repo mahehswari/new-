@@ -1,0 +1,76 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+- block:
+  - name: create dest directory on node
+    file:
+      path: "{{ nerdctl.dest | dirname }}"
+      owner: "{{ nerdctl.owner }}"
+      mode: a=rx,u+w
+      state: directory
+      recurse: yes
+    become: yes
+
+  - name: download item
+    get_url:
+      url: "{{ nerdctl.url }}"
+      dest: "{{ nerdctl.dest }}"
+      owner: "{{ nerdctl.owner }}"
+      mode: "{{ nerdctl.mode }}"
+      checksum: "{{ 'sha256:' + nerdctl.sha256 }}"
+    delegate_to: "{{ inventory_hostname }}"
+    register: get_url_result
+    until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+    retries: 4
+    delay: 5
+    no_log: true
+    become: yes
+
+  - name: unpack archive
+    unarchive:
+      src: "{{ nerdctl.dest }}"
+      dest: "{{ nerdctl.dest | dirname }}"
+      owner: "{{ nerdctl.owner }}"
+      mode: "{{ nerdctl.mode }}"
+      copy: no
+    become: yes
+
+- name: create nerdctl config directory
+  file:
+    path: "{{ nerdctl_cfg_dir }}"
+    owner: "{{ nerdctl.owner }}"
+    mode: a=rx,u+w
+    state: directory
+    recurse: yes
+  become: yes
+  
+- name: install nerdctl config
+  template:
+    src: nerdctl.yml.j2
+    dest: "{{ nerdctl_cfg_dir }}/nerdctl.toml"
+    owner: root
+    mode: a=r,u+w
+  become: yes
+
+- name: copy nerdctl binary from download dir
+  copy:
+    remote_src: yes
+    src: "{{ local_release_dir }}/{{ item }}"
+    dest: "/usr/local/bin"
+    mode: a=rx,u+w
+  loop:
+    - nerdctl  
+  become: yes
+
+- name: get nerdctl completion
+  command: "{{ bin_dir }}/nerdctl completion bash"
+  changed_when: False
+  register: nerdctl_completion
+  check_mode: false
+
+- name: install nerdctl completion
+  copy:
+    dest: /etc/bash_completion.d/nerdctl
+    content: "{{ nerdctl_completion.stdout }}"
+    mode: a=r,u+w
+  become: yes

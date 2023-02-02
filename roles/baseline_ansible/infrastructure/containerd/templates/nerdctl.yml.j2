@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+debug          = false
+debug_full     = false
+address        = "unix://{{ cri_socket }}"
+namespace      = "k8s.io"
+#snapshotter    = "stargz"
+#cgroup_manager = "cgroupfs"
+hosts_dir      = ["{{ containerd_cfg_dir }}/certs.d", "/etc/docker/certs.d"]
+# insecure_registry = true     # could be needed for local docker mirror

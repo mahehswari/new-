@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021-2022 Intel Corporation
+---
+- name: Get list of tpm endorsement ca certificates
+  uri:
+    method: GET
+    url: "https://{{ isecl_control_plane_ip }}:30443/hvs/v2/ca-certificates?domain=root"
+    headers:
+      Accept: application/json
+      Authorization: "Bearer {{ isecl_global_admin_bearer_token }}"
+    body_format: json
+    validate_certs: no
+    return_content: yes
+    status_code:
+      - 200
+  register: hvs_endorsement_ca_certs
+  until: hvs_endorsement_ca_certs is not failed
+  retries: 10
+  delay: 10
+
+- name: Find EK CA certificate in HVS endorsment certificates
+  set_fact:
+    endorsement_ca_cert_info: "{{ hvs_endorsement_ca_certs.json | json_query(endorsement_ca_cert_query) }}"
+  vars:
+    endorsement_ca_cert_query: "ca_certificate[?certificate=='{{ root_ca_cert_pem }}'].name"
+
+- name: Add endorsement CA certificates to HVS
+  uri:
+    method: POST
+    url: "https://{{ isecl_control_plane_ip }}:30443/hvs/v2/ca-certificates"
+    headers:
+      Accept: application/json
+      Authorization: "Bearer {{ isecl_global_admin_bearer_token }}"
+    body:
+      name: "{{ host_tpm_issuer_root_ca_name.stdout }}"
+      type: "root"
+      certificate: "{{ root_ca_cert_pem }}"
+    body_format: json
+    validate_certs: no
+    return_content: yes
+    status_code:
+      - 201
+  register: add_endorsement_ca_certs_to_hvs
+  until: add_endorsement_ca_certs_to_hvs is not failed
+  retries: 10
+  delay: 10
+  when: "endorsement_ca_cert_info | length == 0"
+

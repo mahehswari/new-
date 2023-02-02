@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+_cert_server_name: telegraf
+_cert_secret_name: telegraf-tls
+
+_image_name: intel/observability-telegraf
+_image_tag: "1.1"
+
+telemetry_telegraf_port: 9105

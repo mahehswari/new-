@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+# Playbook for observability features
+
+- hosts: edgenode_group
+  roles:
+    - role: telemetry/open_common_ports
+- hosts: controller_group
+  roles:
+    - role: telemetry/prometheus
+      # Name: Prometheus
+      # Type: Building block
+      # Domain: Observability
+      # Source: https://github.com/prometheus/prometheus
+      # IP status: Reuse
+      # Description: A Cloud Native Computing Foundation project, is a systems and service monitoring system.
+    - role: telemetry/node_exporter
+      # Name: Node exporter
+      # Type: Building block
+      # Domain: Observability
+      # Source: https://github.com/prometheus/node_exporter
+      # IP status: Reuse
+      # Description: Prometheus exporter for hardware and OS metrics exposed by *NIX kernels, written in Go with pluggable metric collectors.
+    - role: telemetry/statsd_exporter
+      # Name: SstatsD exporter
+      # Type: Building block
+      # Domain: Observability
+      # Source: https://github.com/prometheus/statsd_exporter
+      # IP status: Reuse
+      # Description: Receives StatsD-style metrics and exports them as Prometheus metrics.
+      when: telemetry_statsd_exporter_enable | default(True)
+    - role: telemetry/telegraf
+      # Name: Telegraf
+      # Type: Building block
+      # Domain: Observability
+      # Source: https://github.com/influxdata/telegraf
+      # IP status: Reuse
+      # Description: Agent for collecting, processing, aggregating, and writing metrics.
+      when: telemetry_telegraf_enable | default(True)
+    - role: telemetry/fluentd
+      # Name: Fluentd
+      # Type: Building block
+      # Domain: Observability
+      # Source: https://github.com/fluent/fluentd
+      # IP status: Reuse
+      # Description: Collects events from various data sources and writes them to files, RDBMS, NoSQL, IaaS, SaaS, Hadoop etc. It helps you unify your logging infrastructure.
+      when: "telemetry_fluentd_enable | default(True)"
+    - role: telemetry/grafana
+      # Name: Grafana
+      # Type: Building block
+      # Domain: Observability
+      # Source: https://github.com/grafana/grafana
+      # IP status: Reuse
+      # Description: Allows you to query, visualize, alert on and understand your metrics no matter where they are stored. 
+      when: "telemetry_grafana_enable | default(True)"

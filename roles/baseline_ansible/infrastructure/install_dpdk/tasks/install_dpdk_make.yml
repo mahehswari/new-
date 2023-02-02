@@ -1,0 +1,188 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2019-2021 Intel Corporation
+
+---
+- name: check if igb_uio.ko already compiled
+  stat:
+    path: "{{ dpdk_install_dir }}/{{ dpdk_target }}/kmod/igb_uio.ko"
+  register: igb_uio_module_compiled
+
+- name: check if rte_kni.ko already compiled
+  stat:
+    path: "{{ dpdk_install_dir }}/{{ dpdk_target }}/kmod/rte_kni.ko"
+  register: rte_kni_module_compiled
+
+- name: "[WORKAROUND] modify dpdk to compile it"
+  lineinfile:
+    path: "{{ dpdk_install_dir }}/kernel/linux/kni/kni_net.c"
+    regexp: '^kni_net_tx_timeout'
+    line: 'kni_net_tx_timeout(struct net_device *dev, unsigned int txqueue)'
+  become: yes
+  when:
+    - ansible_os_family == 'RedHat'
+
+- name: get current kernel
+  command: uname -r
+  register: unamer
+  changed_when: false
+
+- name: test if kernel stamp file exists
+  stat:
+    path: "{{ dpdk_install_dir }}/kernel_stamp_file"
+  register: stat_result
+
+- name: get kernel stamp
+  command: cat "{{ dpdk_install_dir }}/kernel_stamp_file"
+  register: kernel_stamp
+  changed_when: false
+  when: stat_result.stat.exists
+
+- name: remove dpdk_target dir
+  file:
+    path: "{{ dpdk_install_dir }}/{{ dpdk_target }}"
+    state: absent
+  when: not igb_uio_module_compiled.stat.exists or not rte_kni_module_compiled.stat.exists
+        or (stat_result.stat.exists and not unamer.stdout in kernel_stamp.stdout)
+
+- name: create/update kernel stamp file
+  copy:
+    dest: "{{ dpdk_install_dir }}/kernel_stamp_file"
+    content: |
+      {{ unamer.stdout }}
+    mode: a=r,u+w
+    owner: "{{ ansible_user | default(ansible_user_id) }}"
+  when: not stat_result.stat.exists or not unamer.stdout in kernel_stamp.stdout
+
+- name: compilation of dpdk if needed
+  block:
+    - name: run make config
+      community.general.system.make:
+        chdir: "{{ dpdk_install_dir }}"
+        target: config
+        params:
+          T: "{{ dpdk_target }}"
+    - name: enable virtio-user support
+      lineinfile:
+        path: "{{ dpdk_install_dir }}/build/.config"
+        regexp: '^CONFIG_RTE_VIRTIO_USER'
+        line: 'CONFIG_RTE_VIRTIO_USER=y'
+        mode: a=,u=rw
+    - name: enable PCAP PMD support
+      lineinfile:
+        path: "{{ dpdk_install_dir }}/build/.config"
+        regexp: '^CONFIG_RTE_LIBRTE_PMD_PCAP'
+        line: 'CONFIG_RTE_LIBRTE_PMD_PCAP=y'
+        mode: a=,u=rw
+    - name: build DPDK
+      community.general.system.make:
+        target: install
+        chdir: "{{ dpdk_install_dir }}"
+        params:
+          T: "{{ dpdk_target }}"
+      environment:
+        "MAKEFLAGS": "-j{{ ansible_processor_vcpus }}"
+  when: not igb_uio_module_compiled.stat.exists or not rte_kni_module_compiled.stat.exists
+        or (stat_result.stat.exists and not unamer.stdout in kernel_stamp.stdout)
+
+- name: find dpdk tools
+  find:
+    path: "{{ dpdk_install_dir }}"
+    patterns: "dpdk-devbind.py"
+    recurse: true
+  register: dpdk_tools_dir
+
+- name: set path to dpdk usertools directory
+  set_fact:
+    dpdk_tools: "{{ dpdk_tools_dir.files[0].path }}"
+
+- name: install dpdk-devbind.py in /usr/local/bin
+  copy:
+    remote_src: true
+    src: "{{ dpdk_tools }}"
+    dest: "/usr/local/bin/dpdk-devbind.py"
+    mode: a=r,u+wx
+    owner: "{{ ansible_user | default(ansible_user_id) }}"
+  become: yes
+
+- name: copy kernel modules
+  copy:
+    src: "{{ dpdk_install_dir }}/{{ dpdk_target }}/kmod/{{ item }}"
+    dest: "/lib/modules/{{ unamer.stdout }}/kernel/drivers/"
+    remote_src: true
+    mode: a=r,u+w
+    owner: "{{ ansible_user | default(ansible_user_id) }}"
+    group: root
+  loop:
+    - "igb_uio.ko"
+    - "rte_kni.ko"
+  become: yes
+
+- name: depmod
+  command: depmod -a
+  changed_when: true
+  become: yes
+
+- name: copy list of modules to load at boot
+  copy:
+    src: dpdk.conf
+    dest: /etc/modules-load.d/dpdk.conf
+    mode: a=r,u+w
+    owner: "{{ ansible_user | default(ansible_user_id) }}"
+  become: yes
+
+- name: copy list of modules to modprobe at boot
+  copy:
+    src: dpdk0kni.conf
+    dest: /etc/modprobe.d/dpdk0kni.conf
+    mode: a=r,u+w
+    owner: "{{ ansible_user | default(ansible_user_id) }}"
+  become: yes
+
+- name: unload modules
+  community.general.system.modprobe:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - "igb_uio"
+    - "rte_kni"
+    - "uio_pci_generic"
+    - "uio"
+  become: yes
+
+- name: unload vfio
+  community.general.system.modprobe:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - "vfio-pci"
+    - "vfio_iommu_type1"
+    - "kvmgt"
+    - "vfio_mdev"
+    - "vfio"
+  become: yes
+
+- name: load uio and igb_uio modules
+  community.general.system.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "uio"
+    - "igb_uio"
+  become: yes
+
+- name: load rte_kni module
+  community.general.system.modprobe:
+    name: "rte_kni"
+    state: present
+    params: "carrier=on"
+  become: yes
+
+- name: load vfio module
+  community.general.system.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - "vfio"
+    - "vfio-pci"
+  failed_when: false
+  become: yes

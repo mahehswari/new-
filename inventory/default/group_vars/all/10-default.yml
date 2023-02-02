@@ -1,0 +1,432 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2019-2021 Intel Corporation
+
+---
+# This file contains variables intended to be configured by user.
+# It allows feature enabling and configuration.
+# Per-host variables should be places in `inventory/default/host_vars` directory.
+# Features should not be configured by changing roles' defaults (i.e. role/defaults/main.yml)
+
+###############################################
+##### User settings
+
+### Proxy settings
+proxy_env:
+  # Proxy URLs to be used for HTTP, HTTPS and FTP
+  # Comment out proxy settings except no_proxy while deploying verification_controller on AWS
+  http_proxy: "http://proxy-iind.intel.com:911"
+  https_proxy: "http://proxy-iind.intel.com:912"
+
+  ftp_proxy: "http://proxy-iind.intel.com:911"
+  # No proxy setting contains addresses and networks that should not be accessed using proxy (e.g. local network, Kubernetes CNI networks)
+  no_proxy: ""
+  # all proxy need to use socks5 proxy to connect nats based servers(case with platform attestation components)
+  all_proxy: "socks5://proxy-iind.intel.com:1080"
+
+
+# Proxy for be used by GIT HTTP - required if GIT HTTP via proxy
+git_http_proxy: "{{ proxy_env['http_proxy'] | default('') }}"
+
+# Disable YUM plugins (e.g. Fastest Mirror)
+os_remove_yum_plugins: true
+
+##################################################
+
+### Network Time Protocol (NTP)
+# Enable machine's time synchronization with NTP server
+ntp_enable: false
+# Servers to be used by NTP instead of the default ones (e.g. 0.centos.pool.ntp.org)
+ntp_servers: []
+
+### Kernel, grub & tuned configuration
+# Kernel, grub & tuned configurations are machine-type specific:
+# - Edge Nodes - edit `inventory/default/group_vars/edgenode_group/10-default.yml`
+# - Edge Controller - edit `inventory/default/group_vars/controller_group/10-default.yml`
+# To provide configuration for specific machine, place the settings in `inventory/default/host_vars/_inventory_host_name.yml`
+
+# Disable sriov kernel flags (intel_iommu=on iommu=pt)
+iommu_enabled: true
+
+# Enable hugepages
+hugepages_enabled: false
+# Size of a single hugepage (2M or 1G)
+default_hugepage_size: 1G
+# Amount of hugepages
+hugepages_1G: 4
+hugepages_2M: 0
+
+# amount of memory "protected" from hugepages allocation in MB
+mem_reserved: 1024
+
+# Configure cpu_idle_driver
+cpu_idle_driver_setup_enabled: false
+cpu_idle_driver: poll
+
+# isolcpus_enabled controls the CPU isolation mechanisms configured via grub command line.
+isolcpus_enabled: false
+# isolcpus is parameter for isolcpus, rcu_nocbs, nohz_full kernel command line arguments.
+# For more information visit https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.htm
+# This variable is required.
+isolcpus: 2-4
+
+# os_cpu_affinity_cpus pins the kthread and irq processing to selected cores using kthread_cpus and irqaffinity
+# kernel command line arguments.
+# For more information visit https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.htm
+# Does nothing when empty.
+os_cpu_affinity_cpus: ""
+
+# Autogenerate isolated cores based on `cmk_exclusive_num_cores` when `cmk_enabled=true`.
+autogenerate_isolcpus: false
+
+# Enable additional grub parameters
+additional_grub_parameters_enabled: false
+additional_grub_parameters: ""
+
+### Retry settings for network-based tasks
+# - number_of_retries - configures how many times failed task should be retried
+# - retry_delay - configures delay between retries (in seconds)
+number_of_retries: 10
+retry_delay: 5
+
+# - allowed_number_of_k8s_retries - configures how many Kubernetes failures are allowed
+allowed_number_of_k8s_retries: 10
+
+### Network Edge's Kubernetes CNIs
+# List of requested CNIs to be used in Network Edge mode
+# CNIs are applied in order of definition
+# Multus CNI is implicit - it will be applied as 2nd one if list contains more than 1
+# Available CNIs:
+# - calico (note: if the calico CNI is used, then it must be main/primary CNI, i.e. first on the list)
+kubernetes_cnis:
+  - calico
+
+# Calico's CIDR (will be included automatically to noproxy when calico is included in kubernetes_cnis)
+calico_cidr: "10.245.0.0/16"
+
+# These settings allow to set custom service subnet for k8s cluster
+k8s_custom_subnets: false
+k8s_service_subnet: "10.96.0.0/16"
+cluster_dns_ip: "10.96.0.10"
+
+### Split Network
+# for splitting management network and cluster network
+# need to provide calico cluster ip, kubernetes service host and port
+# Enable Split Network
+split_network: false
+
+# static ip cidr
+static_ip_cidr: "192.168.133.1/24"
+
+# NIC mac address for setting static ip (in order sepcified in inventory.yml)
+node_device_mac:
+  - xx:xx:xx:xx:xx:xx
+controller_device_mac:
+  - xx:xx:xx:xx:xx:xx
+
+# Kubernetes service port
+kubernetes_service_port: "6443"
+kubernetes_service_port_https: "6443"
+
+## SmartEdge namespaces
+system_namespace: "smartedge-system"
+application_namespace: "smartedge-apps"
+
+# SmartEdge installation directory
+project_dir: "/opt/smartedge"
+
+# SmartEdge users group
+project_group: "{{ ansible_user }}"
+
+# OpenEBS settings
+openebs_enabled: false
+openebs_namespace: "openebs"
+
+# Rook ceph settings
+rook_ceph_enabled: false
+rook_ceph_namespace: "rook-ceph"
+
+rook_ceph:
+  mon_count: 1
+  host_name: "{{ hostvars[groups['controller_group'][0]]['ansible_nodename'] }}"
+  osds_per_device: "1"
+  replica_pool_size: 1
+
+# Kube-virt settings
+kubevirt_enable: false
+kubevirt_namespace: "kubevirt"
+cdi_namespace: "cdi"
+
+# CPUManager feature gate for kubevirt.
+kv_cpu_manager_enabled: true
+
+## SR-IOV Network Operator
+sriov_network_operator_enable: true
+
+## SR-IOV Network Operator configuration
+sriov_network_operator_configure_enable: true
+
+## SR-IOV Network Nic's Detection Application
+sriov_network_detection_application_enable: true
+
+# Nic names for the SR-IOV Network Operator
+sriov_nics:
+  c0p0: "eno12399"
+  c0p1: "eno12409"
+  c1p0: "ens5f0"
+  c1p1: "ens5f1"
+
+# SriovNetworkNodePolicies list
+sriov_network_node_policies:
+  - name: "sriov-netdev-net-c0p0"
+    resource_name: "sriov_netdev_net_c0p0"
+    num_vfs: 4
+    priority: 99
+    vendor: 8086
+    pf_names: ["{{ sriov_nics.c0p0 }}"]
+    device_type: netdevice
+  - name: "sriov-vfio-pci-net-c0p1"
+    resource_name: "sriov_vfiopci_net_c0p1"
+    num_vfs: 4
+    priority: 99
+    vendor: 8086
+    pf_names: ["{{ sriov_nics.c0p1 }}"]
+    device_type: vfio-pci
+  - name: "sriov-netdev-net-c1p0"
+    resource_name: "sriov_netdev_net_c1p0"
+    num_vfs: 4
+    priority: 99
+    vendor: 8086
+    pf_names: ["{{ sriov_nics.c1p0 }}"]
+    device_type: netdevice
+  - name: "sriov-vfio-pci-net-c1p1"
+    resource_name: "sriov_vfiopci_net_c1p1"
+    num_vfs: 4
+    priority: 99
+    vendor: 8086
+    pf_names: ["{{ sriov_nics.c1p1 }}"]
+    device_type: vfio-pci
+
+# SriovNetworks list
+sriov_networks:
+  - name: sriov-netdev-network-c0p0
+    network_namespace: "{{ application_namespace }}"
+    ipam: |-
+      {
+      "type": "host-local",
+      "subnet": "10.10.10.0/24",
+      "rangeStart": "10.10.10.10",
+      "rangeEnd": "10.10.10.41",
+      "routes": [{
+        "dst": "0.0.0.0/0"
+      }],
+      "gateway": "10.10.10.1"
+      }
+    vlan: 0
+    resource_name: sriov_netdev_net_c0p0
+    link_state: enable
+  - name: sriov-netdev-network-c1p0
+    network_namespace: "{{ application_namespace }}"
+    ipam: |-
+      {
+      "type": "host-local",
+      "subnet": "10.10.20.0/24",
+      "rangeStart": "10.10.20.10",
+      "rangeEnd": "10.10.20.41",
+      "routes": [{
+        "dst": "0.0.0.0/0"
+      }],
+      "gateway": "10.10.20.1"
+      }
+    vlan: 1
+    resource_name: sriov_netdev_net_c1p0
+    link_state: enable
+  - name: sriov-vfio-network-c0p1
+    network_namespace: "{{ application_namespace }}"
+    ipam: |-
+      {}
+    resource_name: sriov_vfiopci_net_c0p1
+    link_state: enable
+  - name: sriov-vfio-network-c1p1
+    network_namespace: "{{ application_namespace }}"
+    ipam: |-
+      {}
+    resource_name: sriov_vfiopci_net_c1p1
+    link_state: enable
+
+## Enable OOT driver update for E810
+e810_driver_enable: True
+e810_comms_pkg_enable: False
+## The driver used by the default interface used for SSH/Management of the Edge Node
+mgmt_driver: "tg3"
+
+### Kubernetes Topology Manager configuration (for worker)
+# CPU settings
+cpu:
+  # CPU policy - possible values: none (disabled), static (default)
+  policy: "static"
+  # Reserved CPUs for K8s and OS daemons - list of reserved CPUs
+  reserved_cpus: "0,1"
+
+# Kubernetes Topology Manager policy - possible values: none (disabled), best-effort (default), restricted, single-numa-node
+topology_manager:
+  policy: "best-effort"
+
+## Network Edge Node Feature Discovery (NFD)
+ne_nfd_enable: true
+
+## Network Edge Helm Charts Storage Default Directory
+ne_helm_charts_default_dir: "{{ project_dir }}/helm-charts"
+
+###############
+## Telemetry
+
+telemetry_enable: true
+# Telemetry flavor - possible values: common (default), flexran, smartcity, corenetwork
+telemetry_flavor: common
+
+# Telemetry namespace
+telemetry_namespace: telemetry
+# Node Exporter
+telemetry_node_exporter_port: 9100
+# Grafana
+telemetry_grafana_enable: true
+
+# Prometheus
+telemetry_prometheus_scrape_interval_seconds: 60
+telemetry_prometheus_retention: 15d
+telemetry_prometheus_alertmanager_targets: []
+# A list of RemoteWriteSpec objects
+# https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#remotewritespec
+telemetry_prometheus_remote_write_targets: []
+telemetry_prometheus_nodeport: 30000
+# To expose the Prometheus on NodeIP, set this variable to True
+telemetry_prometheus_nodeport_expose: false
+telemetry_prometheus_tls_secret_name: prometheus-tls
+
+# Prometheus-statsd-exporter
+telemetry_statsd_exporter_enable: true
+telemetry_statsd_exporter_udp_port: 8125
+telemetry_statsd_exporter_tcp_port: 8125
+
+# Telegraf
+telemetry_telegraf_enable: true
+telemetry_telegraf_port: 9105
+#Fluentd
+telemetry_fluentd_enable: false
+telemetry_fluentd_forward_targets: []
+# Example:
+# telemetry_fluentd_forward_targets:
+# - name: testForward
+#   port: 24224
+#   host: <ip>/<DNS resolveable hostname>
+###############
+
+## Docker registry mirrors
+## https://docs.docker.com/registry/recipes/mirror/
+# docker_registry_mirrors:
+#   - "https://docker-mirror.example.local"
+
+## Docker insecure registries
+## https://docs.docker.com/registry/insecure/
+# docker_insecure_registries:
+#   - "docker-insecure-mirror.example.local:5000"
+
+## Hyperthreading
+check_hyperthreading: false
+expected_hyperthreading_state: "enabled"
+
+## Persistent volumes root dir, according to system requirements (OF-5350) should be located inside /var/lib/*
+_persistent_volumes_dest: "/var/lib/smartedge/"
+
+## Enable cgroupfs to be used as a cgroup driver instead of systemd.
+cgroupfs_enable: false
+
+# rc.local path
+_rc_local_path: "/etc/rc{{ '.local' if ansible_os_family == 'Debian' else '.d/rc.local' }}"
+
+# Harbor timeout
+harbor_timeout_min: 5
+
+###############
+# FDO enabled on edge node
+fdo_node: false
+
+fdo:
+    # API password to access manufacturer REST endpoint
+    manufacturer_pass: manufacturerpass
+    # API password to access owner REST endpoint
+    owner_pass: ownerpass
+    # API password to access rv REST endpoint
+    rv_pass: rvpass
+    # Full manufacturer address where device can initiate DEvice Init. eg - "https://10.0.0.1:30038"
+    manufacturer_addr: https://10.190.162.83:30038
+    # IP address or the FQDN of the manufacturer
+    manufacturer_ip: 10.190.162.83
+    # IP address or the FQDN of the owner
+    owner_ip: 10.190.162.83
+    # Whether development setup is being installed. Few steps within FDO are out of scope for
+    # a production environment and hence have to be run manually on the owner service. For ease
+    # of deployment these steps are automated for development environment.
+    dev_setup: true
+
+################
+#
+### Platform attestation specific configurations
+
+# Install isecl attestation components (TA, ihub, isecl k8s controller and scheduler extension)
+platform_attestation_node: false
+
+# CMS hash from Intel-secl controller. Use following command:
+# kubectl get secrets/cms-tls-cert-sha384 -n isecl --template={{.data.CMS_TLS_CERT_SHA384}} | base64 -d
+isecl_cms_tls_hash: ""
+
+# Host on which NFS server is setup. If left empty, NFS server will be installed on kubernetes controller
+isecl_nfs_server: ""
+
+# List of nfs clients allowed to server. Only used when NFS server installed on kubernetes controller
+isecl_nfs_server_clients: []
+
+# Host IP of node hosting isecl controlplane(core) services. This could be hosted on cloud as well.
+isecl_control_plane_ip: ""
+
+# Host IP of node hosting KMRA AppHSM service
+kmra_apphsm_ip: ""
+
+### Software Guard Extensions
+# SGX requires kernel 5.11+, SGX enabled in BIOS and access to PCC service
+sgx_enabled: false
+
+## Install HWE Kernel for SGX
+install_hwe_kernel_enable: false
+
+# PCCS server IP address
+sgx_pccs_ip: ""
+
+# PCCS server port address
+sgx_pccs_port: "32666"
+
+# To accept insecure HTTPS cert, set this option to FALSE
+sgx_use_secure_cert: false
+
+###############
+## PCCS for SGX
+
+# ApiKey - The PCCS uses this API key to request collaterals from Intel's Provisioning Certificate Service
+pccs_api_key: ""
+
+# PCCS client
+pccs_user_password: ""
+
+
+# NodePort to access PCCS from outside of cluster
+# pccs_access_port: 32666
+
+# Enable userspace drivers installation
+install_userspace_drivers_enable: false
+
+# SRIOV-FEC operator
+sriov_fec_operator_enable: false
+sriov_fec_operator_configure_enable: false
+
+## Network Service Mesh
+ne_nsm_enable: false

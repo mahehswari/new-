@@ -1,0 +1,75 @@
+ansible-playbook [core 2.13.1]
+  config file = /home/openness/scratch/lp/dek/ansible.cfg
+  configured module search path = ['/home/openness/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/openness/.local/share/virtualenvs/dek-t4G_8wwI/lib/python3.9/site-packages/ansible
+  ansible collection location = /home/openness/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/openness/.local/share/virtualenvs/dek-t4G_8wwI/bin/ansible-playbook
+  python version = 3.9.15 (main, Oct 12 2022, 19:14:24) [GCC 9.4.0]
+  jinja version = 3.0.3
+  libyaml = True
+Using /home/openness/scratch/lp/dek/ansible.cfg as config file
+statically imported: /home/openness/scratch/lp/dek/tasks/reboot_server.yml
+statically imported: /home/openness/scratch/lp/dek/tasks/reboot_server.yml
+redirecting (type: modules) ansible.builtin.docker_image to community.docker.docker_image
+redirecting (type: callback) ansible.builtin.debug to ansible.posix.debug
+redirecting (type: callback) ansible.builtin.debug to ansible.posix.debug
+redirecting (type: callback) ansible.builtin.profile_roles to ansible.posix.profile_roles
+Skipping callback 'default', as we already have a stdout callback.
+Skipping callback 'minimal', as we already have a stdout callback.
+Skipping callback 'oneline', as we already have a stdout callback.
+
+PLAYBOOK: single_node_network_edge.yml *****************************************
+11 plays in /home/openness/scratch/lp/dek/single_node_network_edge.yml
+
+PLAY [edgenode_group] **********************************************************
+
+TASK [Gathering Facts] *********************************************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:13
+Friday 06 January 2023  15:02:00 +0530 (0:00:00.034)       0:00:00.034 ******** 
+[WARNING]: Unhandled error in Python interpreter discovery for host node01:
+Failed to connect to the host via ssh:
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  @    WARNING:
+REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  IT IS POSSIBLE
+THAT SOMEONE IS DOING SOMETHING NASTY!  Someone could be eavesdropping on you
+right now (man-in-the-middle attack)!  It is also possible that a host key has
+just been changed.  The fingerprint for the ECDSA key sent by the remote host
+is SHA256:SjVZuboiSHMWzaUCt/5EcjmCMFiAh6rwbTMACBZ8wNg.  Please contact your
+system administrator.  Add correct host key in /home/openness/.ssh/known_hosts
+to get rid of this message.  Offending ECDSA key in
+/home/openness/.ssh/known_hosts:3    remove with:    ssh-keygen -f
+"/home/openness/.ssh/known_hosts" -R "10.190.162.164"  Challenge/response
+authentication is disabled to avoid man-in-the-middle attacks.
+openness@10.190.162.164: Permission denied (publickey,password).
+fatal: [node01]: UNREACHABLE! => {
+    "changed": false,
+    "unreachable": true
+}
+
+MSG:
+
+Data could not be sent to remote host "10.190.162.164". Make sure this host can be reached over ssh: @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+SHA256:SjVZuboiSHMWzaUCt/5EcjmCMFiAh6rwbTMACBZ8wNg.
+Please contact your system administrator.
+Add correct host key in /home/openness/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /home/openness/.ssh/known_hosts:3
+  remove with:
+  ssh-keygen -f "/home/openness/.ssh/known_hosts" -R "10.190.162.164"
+Challenge/response authentication is disabled to avoid man-in-the-middle attacks.
+openness@10.190.162.164: Permission denied (publickey,password).
+
+
+PLAY RECAP *********************************************************************
+node01                     : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
+
+Friday 06 January 2023  15:02:01 +0530 (0:00:00.850)       0:00:00.885 ******** 
+=============================================================================== 
+gather_facts ------------------------------------------------------------ 0.85s
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+total ------------------------------------------------------------------- 0.85s

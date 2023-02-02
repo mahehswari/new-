@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+- name: Enable fdo-client service and reboot
+  systemd:
+    name: fdo-client
+    enabled: true
+    masked: false
+    daemon_reload: true
+  become: yes
+
+- name: Reboot node
+  command: "reboot"
+  become: yes
+  when: fdo.dev_setup == true
+

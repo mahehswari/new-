@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+intel_pstate_configuration_enabled: false
+
+# Available intel_pstate driver configuration options:
+#  - disable
+#  - passive
+#  - force
+#  - no_hwp
+#  - hwp_only
+#  - support_acpi_ppc
+#  - per_cpu_perf_limits
+intel_pstate_configuration: disable
+
+turbo_configuration_enabled: false
+turbo_active: false

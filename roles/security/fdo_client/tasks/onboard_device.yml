@@ -1,0 +1,5 @@
+---
+- name: Onboard FDO device 
+  shell: './fdo_csdk.sh'
+  args:
+    chdir: '{{ homedir }}'

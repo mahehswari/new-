@@ -1,0 +1,9 @@
+homedir: /opt/intel/fdo_client
+openssl_version: 1.1.1
+destdir: '{{ homedir }}/client-sdk-fidoiot'
+project_dir: '{{ destdir }}'
+user: '{{ ansible_user }}'
+user_group: '{{ ansible_user }}'
+client_repo: 'https://github.com/manju956/client-sdk-fidoiot'
+client_version: 'fetch_exec-cb_extension'
+

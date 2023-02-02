@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+- name: prepare firewall
+  block:
+    - name: unmask, enable and start firewall service
+      systemd:
+        name: "{{ firewall_service[ansible_os_family] }}"
+        masked: false
+        enabled: true
+        state: started
+
+    - name: add Kubernetes pods and services subnets to the "trusted" zone in firewalld
+      ansible.posix.firewalld:
+        source: "{{ item }}"
+        zone: trusted
+        state: enabled
+        permanent: true
+        immediate: true
+      loop: "{{ fw_open_subnets }}"
+      when: ansible_os_family == "RedHat"
+
+    - name: allow traffic from Kubernetes subnets in ufw
+      community.general.system.ufw:
+        rule: allow
+        from: "{{ item }}"
+      loop: "{{ fw_open_subnets }}"
+      when: ansible_os_family == "Debian"
+  become: true
+  when: use_firewall | default(false)

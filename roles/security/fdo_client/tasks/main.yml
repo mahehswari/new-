@@ -1,0 +1,30 @@
+---
+- name: Build FDO device binary
+  include_tasks: build_fdo_device.yml
+
+- name: Execute Device Init
+  include_tasks: onboard_device.yml
+
+# In a production setup, the script invoked within these
+# tasks is supposed to be run manually on the owner service
+# and obtained certificate can be transferred to the manufacturer
+# as a prerequisite
+- name: Retrieve Owner public certificate for extension 
+  include_tasks: retrive_owner_cert.yml
+  when: fdo.dev_setup == true
+
+- name: Download extended ownership voucher from Manufacturer
+  include_tasks: extend_voucher.yml
+
+# In a production setup, the script invoked within these
+# tasks is supposed to be run manually on the owner service
+# with the ownership voucher obtained from the manufacturer
+- name: Upload Ownership voucher to Owner
+  include_tasks: upload_ov_to_owner.yml
+  when: fdo.dev_setup == true
+
+- name: Create system daemon to run device onboard at next boot
+  include_tasks: final_onboard.yml
+
+#- name: Trigger TO1/TO2 to onboard device
+#  include_tasks: onboard_device.yml

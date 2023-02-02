@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+install_dependencies:
+  RedHat:
+    - perl-interpreter
+  Debian: []
+
+
+post_install_dependencies:
+  RedHat:
+    - boost-devel
+    - gcc
+    - gcc-c++
+    - glibc-devel
+    - libtool
+    - systemtap
+  Debian:
+    - boost-devel
+    - gcc
+    - gcc-c++
+    - glibc-devel
+    - libtool
+    - systemtap

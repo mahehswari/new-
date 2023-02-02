@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.owner.name }}-deployment
+  namespace: {{ .Values.owner.nameSpace }}
+  labels:
+    env: demo
+    app: {{ .Values.owner.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.owner.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.owner.name }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - image: "{{ .Values.initContainer.image }}:{{ .Values.initContainer.tag }}"
+          imagePullPolicy: {{ .Values.initContainer.pullPolicy }}
+          name: {{ .Values.initContainer.name }}
+          command:
+            - /bin/chown
+            - -R
+            - "1000"
+            - /home/fdo/app-data
+          volumeMounts:
+            - name: owner-app-data-volume
+              mountPath: /home/fdo/app-data
+      containers:
+        - image: "{{ .Values.container.image }}:{{ .Values.container.tag | default .Chart.AppVersion }}"
+          name: {{ .Values.container.name }}
+          imagePullPolicy: {{ .Values.container.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}
+                #ports:
+                #- containerPort: {{ .Values.container.http_port }}
+                #- containerPort: {{ .Values.container.https_port }}
+          volumeMounts:
+            - name: owner-app-data-volume
+              mountPath: /home/fdo/app-data
+      volumes:
+        - name: owner-app-data-volume
+          hostPath:
+            path: {{ .Values.owner.app_data }}
+            type: Directory

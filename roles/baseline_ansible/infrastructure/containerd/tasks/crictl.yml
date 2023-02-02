@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+- block:
+  - name: create dest directory on node
+    file:
+      path: "{{ crictl.dest | dirname }}"
+      owner: "{{ crictl.owner }}"
+      mode: a=rx,u+w
+      state: directory
+      recurse: yes
+    become: yes
+
+  - name: download item
+    get_url:
+      url: "{{ crictl.url }}"
+      dest: "{{ crictl.dest }}"
+      owner: "{{ crictl.owner }}"
+      mode: "{{ crictl.mode }}"
+      checksum: "{{ 'sha256:' + crictl.sha256 }}"
+    delegate_to: "{{ inventory_hostname }}"
+    register: get_url_result
+    until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+    retries: 4
+    delay: 5
+    no_log: true
+    become: yes
+
+  - name: unpack archive
+    unarchive:
+      src: "{{ crictl.dest }}"
+      dest: "{{ crictl.dest | dirname }}"
+      owner: "{{ crictl.owner }}"
+      mode: "{{ crictl.mode }}"
+      copy: no
+    become: yes
+
+- name: install crictl config
+  template:
+    src: crictl.yml.j2
+    dest: /etc/crictl.yaml
+    owner: root
+    mode: a=r,u+w
+  become: yes
+
+- name: copy crictl binary from download dir
+  copy:
+    src: "{{ local_release_dir }}/crictl"
+    dest: "{{ bin_dir }}/crictl"
+    mode: a=rx,u+w
+    remote_src: true
+  become: yes
+
+- name: get crictl completion
+  command: "{{ bin_dir }}/crictl completion bash"
+  changed_when: False
+  register: cri_completion
+  check_mode: false
+
+- name: install crictl completion
+  copy:
+    dest: /etc/bash_completion.d/crictl
+    content: "{{ cri_completion.stdout }}"
+    mode: a=r,u+w
+  become: yes

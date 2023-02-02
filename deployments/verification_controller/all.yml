@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+## SR-IOV Network Operator
+sriov_network_operator_enable: false
+
+## SR-IOV Network Operator configuration
+sriov_network_operator_configure_enable: false
+
+# Disable telemetry
+telemetry_enable: false
+
+# Disable Harbor Registry
+harbor_registry_enable: false
+
+# Disable Network Edge Node Feature Discovery (NFD)
+ne_nfd_enable: false
+
+e810_driver_enable: false
+
+# Disable SGX
+sgx_enabled: false
+
+# Enable isecl controller instalation
+platform_attestation_controller: false
+
+# Disable installing isecl attestation components for nodes
+platform_attestation_node: false
+
+# List of possible host names for TA. Coma separated list with possible wildcards: *.example.com,192.168.1.*
+isecl_ta_san_list: ""
+
+# Enable PCCS deployment
+pccs_enable: false
+
+# Enable KMRA app-hsm deployment
+kmra_enable: false
+
+# Enable Pod Security Policy. This option enables PSP admission controller and creates minimal set of rules.
+psp_enabled: true
+
+#SGX GID
+sgx_prv_gid: 1002
+# Disable CPU reservation for kubelet
+cpu: {}
+
+#Enale FDO
+fdo_controller: true

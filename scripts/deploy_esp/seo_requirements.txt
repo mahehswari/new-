@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021-2022 Intel Corporation
+
+# This file covers all the dependencies of the seo module and the scripts relying directly on it (i.e. deploy_esp.py
+#  and flash_usb.py)
+
+jsonschema ~= 4.6.0
+pyyaml ~= 6.0.0
+requests ~= 2.27.1

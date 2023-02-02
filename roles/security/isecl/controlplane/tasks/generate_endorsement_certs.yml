@@ -1,0 +1,139 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021-2022 Intel Corporation
+---
+- name: Get hosts EK Certificate
+  block:
+  - name: Create temporary dir
+    tempfile:
+      state: directory
+      suffix: ek-cert
+    register: hosts_ek_cert_temp_dir
+
+  - name: Get RSA 2048 EK certificate from NVRAM
+    command: tpm2_nvread -C o -o ek.der 0x1c00002
+    args:
+      chdir: "{{ hosts_ek_cert_temp_dir.path }}"
+    become: true
+    changed_when: true
+
+  # Extract TPM endorsement root CA URI
+  - name: Get TPM root CA certificate URI
+    shell: openssl x509 -in ek.der -inform der -text -noout | sed -n 's/ *CA Issuers - URI://p'
+    args:
+      chdir: "{{ hosts_ek_cert_temp_dir.path }}"
+    register: host_tpm_issuer_root_ca_uri
+    become: true
+    changed_when: true
+
+  - name: Check if TPM root CA URI is available
+    fail:
+      msg: Failed to get TPM root CA URI
+    when: host_tpm_issuer_root_ca_uri.stdout | length == 0
+
+  # Replace space if present in root CA url with char '%20'
+  - name: Set TPM root CA certificate URI
+    set_fact:
+      issuer_cert_uri: "{{ host_tpm_issuer_root_ca_uri.stdout | regex_replace(' ', '%20') }}"
+
+  - name: Set TPM root CA certificate name
+    set_fact:
+      tpm_root_ca: tpm_issuer_root_ca.cer
+
+  - name: Download TPM root CA certificate
+    uri:
+      method: GET
+      url: "{{ issuer_cert_uri }}"
+      validate_certs: no
+      dest: "{{ hosts_ek_cert_temp_dir.path }}/{{ tpm_root_ca }}"
+      status_code:
+        - 200
+    register: tpm_issuer_root_ca
+    until: tpm_issuer_root_ca is not failed
+    retries: 10
+    delay: 10
+
+  # TPM root CA certificate is in PEM/DER format
+  - name: Check TPM root CA certificate file type
+    command: file {{ tpm_root_ca }}
+    args:
+      chdir: "{{ hosts_ek_cert_temp_dir.path }}"
+    register: tpm_root_ca_cert_type
+    changed_when: false
+
+  - name: Check TPM EK certificate file type
+    command: file ek.der
+    args:
+      chdir: "{{ hosts_ek_cert_temp_dir.path }}"
+    register: tpm_ek_ca_cert_type
+    changed_when: false
+
+  # Get the issuer name for HVS api hvs/v2/tpm-endorsements and hvs/v2/ca-certificates
+  - name: Get TPM root CA certificate issuer name
+    shell: openssl x509 -in ek.der -inform der -text -noout | grep -Po 'CN =\K.*'
+    args:
+      chdir: "{{ hosts_ek_cert_temp_dir.path }}"
+    register: host_tpm_issuer_root_ca_name
+    become: true
+    changed_when: true
+
+  - name: Remove headers and new line from PEM file
+    lineinfile:
+      path: "{{ hosts_ek_cert_temp_dir.path }}/{{ tpm_root_ca }}"
+      regexp: "{{ item.regexp }}"
+      state: absent
+    loop:
+      - { regexp: "BEGIN CERTIFICATE" }
+      - { regexp: "END CERTIFICATE" }
+      - { regexp: ' \t\n\r' }
+    register: host_tpm_issuer_root_ca_pem
+    when: tpm_root_ca_cert_type.stdout.find('PEM certificate') != -1
+
+  - name: Load pem file data
+    slurp:
+      src: "{{ hosts_ek_cert_temp_dir.path }}/{{ tpm_root_ca }}"
+    register: slurped_pem_data
+    when: host_tpm_issuer_root_ca_pem.changed
+
+  - name: Set root ca pem content
+    set_fact:
+      root_ca_cert_pem: "{{ slurped_pem_data.content | b64decode }}"
+    when: host_tpm_issuer_root_ca_pem.changed
+    no_log: true
+
+  - name: Extract TPM root ca certificate PEM without headers
+    shell: openssl x509 -inform der -in {{ tpm_root_ca }} | sed '/BEGIN CERTIFICATE/d; /END CERTIFICATE/d' | tr -d ' \t\n\r'
+    args:
+      chdir: "{{ hosts_ek_cert_temp_dir.path }}"
+    register: host_tpm_issuer_root_ca_pem
+    when: tpm_root_ca_cert_type.stdout.find('data') != -1
+    no_log: true
+
+  - name: Set root ca pem content
+    set_fact:
+      root_ca_cert_pem: "{{ host_tpm_issuer_root_ca_pem.stdout }}"
+    when: host_tpm_issuer_root_ca_pem.changed
+    no_log: true
+
+  - name: Read TPM EK certificate as PEM
+    shell: openssl x509 -inform der -in ek.der
+    args:
+      chdir: "{{ hosts_ek_cert_temp_dir.path }}"
+    register: host_tpm_ek_pem_pristine
+    become: true
+    no_log: true
+
+  - name: Convert TPM EK certificate to PEM without headers and new line
+    shell: echo "{{ host_tpm_ek_pem_pristine.stdout }}" | base64 | tr -d " \t\n\r"
+    args:
+      chdir: "{{ hosts_ek_cert_temp_dir.path }}"
+    register: host_tpm_ek_pem
+    become: true
+    changed_when: true
+    no_log: true
+
+  always:
+    - name: Cleanup temp dir
+      file:
+        path: "{{ hosts_ek_cert_temp_dir.path }}"
+        state: absent
+

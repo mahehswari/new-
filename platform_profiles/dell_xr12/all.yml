@@ -1,0 +1,70 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+# This file contains variables intended to be configured by user.
+# It allows the SR-IOV feature configuration.
+
+# Only if SRIOV detection enabled there will be use for those variables:d
+
+sriov_detection_input_file:
+  criteriaLists:
+    pf1:
+      functionality: APP
+      deviceId: [158a,0d58,1593,159b,1592,188a]
+      numVFSupp: 64
+    pf2:
+      functionality: APP
+      deviceId: [158a,0d58,1593,159b,1592,188a]
+      numVFSupp: 64
+    pf3:
+      functionality: APP
+      deviceId: [158a,0d58,1593,159b,1592,188a]
+      numVFSupp: 64
+    pf4:
+      functionality: APP
+      deviceId: [158a,0d58,1593,159b,1592,188a]
+      numVFSupp: 64
+
+  configurations:
+    timeoutForFindPTPMaster: 1
+    
+    
+sriov_nics:
+  c0p0: "eno12399"
+  c0p1: "eno12409"
+  c1p0: "ens5f0"
+  c1p1: "ens5f1"
+
+ # Enable hugepages
+hugepages_enabled: false
+# Size of a single hugepage (2M or 1G)
+default_hugepage_size: 1G
+# Amount of hugepages
+hugepages_1G: 4
+hugepages_2M: 0
+
+# amount of memory "protected" from hugepages allocation in MB
+mem_reserved: 1024
+
+# Configure cpu_idle_driver
+cpu_idle_driver_setup_enabled: false
+cpu_idle_driver: poll
+
+# isolcpus_enabled controls the CPU isolation mechanisms configured via grub command line.
+isolcpus_enabled: false
+# isolcpus is parameter for isolcpus, rcu_nocbs, nohz_full kernel command line arguments.
+# For more information visit https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.htm
+# This variable is required.
+isolcpus: 2-4
+
+#os_cpu_affinity_cpus pins the kthread and irq processing to selected cores using kthread_cpus and irqaffinity
+# kernel command line arguments.
+# For more information visit https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.htm
+# Does nothing when empty.
+os_cpu_affinity_cpus: ""
+
+# Autogenerate isolated cores based on `cmk_exclusive_num_cores` when `cmk_enabled=true`.
+autogenerate_isolcpus: false
+
+ 

@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+- name: Check if Secure Boot enabled
+  shell: "set -o pipefail && bootctl status 2> /dev/null | grep 'Secure Boot: enabled' > /dev/null"
+  register: secure_boot_status
+  become: yes
+  changed_when: false
+  failed_when: false
+
+- name: Install drivers from source
+  block:
+  - name: build and load ice driver
+    block:
+      - name: set facts
+        set_fact:
+          driver_name: "{{ _ice_name }}"
+          driver_version: "{{ _ice_ver }}"
+          driver_url: "{{ _ice_url }}"
+          driver_checksum: "{{ _ice_chksm }}"
+          current_mgmt_driver: "{{ mgmt_driver }}"
+
+      - name: build ice driver
+        include_role:
+          name: baseline_ansible/infrastructure/build_nic_drivers
+
+  - name: build and load iavf driver
+    block:
+      - name: set facts
+        set_fact:
+          driver_name: "{{ _iavf_name }}"
+          driver_version: "{{ _iavf_ver }}"
+          driver_url: "{{ _iavf_url }}"
+          driver_checksum: "{{ _iavf_chksm }}"
+          current_mgmt_driver: "{{ mgmt_driver }}"
+
+      - name: build iavf driver
+        include_role:
+          name: baseline_ansible/infrastructure/build_nic_drivers
+
+  - name: enable ice comms package
+    block:
+      - name: set facts
+        set_fact:
+          ice_comms_package_url: "{{ _ice_comms_url }}"
+          ice_comms_package_checksum: "{{ _ice_comms_chksm }}"
+          ice_comms_package_version: "{{ _ice_comms_ver }}"
+          current_mgmt_driver: "{{ mgmt_driver }}"
+
+      - name: install ice comms package
+        include_role:
+          name: baseline_ansible/infrastructure/install_comms_pkg
+    when: e810_comms_pkg_enable | default(False)
+  when: secure_boot_status.rc != 0

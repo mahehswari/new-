@@ -1,0 +1,178 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/se-context",
+    "definitions": {
+        "se-context": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "product": {
+                    "$ref": "#/definitions/product"
+                },
+                "context": {
+                    "$ref": "#/definitions/context"
+                },
+                "path": {
+                    "$ref": "#/definitions/path"
+                },
+                "docs": {
+                    "$ref": "#/definitions/docs"
+                },
+                "profile": {
+                    "$ref": "#/definitions/profile"
+                },
+                "configs": {
+                    "$ref": "#/definitions/configs"
+                },
+                "prog": {"type": "string"}
+            },
+            "required": ["product", "context", "path", "docs", "profile", "configs"]
+        },
+        "product":{
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {"type": "string"},
+                "version": {"type": "string"},
+                "codename": {"type": "string"}
+            },
+            "required": ["name", "version"]
+        },
+        "context": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "offline_flag": {"type": "boolean"}
+            },
+            "required": ["offline_flag"]
+        },
+        "path": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "part": {
+                    "$ref": "#/definitions/part"
+                },
+                "full" : {
+                    "type" : "object",
+                    "properties": {
+                        "repo" : {"type": "string"}
+                    }
+                }
+            },
+            "required": ["part", "full"]
+        },
+        "part": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "logs": {"type": "string"},
+                "data": {"type": "string"},
+                "docs": {"type": ["string", "null"]},
+                "scripts": {"type": "string"},
+                "toolchain": {"type": "string"},
+                "report_config": {"type": "string"},
+                "monitoring_service": {"type": "string"},
+                "dependencies": {
+                    "type": "string",
+                    "title": "Python Dependencies",
+                    "description": "Path to the file that contains dependencies required to install. They are needed to run the toolchain correctly"
+                },
+                "hooks": {
+                    "type": "string",
+                    "title": "Python Hooks Module Parent",
+                    "description": "Path to a directory containing repository specific IUT hooks module"
+                },
+                "package": {
+                        "$ref": "#/definitions/package"
+                },
+                "tmp": {"type": "object"}
+            },
+            "required": ["logs", "scripts", "toolchain", "report_config", "monitoring_service", "dependencies", "hooks", "package", "data"]
+        },
+        "package": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "docs": {"type" : "string"},
+                "metadata": {"type" : "string"},
+                "monitoring_service": {"type" : "string"},
+                "config": {"type" : "string"},
+                "checksum": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "datafiles": {"type": "string"},
+                        "metafiles": {"type": "string"}
+                    }
+                },
+                "required": ["datafiles", "metafiles"]
+            },
+            "required": ["docs", "metadata", "monitoring_service", "config", "checksum"]
+        },
+        "docs": {
+            "title": "Documentation Source Information",
+            "description": "Specify the source and structure of the provisioning process documentation. If the 'url' property is specified, the source is assumed to be a remote repository with the 'path' and 'branch' properties providing extra remote location details. If the 'url' property is missing, the source is assumed to be a local file system path relative to the root of a Smart Edge repository.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "url": {"type": "string", "format": "uri" },
+                "path": {
+                    "title": "Documentation Root Directory Path",
+                    "description": "If the 'url' property is specified, the path is relative to the remote repository root. Otherwise, it is relative to the current Smart Edge repository clone root.",
+                    "type": "string"
+                },
+                "branch": {"type": "string"},
+                "map": {
+                    "title": "Article to Document Mapping",
+                    "description": "This property defines a mapping that allows runtime determination of the markdown document, which provides a specific troubleshooting article. The IUT commands use this mapping to compose the article URL for the error message presentation purposes. The commands process the patterns in the order of their definition. The processing stops with the first matching pattern. For details see 'iut.docs.get_article_doc' function description.",
+                    "type": "array",
+                    "items": {
+                        "title": "Regular Expression and Document Path",
+                        "description": "The first item is an article id pattern, and the second is a markdown document path (relative to the 'docs.path' property).",
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "minContains": 2,
+                        "maxContains": 2
+                    },
+                    "minContains": 1
+                }
+            },
+            "required": ["url", "path", "branch", "map"]
+        },
+        "profile": {
+            "type": "object",
+            "if":{
+                "allOf": [
+                    {
+                        "required": ["name", "url", "branch"]
+                    }
+                ]
+            },
+            "then":{
+                "properties": {
+                    "name": {"type": "string"},
+                    "url": {"type": "string", "format": "uri" },
+                    "branch": {"type": "string"}
+                },
+                "additionalProperties": false,
+                "required": ["name", "url", "branch"]
+            },
+            "else": {
+                "properties": {
+                    "name": {"type": "string"},
+                    "path": {"type": "string"}
+                },
+                "additionalProperties": false,
+                "required": ["name", "path"]
+            }
+        },
+        "configs": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": {
+                "^\\w+$" : {"type": "string" }
+            }
+        }
+    }
+}

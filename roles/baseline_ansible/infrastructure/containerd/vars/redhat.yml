@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+containerd_package_info:
+  enablerepo: "docker-ce"
+  pkgs:
+    - "{{ containerd_versioned_pkg[containerd_version | string] }}"

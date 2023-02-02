@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+
+exclude_dirs:
+  - '/ansible_collections/*/tests/'
+  - '/ansible_collections/ansible/posix/'
+  - '/ansible_collections/community/docker/'
+  - '/ansible_collections/community/general/'
+  - '**/*_test.py'
+  - '**/conftest.py'

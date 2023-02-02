@@ -1,0 +1,118 @@
+diff --git a/deployments/verification_controller/all.yml b/deployments/verification_controller/all.yml
+index 72191cd7..cfd198ac 100644
+--- a/deployments/verification_controller/all.yml
++++ b/deployments/verification_controller/all.yml
+@@ -31,10 +31,10 @@ platform_attestation_node: false
+ isecl_ta_san_list: ""
+ 
+ # Enable PCCS deployment
+-pccs_enable: true
++pccs_enable: false
+ 
+ # Enable KMRA app-hsm deployment
+-kmra_enable: true
++kmra_enable: false
+ 
+ # Enable Pod Security Policy. This option enables PSP admission controller and creates minimal set of rules.
+ psp_enabled: true
+diff --git a/inventory.yml b/inventory.yml
+index 98a1888b..0c3213ee 100644
+--- a/inventory.yml
++++ b/inventory.yml
+@@ -5,17 +5,17 @@
+ all:
+   vars:
+     cluster_name: dek_test        # NOTE: Use `_` instead of spaces.
+-    deployment: dek               # NOTE: Available deployment type: Developer expirience kits (dek).
++    deployment: dek                               # NOTE: Available deployment type: Developer expirience kits (dek).
+     single_node_deployment: true  # Request single node deployment (true/false).
+     platform_profile: dell_r750   # HW profile
+     limit:                        # Limit ansible deployment to certain inventory group or hosts
+ controller_group:
+   hosts:
+     controller:
+-      ansible_host: 172.16.0.1
+-      ansible_user: smartedge-open
++      ansible_host: 10.190.162.83
++      ansible_user: intel
+ edgenode_group:
+   hosts:
+     node01:
+-      ansible_host: 172.16.0.1
+-      ansible_user: smartedge-open
++      ansible_host: 10.190.162.83
++      ansible_user: intel
+diff --git a/inventory/default/group_vars/all/10-default.yml b/inventory/default/group_vars/all/10-default.yml
+index 1dcc18d0..329e03fd 100644
+--- a/inventory/default/group_vars/all/10-default.yml
++++ b/inventory/default/group_vars/all/10-default.yml
+@@ -14,14 +14,14 @@
+ proxy_env:
+   # Proxy URLs to be used for HTTP, HTTPS and FTP
+   # Comment out proxy settings except no_proxy while deploying verification_controller on AWS
+-  http_proxy: ""
+-  https_proxy: ""
++  http_proxy: "http://proxy-iind.intel.com:911"
++  https_proxy: "http://proxy-iind.intel.com:912"
+ 
+-  ftp_proxy: ""
++  ftp_proxy: "http://proxy-iind.intel.com:911"
+   # No proxy setting contains addresses and networks that should not be accessed using proxy (e.g. local network, Kubernetes CNI networks)
+   no_proxy: ""
+   # all proxy need to use socks5 proxy to connect nats based servers(case with platform attestation components)
+-  all_proxy: ""
++  all_proxy: "socks5://proxy-iind.intel.com:1080"
+ 
+ 
+ # Proxy for be used by GIT HTTP - required if GIT HTTP via proxy
+@@ -349,21 +349,21 @@ harbor_timeout_min: 5
+ 
+ ###############
+ # FDO enabled on edge node
+-fdo_node: false
++fdo_node: true
+ 
+ fdo:
+     # API password to access manufacturer REST endpoint
+-    manufacturer_pass:
++    manufacturer_pass: manufacturerpass
+     # API password to access owner REST endpoint
+-    owner_pass:
++    owner_pass: ownerpass
+     # API password to access rv REST endpoint
+-    rv_pass:
++    rv_pass: rvpass
+     # Full manufacturer address where device can initiate DEvice Init. eg - "https://10.0.0.1:30038"
+-    manufacturer_addr:
++    manufacturer_addr: https://13.235.246.188:30038
+     # IP address or the FQDN of the manufacturer
+-    manufacturer_ip:
++    manufacturer_ip: 13.235.246.188
+     # IP address or the FQDN of the owner
+-    owner_ip:
++    owner_ip: 13.235.246.188
+     # Whether development setup is being installed. Few steps within FDO are out of scope for
+     # a production environment and hence have to be run manually on the owner service. For ease
+     # of deployment these steps are automated for development environment.
+@@ -374,7 +374,7 @@ fdo:
+ ### Platform attestation specific configurations
+ 
+ # Install isecl attestation components (TA, ihub, isecl k8s controller and scheduler extension)
+-platform_attestation_node: true
++platform_attestation_node: false
+ 
+ # CMS hash from Intel-secl controller. Use following command:
+ # kubectl get secrets/cms-tls-cert-sha384 -n isecl --template={{.data.CMS_TLS_CERT_SHA384}} | base64 -d
+@@ -394,10 +394,10 @@ kmra_apphsm_ip: ""
+ 
+ ### Software Guard Extensions
+ # SGX requires kernel 5.11+, SGX enabled in BIOS and access to PCC service
+-sgx_enabled: true
++sgx_enabled: false
+ 
+ ## Install HWE Kernel for SGX
+-install_hwe_kernel_enable: true
++install_hwe_kernel_enable: false
+ 
+ # PCCS server IP address
+ sgx_pccs_ip: ""

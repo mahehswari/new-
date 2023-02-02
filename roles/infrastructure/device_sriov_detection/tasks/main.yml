@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+
+---
+ - name: create temp directory for sriov detect
+   tempfile:
+     state: directory
+     prefix: sriov-detect-
+   register: sriov_detect_dir
+   become: yes
+   
+ - name: Copy the detect SR-IOV GO file and the configurations file to the remote OS with owner and permissions
+   copy:
+     src: "{{ role_path }}/files/{{ item }}"
+     dest: "{{ sriov_detect_dir.path }}"
+     owner: "{{ project_user }}"
+     group: "{{ project_user }}"
+     mode: a=rx,u+w 
+   with_items:
+     - sriov_detection.go
+     - sriov_detection_configuration.yml
+     - go.mod
+   become: yes   
+          
+ - name: Prepare the GoLang environment - Searching and Downloading the required GoLang packages  
+   command: "{{ item }}"
+   args:
+     chdir: "{{ sriov_detect_dir.path }}"
+   with_items:
+    - go mod tidy
+   environment:
+     PATH: /usr/local/go/bin:{{ ansible_env.PATH }}
+   changed_when: false
+   become: yes   
+
+ - name: Template SRIOV detection input file and copy to node
+   template:
+     src: sriov_input.yaml.j2
+     dest: "{{ sriov_detect_dir.path }}/sriov_input.yml"
+     mode: a=rw,u+x
+   become: yes
+
+ - name: Run sr-iov detection application
+   command: go run sriov_detection.go sriov_input.yml debug_mode 
+   args:
+     chdir: "{{ sriov_detect_dir.path }}" 
+   register: sriov_detection_output
+   environment:
+     PATH: /usr/local/go/bin:{{ ansible_env.PATH }}
+   changed_when: false
+   become: yes  
+
+ - name: Create a list of sriov_nic keys
+   set_fact:
+     sriov_nics_list: "{{ sriov_nics.keys() | list }}"   
+
+ - name: Set new interace names by combining two lists
+   set_fact:
+     sriov_nics: "{{ dict(sriov_nics_list | zip(sriov_detection_output.stdout_lines)) }}"
+   loop: "{{ sriov_nics_list }}"
+

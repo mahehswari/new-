@@ -1,0 +1,3799 @@
+ansible-playbook [core 2.13.1]
+  config file = /home/openness/scratch/lp/dek/ansible.cfg
+  configured module search path = ['/home/openness/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/openness/.local/share/virtualenvs/dek-t4G_8wwI/lib/python3.9/site-packages/ansible
+  ansible collection location = /home/openness/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/openness/.local/share/virtualenvs/dek-t4G_8wwI/bin/ansible-playbook
+  python version = 3.9.15 (main, Oct 12 2022, 19:14:24) [GCC 9.4.0]
+  jinja version = 3.0.3
+  libyaml = True
+Using /home/openness/scratch/lp/dek/ansible.cfg as config file
+statically imported: /home/openness/scratch/lp/dek/tasks/reboot_server.yml
+statically imported: /home/openness/scratch/lp/dek/tasks/reboot_server.yml
+redirecting (type: modules) ansible.builtin.docker_image to community.docker.docker_image
+redirecting (type: callback) ansible.builtin.debug to ansible.posix.debug
+redirecting (type: callback) ansible.builtin.debug to ansible.posix.debug
+redirecting (type: callback) ansible.builtin.profile_roles to ansible.posix.profile_roles
+Skipping callback 'default', as we already have a stdout callback.
+Skipping callback 'minimal', as we already have a stdout callback.
+Skipping callback 'oneline', as we already have a stdout callback.
+
+PLAYBOOK: single_node_network_edge.yml *****************************************
+11 plays in /home/openness/scratch/lp/dek/single_node_network_edge.yml
+
+PLAY [edgenode_group] **********************************************************
+
+TASK [Gathering Facts] *********************************************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:13
+Thursday 05 January 2023  13:39:04 +0530 (0:00:00.050)       0:00:00.050 ****** 
+ok: [node01]
+
+TASK [set node name] ***********************************************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:15
+Thursday 05 January 2023  13:39:06 +0530 (0:00:02.813)       0:00:02.864 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "node_name": "ip-10-0-0-129"
+    },
+    "changed": false
+}
+
+TASK [create helper variable] **************************************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:17
+Thursday 05 January 2023  13:39:06 +0530 (0:00:00.088)       0:00:02.952 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "single_node_deployment": true
+    },
+    "changed": false
+}
+
+TASK [check deployment settings] ***********************************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:20
+Thursday 05 January 2023  13:39:06 +0530 (0:00:00.040)       0:00:02.992 ****** 
+included: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml for node01
+
+TASK [check common settings] ***************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:6
+Thursday 05 January 2023  13:39:07 +0530 (0:00:00.042)       0:00:03.035 ****** 
+included: /home/openness/scratch/lp/dek/./tasks/settings_check_common.yml for node01
+
+TASK [fail if more than 1 controller] ******************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_common.yml:6
+Thursday 05 January 2023  13:39:07 +0530 (0:00:00.037)       0:00:03.072 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [validate hostname] *******************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_common.yml:13
+Thursday 05 January 2023  13:39:07 +0530 (0:00:00.055)       0:00:03.128 ****** 
+included: /home/openness/scratch/lp/dek/./tasks/precheck_hostname.yml for node01
+
+TASK [fail if hostname is localhost] *******************************************
+task path: /home/openness/scratch/lp/dek/tasks/precheck_hostname.yml:6
+Thursday 05 January 2023  13:39:07 +0530 (0:00:00.036)       0:00:03.165 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [check /etc/hosts for ipv4 hostname] **************************************
+task path: /home/openness/scratch/lp/dek/tasks/precheck_hostname.yml:11
+Thursday 05 January 2023  13:39:07 +0530 (0:00:00.030)       0:00:03.195 ****** 
+ok: [node01] => {
+    "changed": false,
+    "cmd": "grep -E \"127\\.0\\.0\\.1.*ip-10-0-0-129\" /etc/hosts",
+    "delta": "0:00:00.005268",
+    "end": "2023-01-05 08:09:40.458405",
+    "failed_when_result": false,
+    "rc": 0,
+    "start": "2023-01-05 08:09:40.453137"
+}
+
+STDOUT:
+
+127.0.0.1 localhost ip-10-0-0-129
+
+TASK [check /etc/hosts for ipv6 hostname] **************************************
+task path: /home/openness/scratch/lp/dek/tasks/precheck_hostname.yml:17
+Thursday 05 January 2023  13:39:07 +0530 (0:00:00.545)       0:00:03.741 ****** 
+ok: [node01] => {
+    "changed": false,
+    "cmd": "grep -E \"::1.*ip-10-0-0-129\" /etc/hosts",
+    "delta": "0:00:00.005242",
+    "end": "2023-01-05 08:09:40.840258",
+    "failed_when_result": false,
+    "rc": 0,
+    "start": "2023-01-05 08:09:40.835016"
+}
+
+STDOUT:
+
+::1 ip6-localhost ip6-loopback ip-10-0-0-129
+
+TASK [fail if hostname missing in /etc/hosts] **********************************
+task path: /home/openness/scratch/lp/dek/tasks/precheck_hostname.yml:23
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.381)       0:00:04.122 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [check if hostname complies with Kubernetes standards] ********************
+task path: /home/openness/scratch/lp/dek/tasks/precheck_hostname.yml:28
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.028)       0:00:04.151 ****** 
+ok: [node01] => {
+    "changed": false
+}
+
+MSG:
+
+All assertions passed
+
+TASK [validate requested CNIs] *************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:9
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.045)       0:00:04.196 ****** 
+included: /home/openness/scratch/lp/dek/./tasks/../roles/kubernetes/cni/tasks/precheck.yml for node01
+
+TASK [fail if no CNI is set up] ************************************************
+task path: /home/openness/scratch/lp/dek/roles/kubernetes/cni/tasks/precheck.yml:6
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.036)       0:00:04.233 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [fail if calico isn't a primary CNI] **************************************
+task path: /home/openness/scratch/lp/dek/roles/kubernetes/cni/tasks/precheck.yml:11
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.043)       0:00:04.276 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [fail if calico-ebpf isn't a primary CNI (calico-ebpf works as primary only)] ***
+task path: /home/openness/scratch/lp/dek/roles/kubernetes/cni/tasks/precheck.yml:18
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.025)       0:00:04.302 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [load kubernetes/cni defaults] ********************************************
+task path: /home/openness/scratch/lp/dek/roles/kubernetes/cni/tasks/precheck.yml:26
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.026)       0:00:04.329 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "defaults": {
+            "_available_kubernetes_cnis": [
+                "calico",
+                "nodus"
+            ]
+        }
+    },
+    "ansible_included_var_files": [
+        "/home/openness/scratch/lp/dek/roles/kubernetes/cni/tasks/../defaults/main.yml"
+    ],
+    "changed": false
+}
+
+TASK [fail if requested CNI is not available] **********************************
+task path: /home/openness/scratch/lp/dek/roles/kubernetes/cni/tasks/precheck.yml:31
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.044)       0:00:04.374 ****** 
+skipping: [node01] => (item=calico)  => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "item": "calico",
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [load biosfw vars] ********************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:14
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.029)       0:00:04.403 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [check syscfg_package.zip] ************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:18
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.052)       0:00:04.456 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [fail if file not present] ************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:23
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.047)       0:00:04.504 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [print VT-d debug msg] ****************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:36
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.044)       0:00:04.548 ****** 
+skipping: [node01] => {}
+
+TASK [check VT-d status] *******************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:39
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.039)       0:00:04.588 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [check current state] *****************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:46
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.038)       0:00:04.626 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [fail if Hyperthreading is ENABLED instead of DISABLED] *******************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:50
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.041)       0:00:04.668 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [fail if Hyperthreading is DISABLED instead of ENABLED] *******************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:56
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.039)       0:00:04.708 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [validate Intel-secl] *****************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:64
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.038)       0:00:04.746 ****** 
+included: /home/openness/scratch/lp/dek/./tasks/../roles/security/isecl/common/tasks/precheck.yml for node01
+
+TASK [Check control plane IP] **************************************************
+task path: /home/openness/scratch/lp/dek/roles/security/isecl/common/tasks/precheck.yml:7
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.035)       0:00:04.782 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [Check CMS hash] **********************************************************
+task path: /home/openness/scratch/lp/dek/roles/security/isecl/common/tasks/precheck.yml:12
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.044)       0:00:04.827 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [Check TA SAN list] *******************************************************
+task path: /home/openness/scratch/lp/dek/roles/security/isecl/common/tasks/precheck.yml:20
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.038)       0:00:04.866 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [validate PCCS] ***********************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:67
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.042)       0:00:04.908 ****** 
+included: /home/openness/scratch/lp/dek/./tasks/../roles/security/pccs/tasks/precheck.yml for node01
+
+TASK [Check if APiKey is set] **************************************************
+task path: /home/openness/scratch/lp/dek/roles/security/pccs/tasks/precheck.yml:6
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.036)       0:00:04.945 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [Check if PCCS user password is set] **************************************
+task path: /home/openness/scratch/lp/dek/roles/security/pccs/tasks/precheck.yml:11
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.043)       0:00:04.988 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [validate SGX] ************************************************************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne.yml:70
+Thursday 05 January 2023  13:39:08 +0530 (0:00:00.038)       0:00:05.026 ****** 
+included: /home/openness/scratch/lp/dek/./tasks/../roles/infrastructure/provision_sgx_enabled_platform/tasks/param_precheck.yml for node01
+
+TASK [Check PCCS IP address] ***************************************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/provision_sgx_enabled_platform/tasks/param_precheck.yml:7
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.036)       0:00:05.063 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [Check PCCS port] *********************************************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/provision_sgx_enabled_platform/tasks/param_precheck.yml:12
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.046)       0:00:05.109 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [Check PCCS user token] ***************************************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/provision_sgx_enabled_platform/tasks/param_precheck.yml:17
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.040)       0:00:05.150 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [check deployment settings for single node deployment] ********************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:22
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.038)       0:00:05.189 ****** 
+included: /home/openness/scratch/lp/dek/tasks/settings_check_ne_single_node.yml for node01
+
+TASK [fail if `edgenode_group` doesn't contain only one node] ******************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne_single_node.yml:8
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.038)       0:00:05.227 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [fail if controller and node are not the same machine] ********************
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne_single_node.yml:23
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.051)       0:00:05.279 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [fail if controller and node are not different entries in the inventory] ***
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne_single_node.yml:42
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.046)       0:00:05.325 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [fail if controller and node are deployed using different user] ***********
+task path: /home/openness/scratch/lp/dek/tasks/settings_check_ne_single_node.yml:61
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.025)       0:00:05.350 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [print deployment settings] ***********************************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:24
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.047)       0:00:05.398 ****** 
+included: /home/openness/scratch/lp/dek/tasks/print_vars.yml for node01
+
+TASK [print hostvars] **********************************************************
+task path: /home/openness/scratch/lp/dek/tasks/print_vars.yml:6
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.038)       0:00:05.436 ****** 
+ok: [node01] => {
+    "hostvars[inventory_hostname]": {
+        "_persistent_volumes_dest": "/var/lib/smartedge/",
+        "_rc_local_path": "/etc/rc.local",
+        "additional_grub_parameters": "",
+        "additional_grub_parameters_enabled": false,
+        "allowed_number_of_k8s_retries": 10,
+        "ansible_all_ipv4_addresses": [
+            "10.0.0.129"
+        ],
+        "ansible_all_ipv6_addresses": [
+            "fe80::68:1fff:fe9d:1bc6"
+        ],
+        "ansible_apparmor": {
+            "status": "enabled"
+        },
+        "ansible_architecture": "x86_64",
+        "ansible_bios_date": "08/24/2006",
+        "ansible_bios_vendor": "Xen",
+        "ansible_bios_version": "4.2.amazon",
+        "ansible_board_asset_tag": "NA",
+        "ansible_board_name": "NA",
+        "ansible_board_serial": "NA",
+        "ansible_board_vendor": "NA",
+        "ansible_board_version": "NA",
+        "ansible_chassis_asset_tag": "NA",
+        "ansible_chassis_serial": "NA",
+        "ansible_chassis_vendor": "Xen",
+        "ansible_chassis_version": "NA",
+        "ansible_check_mode": false,
+        "ansible_cmdline": {
+            "BOOT_IMAGE": "/boot/vmlinuz-5.15.0-1026-aws",
+            "console": "ttyS0",
+            "nvme_core.io_timeout": "4294967295",
+            "panic": "-1",
+            "ro": true,
+            "root": "PARTUUID=895d8984-5441-4c70-b87c-a6b6ebb8c95e"
+        },
+        "ansible_config_file": "/home/openness/scratch/lp/dek/ansible.cfg",
+        "ansible_date_time": {
+            "date": "2023-01-05",
+            "day": "05",
+            "epoch": "1672906179",
+            "epoch_int": "1672906179",
+            "hour": "08",
+            "iso8601": "2023-01-05T08:09:39Z",
+            "iso8601_basic": "20230105T080939167608",
+            "iso8601_basic_short": "20230105T080939",
+            "iso8601_micro": "2023-01-05T08:09:39.167608Z",
+            "minute": "09",
+            "month": "01",
+            "second": "39",
+            "time": "08:09:39",
+            "tz": "UTC",
+            "tz_dst": "UTC",
+            "tz_offset": "+0000",
+            "weekday": "Thursday",
+            "weekday_number": "4",
+            "weeknumber": "01",
+            "year": "2023"
+        },
+        "ansible_default_ipv4": {
+            "address": "10.0.0.129",
+            "alias": "eth0",
+            "broadcast": "",
+            "gateway": "10.0.0.1",
+            "interface": "eth0",
+            "macaddress": "02:68:1f:9d:1b:c6",
+            "mtu": 9001,
+            "netmask": "255.255.255.0",
+            "network": "10.0.0.0",
+            "prefix": "24",
+            "type": "ether"
+        },
+        "ansible_default_ipv6": {},
+        "ansible_device_links": {
+            "ids": {},
+            "labels": {
+                "xvda1": [
+                    "cloudimg-rootfs"
+                ],
+                "xvda15": [
+                    "UEFI"
+                ]
+            },
+            "masters": {},
+            "uuids": {
+                "xvda1": [
+                    "687fab62-1ba5-4282-890e-9266064f7d27"
+                ],
+                "xvda15": [
+                    "B2B4-82AC"
+                ]
+            }
+        },
+        "ansible_devices": {
+            "loop0": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {},
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "none",
+                "sectors": "49944",
+                "sectorsize": "512",
+                "size": "24.39 MB",
+                "support_discard": "4096",
+                "vendor": null,
+                "virtual": 1
+            },
+            "loop1": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {},
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "none",
+                "sectors": "113832",
+                "sectorsize": "512",
+                "size": "55.58 MB",
+                "support_discard": "4096",
+                "vendor": null,
+                "virtual": 1
+            },
+            "loop2": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {},
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "none",
+                "sectors": "129520",
+                "sectorsize": "512",
+                "size": "63.24 MB",
+                "support_discard": "4096",
+                "vendor": null,
+                "virtual": 1
+            },
+            "loop3": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {},
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "none",
+                "sectors": "210912",
+                "sectorsize": "512",
+                "size": "102.98 MB",
+                "support_discard": "4096",
+                "vendor": null,
+                "virtual": 1
+            },
+            "loop4": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {},
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "none",
+                "sectors": "101624",
+                "sectorsize": "512",
+                "size": "49.62 MB",
+                "support_discard": "4096",
+                "vendor": null,
+                "virtual": 1
+            },
+            "loop5": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {},
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "none",
+                "sectors": "113888",
+                "sectorsize": "512",
+                "size": "55.61 MB",
+                "support_discard": "4096",
+                "vendor": null,
+                "virtual": 1
+            },
+            "loop6": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {},
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "none",
+                "sectors": "129496",
+                "sectorsize": "512",
+                "size": "63.23 MB",
+                "support_discard": "4096",
+                "vendor": null,
+                "virtual": 1
+            },
+            "loop7": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {},
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "none",
+                "sectors": "129584",
+                "sectorsize": "512",
+                "size": "63.27 MB",
+                "support_discard": "4096",
+                "vendor": null,
+                "virtual": 1
+            },
+            "xvda": {
+                "holders": [],
+                "host": "",
+                "links": {
+                    "ids": [],
+                    "labels": [],
+                    "masters": [],
+                    "uuids": []
+                },
+                "model": null,
+                "partitions": {
+                    "xvda1": {
+                        "holders": [],
+                        "links": {
+                            "ids": [],
+                            "labels": [
+                                "cloudimg-rootfs"
+                            ],
+                            "masters": [],
+                            "uuids": [
+                                "687fab62-1ba5-4282-890e-9266064f7d27"
+                            ]
+                        },
+                        "sectors": "83658719",
+                        "sectorsize": 512,
+                        "size": "39.89 GB",
+                        "start": "227328",
+                        "uuid": "687fab62-1ba5-4282-890e-9266064f7d27"
+                    },
+                    "xvda14": {
+                        "holders": [],
+                        "links": {
+                            "ids": [],
+                            "labels": [],
+                            "masters": [],
+                            "uuids": []
+                        },
+                        "sectors": "8192",
+                        "sectorsize": 512,
+                        "size": "4.00 MB",
+                        "start": "2048",
+                        "uuid": null
+                    },
+                    "xvda15": {
+                        "holders": [],
+                        "links": {
+                            "ids": [],
+                            "labels": [
+                                "UEFI"
+                            ],
+                            "masters": [],
+                            "uuids": [
+                                "B2B4-82AC"
+                            ]
+                        },
+                        "sectors": "217088",
+                        "sectorsize": 512,
+                        "size": "106.00 MB",
+                        "start": "10240",
+                        "uuid": "B2B4-82AC"
+                    }
+                },
+                "removable": "0",
+                "rotational": "0",
+                "sas_address": null,
+                "sas_device_handle": null,
+                "scheduler_mode": "mq-deadline",
+                "sectors": "83886080",
+                "sectorsize": "512",
+                "size": "40.00 GB",
+                "support_discard": "0",
+                "vendor": null,
+                "virtual": 1
+            }
+        },
+        "ansible_diff_mode": false,
+        "ansible_distribution": "Ubuntu",
+        "ansible_distribution_file_parsed": true,
+        "ansible_distribution_file_path": "/etc/os-release",
+        "ansible_distribution_file_variety": "Debian",
+        "ansible_distribution_major_version": "22",
+        "ansible_distribution_release": "jammy",
+        "ansible_distribution_version": "22.04",
+        "ansible_dns": {
+            "nameservers": [
+                "8.8.8.8",
+                "10.0.0.2"
+            ],
+            "search": [
+                "ap-south-1.compute.internal"
+            ]
+        },
+        "ansible_domain": "",
+        "ansible_effective_group_id": 1000,
+        "ansible_effective_user_id": 1000,
+        "ansible_env": {
+            "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+            "HOME": "/home/ubuntu",
+            "LANG": "C.UTF-8",
+            "LOGNAME": "ubuntu",
+            "MOTD_SHOWN": "pam",
+            "NO_PROXY": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191",
+            "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+            "PWD": "/home/ubuntu",
+            "SHELL": "/bin/bash",
+            "SHLVL": "1",
+            "SSH_CLIENT": "192.55.79.173 42199 22",
+            "SSH_CONNECTION": "192.55.79.173 42199 10.0.0.129 22",
+            "USER": "ubuntu",
+            "XDG_RUNTIME_DIR": "/run/user/1000",
+            "XDG_SESSION_CLASS": "user",
+            "XDG_SESSION_ID": "432",
+            "XDG_SESSION_TYPE": "tty",
+            "_": "/usr/bin/python3",
+            "no_proxy": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191"
+        },
+        "ansible_eth0": {
+            "active": true,
+            "device": "eth0",
+            "features": {
+                "esp_hw_offload": "off [fixed]",
+                "esp_tx_csum_hw_offload": "off [fixed]",
+                "fcoe_mtu": "off [fixed]",
+                "generic_receive_offload": "on",
+                "generic_segmentation_offload": "on",
+                "highdma": "off [fixed]",
+                "hsr_dup_offload": "off [fixed]",
+                "hsr_fwd_offload": "off [fixed]",
+                "hsr_tag_ins_offload": "off [fixed]",
+                "hsr_tag_rm_offload": "off [fixed]",
+                "hw_tc_offload": "off [fixed]",
+                "l2_fwd_offload": "off [fixed]",
+                "large_receive_offload": "off [fixed]",
+                "loopback": "off [fixed]",
+                "macsec_hw_offload": "off [fixed]",
+                "netns_local": "off [fixed]",
+                "ntuple_filters": "off [fixed]",
+                "receive_hashing": "off [fixed]",
+                "rx_all": "off [fixed]",
+                "rx_checksumming": "on [fixed]",
+                "rx_fcs": "off [fixed]",
+                "rx_gro_hw": "off [fixed]",
+                "rx_gro_list": "off",
+                "rx_udp_gro_forwarding": "off",
+                "rx_udp_tunnel_port_offload": "off [fixed]",
+                "rx_vlan_filter": "off [fixed]",
+                "rx_vlan_offload": "off [fixed]",
+                "rx_vlan_stag_filter": "off [fixed]",
+                "rx_vlan_stag_hw_parse": "off [fixed]",
+                "scatter_gather": "on",
+                "tcp_segmentation_offload": "on",
+                "tls_hw_record": "off [fixed]",
+                "tls_hw_rx_offload": "off [fixed]",
+                "tls_hw_tx_offload": "off [fixed]",
+                "tx_checksum_fcoe_crc": "off [fixed]",
+                "tx_checksum_ip_generic": "off [fixed]",
+                "tx_checksum_ipv4": "on [fixed]",
+                "tx_checksum_ipv6": "on",
+                "tx_checksum_sctp": "off [fixed]",
+                "tx_checksumming": "on",
+                "tx_esp_segmentation": "off [fixed]",
+                "tx_fcoe_segmentation": "off [fixed]",
+                "tx_gre_csum_segmentation": "off [fixed]",
+                "tx_gre_segmentation": "off [fixed]",
+                "tx_gso_list": "off [fixed]",
+                "tx_gso_partial": "off [fixed]",
+                "tx_gso_robust": "on [fixed]",
+                "tx_ipxip4_segmentation": "off [fixed]",
+                "tx_ipxip6_segmentation": "off [fixed]",
+                "tx_lockless": "off [fixed]",
+                "tx_nocache_copy": "off",
+                "tx_scatter_gather": "on",
+                "tx_scatter_gather_fraglist": "off [fixed]",
+                "tx_sctp_segmentation": "off [fixed]",
+                "tx_tcp6_segmentation": "on",
+                "tx_tcp_ecn_segmentation": "off [fixed]",
+                "tx_tcp_mangleid_segmentation": "off",
+                "tx_tcp_segmentation": "on",
+                "tx_tunnel_remcsum_segmentation": "off [fixed]",
+                "tx_udp_segmentation": "off [fixed]",
+                "tx_udp_tnl_csum_segmentation": "off [fixed]",
+                "tx_udp_tnl_segmentation": "off [fixed]",
+                "tx_vlan_offload": "off [fixed]",
+                "tx_vlan_stag_hw_insert": "off [fixed]",
+                "vlan_challenged": "off [fixed]"
+            },
+            "hw_timestamp_filters": [],
+            "ipv4": {
+                "address": "10.0.0.129",
+                "broadcast": "",
+                "netmask": "255.255.255.0",
+                "network": "10.0.0.0",
+                "prefix": "24"
+            },
+            "ipv6": [
+                {
+                    "address": "fe80::68:1fff:fe9d:1bc6",
+                    "prefix": "64",
+                    "scope": "link"
+                }
+            ],
+            "macaddress": "02:68:1f:9d:1b:c6",
+            "module": "xen_netfront",
+            "mtu": 9001,
+            "pciid": "vif-0",
+            "promisc": false,
+            "timestamping": [],
+            "type": "ether"
+        },
+        "ansible_facts": {
+            "all_ipv4_addresses": [
+                "10.0.0.129"
+            ],
+            "all_ipv6_addresses": [
+                "fe80::68:1fff:fe9d:1bc6"
+            ],
+            "ansible_local": {},
+            "apparmor": {
+                "status": "enabled"
+            },
+            "architecture": "x86_64",
+            "bios_date": "08/24/2006",
+            "bios_vendor": "Xen",
+            "bios_version": "4.2.amazon",
+            "board_asset_tag": "NA",
+            "board_name": "NA",
+            "board_serial": "NA",
+            "board_vendor": "NA",
+            "board_version": "NA",
+            "chassis_asset_tag": "NA",
+            "chassis_serial": "NA",
+            "chassis_vendor": "Xen",
+            "chassis_version": "NA",
+            "cmdline": {
+                "BOOT_IMAGE": "/boot/vmlinuz-5.15.0-1026-aws",
+                "console": "ttyS0",
+                "nvme_core.io_timeout": "4294967295",
+                "panic": "-1",
+                "ro": true,
+                "root": "PARTUUID=895d8984-5441-4c70-b87c-a6b6ebb8c95e"
+            },
+            "date_time": {
+                "date": "2023-01-05",
+                "day": "05",
+                "epoch": "1672906179",
+                "epoch_int": "1672906179",
+                "hour": "08",
+                "iso8601": "2023-01-05T08:09:39Z",
+                "iso8601_basic": "20230105T080939167608",
+                "iso8601_basic_short": "20230105T080939",
+                "iso8601_micro": "2023-01-05T08:09:39.167608Z",
+                "minute": "09",
+                "month": "01",
+                "second": "39",
+                "time": "08:09:39",
+                "tz": "UTC",
+                "tz_dst": "UTC",
+                "tz_offset": "+0000",
+                "weekday": "Thursday",
+                "weekday_number": "4",
+                "weeknumber": "01",
+                "year": "2023"
+            },
+            "default_ipv4": {
+                "address": "10.0.0.129",
+                "alias": "eth0",
+                "broadcast": "",
+                "gateway": "10.0.0.1",
+                "interface": "eth0",
+                "macaddress": "02:68:1f:9d:1b:c6",
+                "mtu": 9001,
+                "netmask": "255.255.255.0",
+                "network": "10.0.0.0",
+                "prefix": "24",
+                "type": "ether"
+            },
+            "default_ipv6": {},
+            "device_links": {
+                "ids": {},
+                "labels": {
+                    "xvda1": [
+                        "cloudimg-rootfs"
+                    ],
+                    "xvda15": [
+                        "UEFI"
+                    ]
+                },
+                "masters": {},
+                "uuids": {
+                    "xvda1": [
+                        "687fab62-1ba5-4282-890e-9266064f7d27"
+                    ],
+                    "xvda15": [
+                        "B2B4-82AC"
+                    ]
+                }
+            },
+            "devices": {
+                "loop0": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {},
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "none",
+                    "sectors": "49944",
+                    "sectorsize": "512",
+                    "size": "24.39 MB",
+                    "support_discard": "4096",
+                    "vendor": null,
+                    "virtual": 1
+                },
+                "loop1": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {},
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "none",
+                    "sectors": "113832",
+                    "sectorsize": "512",
+                    "size": "55.58 MB",
+                    "support_discard": "4096",
+                    "vendor": null,
+                    "virtual": 1
+                },
+                "loop2": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {},
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "none",
+                    "sectors": "129520",
+                    "sectorsize": "512",
+                    "size": "63.24 MB",
+                    "support_discard": "4096",
+                    "vendor": null,
+                    "virtual": 1
+                },
+                "loop3": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {},
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "none",
+                    "sectors": "210912",
+                    "sectorsize": "512",
+                    "size": "102.98 MB",
+                    "support_discard": "4096",
+                    "vendor": null,
+                    "virtual": 1
+                },
+                "loop4": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {},
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "none",
+                    "sectors": "101624",
+                    "sectorsize": "512",
+                    "size": "49.62 MB",
+                    "support_discard": "4096",
+                    "vendor": null,
+                    "virtual": 1
+                },
+                "loop5": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {},
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "none",
+                    "sectors": "113888",
+                    "sectorsize": "512",
+                    "size": "55.61 MB",
+                    "support_discard": "4096",
+                    "vendor": null,
+                    "virtual": 1
+                },
+                "loop6": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {},
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "none",
+                    "sectors": "129496",
+                    "sectorsize": "512",
+                    "size": "63.23 MB",
+                    "support_discard": "4096",
+                    "vendor": null,
+                    "virtual": 1
+                },
+                "loop7": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {},
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "none",
+                    "sectors": "129584",
+                    "sectorsize": "512",
+                    "size": "63.27 MB",
+                    "support_discard": "4096",
+                    "vendor": null,
+                    "virtual": 1
+                },
+                "xvda": {
+                    "holders": [],
+                    "host": "",
+                    "links": {
+                        "ids": [],
+                        "labels": [],
+                        "masters": [],
+                        "uuids": []
+                    },
+                    "model": null,
+                    "partitions": {
+                        "xvda1": {
+                            "holders": [],
+                            "links": {
+                                "ids": [],
+                                "labels": [
+                                    "cloudimg-rootfs"
+                                ],
+                                "masters": [],
+                                "uuids": [
+                                    "687fab62-1ba5-4282-890e-9266064f7d27"
+                                ]
+                            },
+                            "sectors": "83658719",
+                            "sectorsize": 512,
+                            "size": "39.89 GB",
+                            "start": "227328",
+                            "uuid": "687fab62-1ba5-4282-890e-9266064f7d27"
+                        },
+                        "xvda14": {
+                            "holders": [],
+                            "links": {
+                                "ids": [],
+                                "labels": [],
+                                "masters": [],
+                                "uuids": []
+                            },
+                            "sectors": "8192",
+                            "sectorsize": 512,
+                            "size": "4.00 MB",
+                            "start": "2048",
+                            "uuid": null
+                        },
+                        "xvda15": {
+                            "holders": [],
+                            "links": {
+                                "ids": [],
+                                "labels": [
+                                    "UEFI"
+                                ],
+                                "masters": [],
+                                "uuids": [
+                                    "B2B4-82AC"
+                                ]
+                            },
+                            "sectors": "217088",
+                            "sectorsize": 512,
+                            "size": "106.00 MB",
+                            "start": "10240",
+                            "uuid": "B2B4-82AC"
+                        }
+                    },
+                    "removable": "0",
+                    "rotational": "0",
+                    "sas_address": null,
+                    "sas_device_handle": null,
+                    "scheduler_mode": "mq-deadline",
+                    "sectors": "83886080",
+                    "sectorsize": "512",
+                    "size": "40.00 GB",
+                    "support_discard": "0",
+                    "vendor": null,
+                    "virtual": 1
+                }
+            },
+            "discovered_interpreter_python": "/usr/bin/python3",
+            "distribution": "Ubuntu",
+            "distribution_file_parsed": true,
+            "distribution_file_path": "/etc/os-release",
+            "distribution_file_variety": "Debian",
+            "distribution_major_version": "22",
+            "distribution_release": "jammy",
+            "distribution_version": "22.04",
+            "dns": {
+                "nameservers": [
+                    "8.8.8.8",
+                    "10.0.0.2"
+                ],
+                "search": [
+                    "ap-south-1.compute.internal"
+                ]
+            },
+            "domain": "",
+            "effective_group_id": 1000,
+            "effective_user_id": 1000,
+            "env": {
+                "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+                "HOME": "/home/ubuntu",
+                "LANG": "C.UTF-8",
+                "LOGNAME": "ubuntu",
+                "MOTD_SHOWN": "pam",
+                "NO_PROXY": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191",
+                "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+                "PWD": "/home/ubuntu",
+                "SHELL": "/bin/bash",
+                "SHLVL": "1",
+                "SSH_CLIENT": "192.55.79.173 42199 22",
+                "SSH_CONNECTION": "192.55.79.173 42199 10.0.0.129 22",
+                "USER": "ubuntu",
+                "XDG_RUNTIME_DIR": "/run/user/1000",
+                "XDG_SESSION_CLASS": "user",
+                "XDG_SESSION_ID": "432",
+                "XDG_SESSION_TYPE": "tty",
+                "_": "/usr/bin/python3",
+                "no_proxy": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191"
+            },
+            "eth0": {
+                "active": true,
+                "device": "eth0",
+                "features": {
+                    "esp_hw_offload": "off [fixed]",
+                    "esp_tx_csum_hw_offload": "off [fixed]",
+                    "fcoe_mtu": "off [fixed]",
+                    "generic_receive_offload": "on",
+                    "generic_segmentation_offload": "on",
+                    "highdma": "off [fixed]",
+                    "hsr_dup_offload": "off [fixed]",
+                    "hsr_fwd_offload": "off [fixed]",
+                    "hsr_tag_ins_offload": "off [fixed]",
+                    "hsr_tag_rm_offload": "off [fixed]",
+                    "hw_tc_offload": "off [fixed]",
+                    "l2_fwd_offload": "off [fixed]",
+                    "large_receive_offload": "off [fixed]",
+                    "loopback": "off [fixed]",
+                    "macsec_hw_offload": "off [fixed]",
+                    "netns_local": "off [fixed]",
+                    "ntuple_filters": "off [fixed]",
+                    "receive_hashing": "off [fixed]",
+                    "rx_all": "off [fixed]",
+                    "rx_checksumming": "on [fixed]",
+                    "rx_fcs": "off [fixed]",
+                    "rx_gro_hw": "off [fixed]",
+                    "rx_gro_list": "off",
+                    "rx_udp_gro_forwarding": "off",
+                    "rx_udp_tunnel_port_offload": "off [fixed]",
+                    "rx_vlan_filter": "off [fixed]",
+                    "rx_vlan_offload": "off [fixed]",
+                    "rx_vlan_stag_filter": "off [fixed]",
+                    "rx_vlan_stag_hw_parse": "off [fixed]",
+                    "scatter_gather": "on",
+                    "tcp_segmentation_offload": "on",
+                    "tls_hw_record": "off [fixed]",
+                    "tls_hw_rx_offload": "off [fixed]",
+                    "tls_hw_tx_offload": "off [fixed]",
+                    "tx_checksum_fcoe_crc": "off [fixed]",
+                    "tx_checksum_ip_generic": "off [fixed]",
+                    "tx_checksum_ipv4": "on [fixed]",
+                    "tx_checksum_ipv6": "on",
+                    "tx_checksum_sctp": "off [fixed]",
+                    "tx_checksumming": "on",
+                    "tx_esp_segmentation": "off [fixed]",
+                    "tx_fcoe_segmentation": "off [fixed]",
+                    "tx_gre_csum_segmentation": "off [fixed]",
+                    "tx_gre_segmentation": "off [fixed]",
+                    "tx_gso_list": "off [fixed]",
+                    "tx_gso_partial": "off [fixed]",
+                    "tx_gso_robust": "on [fixed]",
+                    "tx_ipxip4_segmentation": "off [fixed]",
+                    "tx_ipxip6_segmentation": "off [fixed]",
+                    "tx_lockless": "off [fixed]",
+                    "tx_nocache_copy": "off",
+                    "tx_scatter_gather": "on",
+                    "tx_scatter_gather_fraglist": "off [fixed]",
+                    "tx_sctp_segmentation": "off [fixed]",
+                    "tx_tcp6_segmentation": "on",
+                    "tx_tcp_ecn_segmentation": "off [fixed]",
+                    "tx_tcp_mangleid_segmentation": "off",
+                    "tx_tcp_segmentation": "on",
+                    "tx_tunnel_remcsum_segmentation": "off [fixed]",
+                    "tx_udp_segmentation": "off [fixed]",
+                    "tx_udp_tnl_csum_segmentation": "off [fixed]",
+                    "tx_udp_tnl_segmentation": "off [fixed]",
+                    "tx_vlan_offload": "off [fixed]",
+                    "tx_vlan_stag_hw_insert": "off [fixed]",
+                    "vlan_challenged": "off [fixed]"
+                },
+                "hw_timestamp_filters": [],
+                "ipv4": {
+                    "address": "10.0.0.129",
+                    "broadcast": "",
+                    "netmask": "255.255.255.0",
+                    "network": "10.0.0.0",
+                    "prefix": "24"
+                },
+                "ipv6": [
+                    {
+                        "address": "fe80::68:1fff:fe9d:1bc6",
+                        "prefix": "64",
+                        "scope": "link"
+                    }
+                ],
+                "macaddress": "02:68:1f:9d:1b:c6",
+                "module": "xen_netfront",
+                "mtu": 9001,
+                "pciid": "vif-0",
+                "promisc": false,
+                "timestamping": [],
+                "type": "ether"
+            },
+            "fibre_channel_wwn": [],
+            "fips": false,
+            "form_factor": "Other",
+            "fqdn": "ip6-localhost",
+            "gather_subset": [
+                "all"
+            ],
+            "hostname": "ip-10-0-0-129",
+            "hostnqn": "",
+            "interfaces": [
+                "eth0",
+                "lo"
+            ],
+            "is_chroot": false,
+            "iscsi_iqn": "",
+            "kernel": "5.15.0-1026-aws",
+            "kernel_version": "#30-Ubuntu SMP Wed Nov 23 14:15:21 UTC 2022",
+            "lo": {
+                "active": true,
+                "device": "lo",
+                "features": {
+                    "esp_hw_offload": "off [fixed]",
+                    "esp_tx_csum_hw_offload": "off [fixed]",
+                    "fcoe_mtu": "off [fixed]",
+                    "generic_receive_offload": "on",
+                    "generic_segmentation_offload": "on",
+                    "highdma": "on [fixed]",
+                    "hsr_dup_offload": "off [fixed]",
+                    "hsr_fwd_offload": "off [fixed]",
+                    "hsr_tag_ins_offload": "off [fixed]",
+                    "hsr_tag_rm_offload": "off [fixed]",
+                    "hw_tc_offload": "off [fixed]",
+                    "l2_fwd_offload": "off [fixed]",
+                    "large_receive_offload": "off [fixed]",
+                    "loopback": "on [fixed]",
+                    "macsec_hw_offload": "off [fixed]",
+                    "netns_local": "on [fixed]",
+                    "ntuple_filters": "off [fixed]",
+                    "receive_hashing": "off [fixed]",
+                    "rx_all": "off [fixed]",
+                    "rx_checksumming": "on [fixed]",
+                    "rx_fcs": "off [fixed]",
+                    "rx_gro_hw": "off [fixed]",
+                    "rx_gro_list": "off",
+                    "rx_udp_gro_forwarding": "off",
+                    "rx_udp_tunnel_port_offload": "off [fixed]",
+                    "rx_vlan_filter": "off [fixed]",
+                    "rx_vlan_offload": "off [fixed]",
+                    "rx_vlan_stag_filter": "off [fixed]",
+                    "rx_vlan_stag_hw_parse": "off [fixed]",
+                    "scatter_gather": "on",
+                    "tcp_segmentation_offload": "on",
+                    "tls_hw_record": "off [fixed]",
+                    "tls_hw_rx_offload": "off [fixed]",
+                    "tls_hw_tx_offload": "off [fixed]",
+                    "tx_checksum_fcoe_crc": "off [fixed]",
+                    "tx_checksum_ip_generic": "on [fixed]",
+                    "tx_checksum_ipv4": "off [fixed]",
+                    "tx_checksum_ipv6": "off [fixed]",
+                    "tx_checksum_sctp": "on [fixed]",
+                    "tx_checksumming": "on",
+                    "tx_esp_segmentation": "off [fixed]",
+                    "tx_fcoe_segmentation": "off [fixed]",
+                    "tx_gre_csum_segmentation": "off [fixed]",
+                    "tx_gre_segmentation": "off [fixed]",
+                    "tx_gso_list": "on",
+                    "tx_gso_partial": "off [fixed]",
+                    "tx_gso_robust": "off [fixed]",
+                    "tx_ipxip4_segmentation": "off [fixed]",
+                    "tx_ipxip6_segmentation": "off [fixed]",
+                    "tx_lockless": "on [fixed]",
+                    "tx_nocache_copy": "off [fixed]",
+                    "tx_scatter_gather": "on [fixed]",
+                    "tx_scatter_gather_fraglist": "on [fixed]",
+                    "tx_sctp_segmentation": "on",
+                    "tx_tcp6_segmentation": "on",
+                    "tx_tcp_ecn_segmentation": "on",
+                    "tx_tcp_mangleid_segmentation": "on",
+                    "tx_tcp_segmentation": "on",
+                    "tx_tunnel_remcsum_segmentation": "off [fixed]",
+                    "tx_udp_segmentation": "on",
+                    "tx_udp_tnl_csum_segmentation": "off [fixed]",
+                    "tx_udp_tnl_segmentation": "off [fixed]",
+                    "tx_vlan_offload": "off [fixed]",
+                    "tx_vlan_stag_hw_insert": "off [fixed]",
+                    "vlan_challenged": "on [fixed]"
+                },
+                "hw_timestamp_filters": [],
+                "ipv4": {
+                    "address": "127.0.0.1",
+                    "broadcast": "",
+                    "netmask": "255.0.0.0",
+                    "network": "127.0.0.0",
+                    "prefix": "8"
+                },
+                "ipv6": [
+                    {
+                        "address": "::1",
+                        "prefix": "128",
+                        "scope": "host"
+                    }
+                ],
+                "mtu": 65536,
+                "promisc": false,
+                "timestamping": [],
+                "type": "loopback"
+            },
+            "lsb": {
+                "codename": "jammy",
+                "description": "Ubuntu 22.04.1 LTS",
+                "id": "Ubuntu",
+                "major_release": "22",
+                "release": "22.04"
+            },
+            "machine": "x86_64",
+            "machine_id": "f04429f29c1b48fe8bca36be85bc75d5",
+            "memfree_mb": 792,
+            "memory_mb": {
+                "nocache": {
+                    "free": 3486,
+                    "used": 434
+                },
+                "real": {
+                    "free": 792,
+                    "total": 3920,
+                    "used": 3128
+                },
+                "swap": {
+                    "cached": 0,
+                    "free": 0,
+                    "total": 0,
+                    "used": 0
+                }
+            },
+            "memtotal_mb": 3920,
+            "module_setup": true,
+            "mounts": [
+                {
+                    "block_available": 9210703,
+                    "block_size": 4096,
+                    "block_total": 10114671,
+                    "block_used": 903968,
+                    "device": "/dev/root",
+                    "fstype": "ext4",
+                    "inode_available": 5045335,
+                    "inode_total": 5160960,
+                    "inode_used": 115625,
+                    "mount": "/",
+                    "options": "rw,relatime,discard,errors=remount-ro",
+                    "size_available": 37727039488,
+                    "size_total": 41429692416,
+                    "uuid": "687fab62-1ba5-4282-890e-9266064f7d27"
+                },
+                {
+                    "block_available": 0,
+                    "block_size": 131072,
+                    "block_total": 196,
+                    "block_used": 196,
+                    "device": "/dev/loop0",
+                    "fstype": "squashfs",
+                    "inode_available": 0,
+                    "inode_total": 16,
+                    "inode_used": 16,
+                    "mount": "/snap/amazon-ssm-agent/6312",
+                    "options": "ro,nodev,relatime,errors=continue",
+                    "size_available": 0,
+                    "size_total": 25690112,
+                    "uuid": "N/A"
+                },
+                {
+                    "block_available": 0,
+                    "block_size": 131072,
+                    "block_total": 445,
+                    "block_used": 445,
+                    "device": "/dev/loop1",
+                    "fstype": "squashfs",
+                    "inode_available": 0,
+                    "inode_total": 10873,
+                    "inode_used": 10873,
+                    "mount": "/snap/core18/2632",
+                    "options": "ro,nodev,relatime,errors=continue",
+                    "size_available": 0,
+                    "size_total": 58327040,
+                    "uuid": "N/A"
+                },
+                {
+                    "block_available": 0,
+                    "block_size": 131072,
+                    "block_total": 824,
+                    "block_used": 824,
+                    "device": "/dev/loop3",
+                    "fstype": "squashfs",
+                    "inode_available": 0,
+                    "inode_total": 816,
+                    "inode_used": 816,
+                    "mount": "/snap/lxd/23541",
+                    "options": "ro,nodev,relatime,errors=continue",
+                    "size_available": 0,
+                    "size_total": 108003328,
+                    "uuid": "N/A"
+                },
+                {
+                    "block_available": 0,
+                    "block_size": 131072,
+                    "block_total": 397,
+                    "block_used": 397,
+                    "device": "/dev/loop4",
+                    "fstype": "squashfs",
+                    "inode_available": 0,
+                    "inode_total": 491,
+                    "inode_used": 491,
+                    "mount": "/snap/snapd/17883",
+                    "options": "ro,nodev,relatime,errors=continue",
+                    "size_available": 0,
+                    "size_total": 52035584,
+                    "uuid": "N/A"
+                },
+                {
+                    "block_available": 203058,
+                    "block_size": 512,
+                    "block_total": 213716,
+                    "block_used": 10658,
+                    "device": "/dev/xvda15",
+                    "fstype": "vfat",
+                    "inode_available": 0,
+                    "inode_total": 0,
+                    "inode_used": 0,
+                    "mount": "/boot/efi",
+                    "options": "rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro",
+                    "size_available": 103965696,
+                    "size_total": 109422592,
+                    "uuid": "B2B4-82AC"
+                },
+                {
+                    "block_available": 0,
+                    "block_size": 131072,
+                    "block_total": 445,
+                    "block_used": 445,
+                    "device": "/dev/loop5",
+                    "fstype": "squashfs",
+                    "inode_available": 0,
+                    "inode_total": 10880,
+                    "inode_used": 10880,
+                    "mount": "/snap/core18/2667",
+                    "options": "ro,nodev,relatime,errors=continue",
+                    "size_available": 0,
+                    "size_total": 58327040,
+                    "uuid": "N/A"
+                },
+                {
+                    "block_available": 0,
+                    "block_size": 131072,
+                    "block_total": 506,
+                    "block_used": 506,
+                    "device": "/dev/loop6",
+                    "fstype": "squashfs",
+                    "inode_available": 0,
+                    "inode_total": 11897,
+                    "inode_used": 11897,
+                    "mount": "/snap/core20/1738",
+                    "options": "ro,nodev,relatime,errors=continue",
+                    "size_available": 0,
+                    "size_total": 66322432,
+                    "uuid": "N/A"
+                },
+                {
+                    "block_available": 0,
+                    "block_size": 131072,
+                    "block_total": 507,
+                    "block_used": 507,
+                    "device": "/dev/loop7",
+                    "fstype": "squashfs",
+                    "inode_available": 0,
+                    "inode_total": 11904,
+                    "inode_used": 11904,
+                    "mount": "/snap/core20/1778",
+                    "options": "ro,nodev,relatime,errors=continue",
+                    "size_available": 0,
+                    "size_total": 66453504,
+                    "uuid": "N/A"
+                }
+            ],
+            "nodename": "ip-10-0-0-129",
+            "os_family": "Debian",
+            "pkg_mgr": "apt",
+            "proc_cmdline": {
+                "BOOT_IMAGE": "/boot/vmlinuz-5.15.0-1026-aws",
+                "console": [
+                    "tty1",
+                    "ttyS0"
+                ],
+                "nvme_core.io_timeout": "4294967295",
+                "panic": "-1",
+                "ro": true,
+                "root": "PARTUUID=895d8984-5441-4c70-b87c-a6b6ebb8c95e"
+            },
+            "processor": [
+                "0",
+                "GenuineIntel",
+                "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+                "1",
+                "GenuineIntel",
+                "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz"
+            ],
+            "processor_cores": 2,
+            "processor_count": 1,
+            "processor_nproc": 2,
+            "processor_threads_per_core": 1,
+            "processor_vcpus": 2,
+            "product_name": "HVM domU",
+            "product_serial": "NA",
+            "product_uuid": "NA",
+            "product_version": "4.2.amazon",
+            "python": {
+                "executable": "/usr/bin/python3",
+                "has_sslcontext": true,
+                "type": "cpython",
+                "version": {
+                    "major": 3,
+                    "micro": 6,
+                    "minor": 10,
+                    "releaselevel": "final",
+                    "serial": 0
+                },
+                "version_info": [
+                    3,
+                    10,
+                    6,
+                    "final",
+                    0
+                ]
+            },
+            "python_version": "3.10.6",
+            "real_group_id": 1000,
+            "real_user_id": 1000,
+            "selinux": {
+                "status": "disabled"
+            },
+            "selinux_python_present": true,
+            "service_mgr": "systemd",
+            "ssh_host_key_dsa_public": "AAAAB3NzaC1kc3MAAACBALOgbKbI0xRWA894QtMlKPPQV2+fZJVZNF3R0w9uWcqmCfrEK0QFgi9cr7Tye6vQ4gide/uUeAsi99hAmq42mJ4jpjGuwM0k2YfxcYOi80Q54OgHvR0oB/FVJacaP3jZg+ti6QzAn6mO6XzxJN7d0pkBOBwSCv+xaSVUcKXkhpPFAAAAFQC0HmjeFT7go592fLBu1+HqWkZVYwAAAIEArVjpc/lHj1nPZOuSG1RQJlow6MrVAtC2qYU0ocdiwZpqOjAbvwsM6Hlt5lnJ495CZ+uu4CpP7N0NPqUoC/AZJJ4lv/Vw320RV5hCdy0K5N1piMm7OvHFCuUSz2nT5To6KLbJRCX8/BTXFMpgyf+jdJWCiAtdkkF03qO6BLzjH54AAACBAKjcBW+azk307s5KnqEdeyK80v1YN+RlxA3q8neBFVF4H9wF5oLTD7TAlHe8ArXwfOE/CLA1bYET5Jw8bZD6KXC48Ng5zMSFVlLSGO+EJk8w5+qK1vSccJC6a5vWF0e+cjyY2oU2t9q46KTawCjWC/sRlh5xeOkiLckXsHuwP2qv",
+            "ssh_host_key_dsa_public_keytype": "ssh-dss",
+            "ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBP9olduMO/rLx8/eV+BTa9heVNo7G98m5pTd/BRoupH5MGnx8fBp0j5Wt/vgGNEkDfFUXYYp0jNHEKKyFJeAq94=",
+            "ssh_host_key_ecdsa_public_keytype": "ecdsa-sha2-nistp256",
+            "ssh_host_key_ed25519_public": "AAAAC3NzaC1lZDI1NTE5AAAAIJ3y/vHzwyV02T5/vIdd04XWqswF2e5nno6p+C3aaIF0",
+            "ssh_host_key_ed25519_public_keytype": "ssh-ed25519",
+            "ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABgQCT5op3p9fxO94NFmxz/TZlmRKKFpstaTp121TaMHMmHDSiGY92VUUshIAjwmmtLyH+oe9UnFLepBPn1bVOxRnclWqbnCFdo60Nq9ZsXy77yiJFJ8hirepT/bX6+4i/I2xAzt75bnbxP6/i1awoGMChCd4HInBAvEtLFUVtQCkHJkwPIzVthc4bMgg3XQKTfgdVVUXz+dSLLQ2RlQLE6x9Q7EN3P5ChtXKsCzyFjbG0k1k3poqL6axNzklVsSY/IoWi559GaKPR7yEJmirDl8lwGAeALJ7CyIlP7acSveC8lYLBDfT1msXmLO5FzT+zazQTv2efqSirKh0i1/fEY5fx9vo6OCS0PZVFRuG3LGv3/lbDb3bYwOyVYgAk+rAOIekjhXIGby5vpDL8rWqOXQsM9N92Y5bypP9qLqY+3cIY6o5lHMruXlbMI6Gd0T4cM1HAl9/nZYm7R1VvOsFCK6p+oUl6qK9JKay9LITkHtokVlaZWG6NGUHTi4wCpZtQqBE=",
+            "ssh_host_key_rsa_public_keytype": "ssh-rsa",
+            "swapfree_mb": 0,
+            "swaptotal_mb": 0,
+            "system": "Linux",
+            "system_capabilities": [
+                ""
+            ],
+            "system_capabilities_enforced": "True",
+            "system_vendor": "Xen",
+            "uptime_seconds": 1297005,
+            "user_dir": "/home/ubuntu",
+            "user_gecos": "Ubuntu",
+            "user_gid": 1000,
+            "user_id": "ubuntu",
+            "user_shell": "/bin/bash",
+            "user_uid": 1000,
+            "userspace_architecture": "x86_64",
+            "userspace_bits": "64",
+            "virtualization_role": "guest",
+            "virtualization_tech_guest": [
+                "xen"
+            ],
+            "virtualization_tech_host": [],
+            "virtualization_type": "xen"
+        },
+        "ansible_fibre_channel_wwn": [],
+        "ansible_fips": false,
+        "ansible_forks": 5,
+        "ansible_form_factor": "Other",
+        "ansible_fqdn": "ip6-localhost",
+        "ansible_host": "65.0.204.191",
+        "ansible_hostname": "ip-10-0-0-129",
+        "ansible_hostnqn": "",
+        "ansible_interfaces": [
+            "eth0",
+            "lo"
+        ],
+        "ansible_inventory_sources": [
+            "/home/openness/scratch/lp/dek/inventory/automated/dek_test/inventory_dek_test.yml"
+        ],
+        "ansible_is_chroot": false,
+        "ansible_iscsi_iqn": "",
+        "ansible_kernel": "5.15.0-1026-aws",
+        "ansible_kernel_version": "#30-Ubuntu SMP Wed Nov 23 14:15:21 UTC 2022",
+        "ansible_lo": {
+            "active": true,
+            "device": "lo",
+            "features": {
+                "esp_hw_offload": "off [fixed]",
+                "esp_tx_csum_hw_offload": "off [fixed]",
+                "fcoe_mtu": "off [fixed]",
+                "generic_receive_offload": "on",
+                "generic_segmentation_offload": "on",
+                "highdma": "on [fixed]",
+                "hsr_dup_offload": "off [fixed]",
+                "hsr_fwd_offload": "off [fixed]",
+                "hsr_tag_ins_offload": "off [fixed]",
+                "hsr_tag_rm_offload": "off [fixed]",
+                "hw_tc_offload": "off [fixed]",
+                "l2_fwd_offload": "off [fixed]",
+                "large_receive_offload": "off [fixed]",
+                "loopback": "on [fixed]",
+                "macsec_hw_offload": "off [fixed]",
+                "netns_local": "on [fixed]",
+                "ntuple_filters": "off [fixed]",
+                "receive_hashing": "off [fixed]",
+                "rx_all": "off [fixed]",
+                "rx_checksumming": "on [fixed]",
+                "rx_fcs": "off [fixed]",
+                "rx_gro_hw": "off [fixed]",
+                "rx_gro_list": "off",
+                "rx_udp_gro_forwarding": "off",
+                "rx_udp_tunnel_port_offload": "off [fixed]",
+                "rx_vlan_filter": "off [fixed]",
+                "rx_vlan_offload": "off [fixed]",
+                "rx_vlan_stag_filter": "off [fixed]",
+                "rx_vlan_stag_hw_parse": "off [fixed]",
+                "scatter_gather": "on",
+                "tcp_segmentation_offload": "on",
+                "tls_hw_record": "off [fixed]",
+                "tls_hw_rx_offload": "off [fixed]",
+                "tls_hw_tx_offload": "off [fixed]",
+                "tx_checksum_fcoe_crc": "off [fixed]",
+                "tx_checksum_ip_generic": "on [fixed]",
+                "tx_checksum_ipv4": "off [fixed]",
+                "tx_checksum_ipv6": "off [fixed]",
+                "tx_checksum_sctp": "on [fixed]",
+                "tx_checksumming": "on",
+                "tx_esp_segmentation": "off [fixed]",
+                "tx_fcoe_segmentation": "off [fixed]",
+                "tx_gre_csum_segmentation": "off [fixed]",
+                "tx_gre_segmentation": "off [fixed]",
+                "tx_gso_list": "on",
+                "tx_gso_partial": "off [fixed]",
+                "tx_gso_robust": "off [fixed]",
+                "tx_ipxip4_segmentation": "off [fixed]",
+                "tx_ipxip6_segmentation": "off [fixed]",
+                "tx_lockless": "on [fixed]",
+                "tx_nocache_copy": "off [fixed]",
+                "tx_scatter_gather": "on [fixed]",
+                "tx_scatter_gather_fraglist": "on [fixed]",
+                "tx_sctp_segmentation": "on",
+                "tx_tcp6_segmentation": "on",
+                "tx_tcp_ecn_segmentation": "on",
+                "tx_tcp_mangleid_segmentation": "on",
+                "tx_tcp_segmentation": "on",
+                "tx_tunnel_remcsum_segmentation": "off [fixed]",
+                "tx_udp_segmentation": "on",
+                "tx_udp_tnl_csum_segmentation": "off [fixed]",
+                "tx_udp_tnl_segmentation": "off [fixed]",
+                "tx_vlan_offload": "off [fixed]",
+                "tx_vlan_stag_hw_insert": "off [fixed]",
+                "vlan_challenged": "on [fixed]"
+            },
+            "hw_timestamp_filters": [],
+            "ipv4": {
+                "address": "127.0.0.1",
+                "broadcast": "",
+                "netmask": "255.0.0.0",
+                "network": "127.0.0.0",
+                "prefix": "8"
+            },
+            "ipv6": [
+                {
+                    "address": "::1",
+                    "prefix": "128",
+                    "scope": "host"
+                }
+            ],
+            "mtu": 65536,
+            "promisc": false,
+            "timestamping": [],
+            "type": "loopback"
+        },
+        "ansible_local": {},
+        "ansible_lsb": {
+            "codename": "jammy",
+            "description": "Ubuntu 22.04.1 LTS",
+            "id": "Ubuntu",
+            "major_release": "22",
+            "release": "22.04"
+        },
+        "ansible_machine": "x86_64",
+        "ansible_machine_id": "f04429f29c1b48fe8bca36be85bc75d5",
+        "ansible_memfree_mb": 792,
+        "ansible_memory_mb": {
+            "nocache": {
+                "free": 3486,
+                "used": 434
+            },
+            "real": {
+                "free": 792,
+                "total": 3920,
+                "used": 3128
+            },
+            "swap": {
+                "cached": 0,
+                "free": 0,
+                "total": 0,
+                "used": 0
+            }
+        },
+        "ansible_memtotal_mb": 3920,
+        "ansible_mounts": [
+            {
+                "block_available": 9210703,
+                "block_size": 4096,
+                "block_total": 10114671,
+                "block_used": 903968,
+                "device": "/dev/root",
+                "fstype": "ext4",
+                "inode_available": 5045335,
+                "inode_total": 5160960,
+                "inode_used": 115625,
+                "mount": "/",
+                "options": "rw,relatime,discard,errors=remount-ro",
+                "size_available": 37727039488,
+                "size_total": 41429692416,
+                "uuid": "687fab62-1ba5-4282-890e-9266064f7d27"
+            },
+            {
+                "block_available": 0,
+                "block_size": 131072,
+                "block_total": 196,
+                "block_used": 196,
+                "device": "/dev/loop0",
+                "fstype": "squashfs",
+                "inode_available": 0,
+                "inode_total": 16,
+                "inode_used": 16,
+                "mount": "/snap/amazon-ssm-agent/6312",
+                "options": "ro,nodev,relatime,errors=continue",
+                "size_available": 0,
+                "size_total": 25690112,
+                "uuid": "N/A"
+            },
+            {
+                "block_available": 0,
+                "block_size": 131072,
+                "block_total": 445,
+                "block_used": 445,
+                "device": "/dev/loop1",
+                "fstype": "squashfs",
+                "inode_available": 0,
+                "inode_total": 10873,
+                "inode_used": 10873,
+                "mount": "/snap/core18/2632",
+                "options": "ro,nodev,relatime,errors=continue",
+                "size_available": 0,
+                "size_total": 58327040,
+                "uuid": "N/A"
+            },
+            {
+                "block_available": 0,
+                "block_size": 131072,
+                "block_total": 824,
+                "block_used": 824,
+                "device": "/dev/loop3",
+                "fstype": "squashfs",
+                "inode_available": 0,
+                "inode_total": 816,
+                "inode_used": 816,
+                "mount": "/snap/lxd/23541",
+                "options": "ro,nodev,relatime,errors=continue",
+                "size_available": 0,
+                "size_total": 108003328,
+                "uuid": "N/A"
+            },
+            {
+                "block_available": 0,
+                "block_size": 131072,
+                "block_total": 397,
+                "block_used": 397,
+                "device": "/dev/loop4",
+                "fstype": "squashfs",
+                "inode_available": 0,
+                "inode_total": 491,
+                "inode_used": 491,
+                "mount": "/snap/snapd/17883",
+                "options": "ro,nodev,relatime,errors=continue",
+                "size_available": 0,
+                "size_total": 52035584,
+                "uuid": "N/A"
+            },
+            {
+                "block_available": 203058,
+                "block_size": 512,
+                "block_total": 213716,
+                "block_used": 10658,
+                "device": "/dev/xvda15",
+                "fstype": "vfat",
+                "inode_available": 0,
+                "inode_total": 0,
+                "inode_used": 0,
+                "mount": "/boot/efi",
+                "options": "rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro",
+                "size_available": 103965696,
+                "size_total": 109422592,
+                "uuid": "B2B4-82AC"
+            },
+            {
+                "block_available": 0,
+                "block_size": 131072,
+                "block_total": 445,
+                "block_used": 445,
+                "device": "/dev/loop5",
+                "fstype": "squashfs",
+                "inode_available": 0,
+                "inode_total": 10880,
+                "inode_used": 10880,
+                "mount": "/snap/core18/2667",
+                "options": "ro,nodev,relatime,errors=continue",
+                "size_available": 0,
+                "size_total": 58327040,
+                "uuid": "N/A"
+            },
+            {
+                "block_available": 0,
+                "block_size": 131072,
+                "block_total": 506,
+                "block_used": 506,
+                "device": "/dev/loop6",
+                "fstype": "squashfs",
+                "inode_available": 0,
+                "inode_total": 11897,
+                "inode_used": 11897,
+                "mount": "/snap/core20/1738",
+                "options": "ro,nodev,relatime,errors=continue",
+                "size_available": 0,
+                "size_total": 66322432,
+                "uuid": "N/A"
+            },
+            {
+                "block_available": 0,
+                "block_size": 131072,
+                "block_total": 507,
+                "block_used": 507,
+                "device": "/dev/loop7",
+                "fstype": "squashfs",
+                "inode_available": 0,
+                "inode_total": 11904,
+                "inode_used": 11904,
+                "mount": "/snap/core20/1778",
+                "options": "ro,nodev,relatime,errors=continue",
+                "size_available": 0,
+                "size_total": 66453504,
+                "uuid": "N/A"
+            }
+        ],
+        "ansible_nodename": "ip-10-0-0-129",
+        "ansible_os_family": "Debian",
+        "ansible_pkg_mgr": "apt",
+        "ansible_playbook_python": "/home/openness/.local/share/virtualenvs/dek-t4G_8wwI/bin/python",
+        "ansible_proc_cmdline": {
+            "BOOT_IMAGE": "/boot/vmlinuz-5.15.0-1026-aws",
+            "console": [
+                "tty1",
+                "ttyS0"
+            ],
+            "nvme_core.io_timeout": "4294967295",
+            "panic": "-1",
+            "ro": true,
+            "root": "PARTUUID=895d8984-5441-4c70-b87c-a6b6ebb8c95e"
+        },
+        "ansible_processor": [
+            "0",
+            "GenuineIntel",
+            "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz",
+            "1",
+            "GenuineIntel",
+            "Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz"
+        ],
+        "ansible_processor_cores": 2,
+        "ansible_processor_count": 1,
+        "ansible_processor_nproc": 2,
+        "ansible_processor_threads_per_core": 1,
+        "ansible_processor_vcpus": 2,
+        "ansible_product_name": "HVM domU",
+        "ansible_product_serial": "NA",
+        "ansible_product_uuid": "NA",
+        "ansible_product_version": "4.2.amazon",
+        "ansible_python": {
+            "executable": "/usr/bin/python3",
+            "has_sslcontext": true,
+            "type": "cpython",
+            "version": {
+                "major": 3,
+                "micro": 6,
+                "minor": 10,
+                "releaselevel": "final",
+                "serial": 0
+            },
+            "version_info": [
+                3,
+                10,
+                6,
+                "final",
+                0
+            ]
+        },
+        "ansible_python_version": "3.10.6",
+        "ansible_real_group_id": 1000,
+        "ansible_real_user_id": 1000,
+        "ansible_run_tags": [
+            "all"
+        ],
+        "ansible_selinux": {
+            "status": "disabled"
+        },
+        "ansible_selinux_python_present": true,
+        "ansible_service_mgr": "systemd",
+        "ansible_skip_tags": [],
+        "ansible_ssh_host_key_dsa_public": "AAAAB3NzaC1kc3MAAACBALOgbKbI0xRWA894QtMlKPPQV2+fZJVZNF3R0w9uWcqmCfrEK0QFgi9cr7Tye6vQ4gide/uUeAsi99hAmq42mJ4jpjGuwM0k2YfxcYOi80Q54OgHvR0oB/FVJacaP3jZg+ti6QzAn6mO6XzxJN7d0pkBOBwSCv+xaSVUcKXkhpPFAAAAFQC0HmjeFT7go592fLBu1+HqWkZVYwAAAIEArVjpc/lHj1nPZOuSG1RQJlow6MrVAtC2qYU0ocdiwZpqOjAbvwsM6Hlt5lnJ495CZ+uu4CpP7N0NPqUoC/AZJJ4lv/Vw320RV5hCdy0K5N1piMm7OvHFCuUSz2nT5To6KLbJRCX8/BTXFMpgyf+jdJWCiAtdkkF03qO6BLzjH54AAACBAKjcBW+azk307s5KnqEdeyK80v1YN+RlxA3q8neBFVF4H9wF5oLTD7TAlHe8ArXwfOE/CLA1bYET5Jw8bZD6KXC48Ng5zMSFVlLSGO+EJk8w5+qK1vSccJC6a5vWF0e+cjyY2oU2t9q46KTawCjWC/sRlh5xeOkiLckXsHuwP2qv",
+        "ansible_ssh_host_key_dsa_public_keytype": "ssh-dss",
+        "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBP9olduMO/rLx8/eV+BTa9heVNo7G98m5pTd/BRoupH5MGnx8fBp0j5Wt/vgGNEkDfFUXYYp0jNHEKKyFJeAq94=",
+        "ansible_ssh_host_key_ecdsa_public_keytype": "ecdsa-sha2-nistp256",
+        "ansible_ssh_host_key_ed25519_public": "AAAAC3NzaC1lZDI1NTE5AAAAIJ3y/vHzwyV02T5/vIdd04XWqswF2e5nno6p+C3aaIF0",
+        "ansible_ssh_host_key_ed25519_public_keytype": "ssh-ed25519",
+        "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABgQCT5op3p9fxO94NFmxz/TZlmRKKFpstaTp121TaMHMmHDSiGY92VUUshIAjwmmtLyH+oe9UnFLepBPn1bVOxRnclWqbnCFdo60Nq9ZsXy77yiJFJ8hirepT/bX6+4i/I2xAzt75bnbxP6/i1awoGMChCd4HInBAvEtLFUVtQCkHJkwPIzVthc4bMgg3XQKTfgdVVUXz+dSLLQ2RlQLE6x9Q7EN3P5ChtXKsCzyFjbG0k1k3poqL6axNzklVsSY/IoWi559GaKPR7yEJmirDl8lwGAeALJ7CyIlP7acSveC8lYLBDfT1msXmLO5FzT+zazQTv2efqSirKh0i1/fEY5fx9vo6OCS0PZVFRuG3LGv3/lbDb3bYwOyVYgAk+rAOIekjhXIGby5vpDL8rWqOXQsM9N92Y5bypP9qLqY+3cIY6o5lHMruXlbMI6Gd0T4cM1HAl9/nZYm7R1VvOsFCK6p+oUl6qK9JKay9LITkHtokVlaZWG6NGUHTi4wCpZtQqBE=",
+        "ansible_ssh_host_key_rsa_public_keytype": "ssh-rsa",
+        "ansible_swapfree_mb": 0,
+        "ansible_swaptotal_mb": 0,
+        "ansible_system": "Linux",
+        "ansible_system_capabilities": [
+            ""
+        ],
+        "ansible_system_capabilities_enforced": "True",
+        "ansible_system_vendor": "Xen",
+        "ansible_uptime_seconds": 1297005,
+        "ansible_user": "ubuntu",
+        "ansible_user_dir": "/home/ubuntu",
+        "ansible_user_gecos": "Ubuntu",
+        "ansible_user_gid": 1000,
+        "ansible_user_id": "ubuntu",
+        "ansible_user_shell": "/bin/bash",
+        "ansible_user_uid": 1000,
+        "ansible_userspace_architecture": "x86_64",
+        "ansible_userspace_bits": "64",
+        "ansible_verbosity": 2,
+        "ansible_version": {
+            "full": "2.13.1",
+            "major": 2,
+            "minor": 13,
+            "revision": 1,
+            "string": "2.13.1"
+        },
+        "ansible_virtualization_role": "guest",
+        "ansible_virtualization_tech_guest": [
+            "xen"
+        ],
+        "ansible_virtualization_tech_host": [],
+        "ansible_virtualization_type": "xen",
+        "application_namespace": "smartedge-apps",
+        "autogenerate_isolcpus": false,
+        "biosfw_syscfg_package_stat": {
+            "changed": false,
+            "skip_reason": "Conditional result was False",
+            "skipped": true
+        },
+        "calico_cidr": "10.245.0.0/16",
+        "cdi_namespace": "cdi",
+        "cgroupfs_enable": false,
+        "check_hyperthreading": false,
+        "cluster_dns_ip": "10.96.0.10",
+        "cluster_name": "dek_test",
+        "controller_device_mac": [
+            "xx:xx:xx:xx:xx:xx"
+        ],
+        "cpu": {},
+        "cpu_idle_driver": "poll",
+        "cpu_idle_driver_setup_enabled": false,
+        "default_hugepage_size": "1G",
+        "defaults": {
+            "_available_kubernetes_cnis": [
+                "calico",
+                "nodus"
+            ]
+        },
+        "deployment": "verification_controller",
+        "discovered_interpreter_python": "/usr/bin/python3",
+        "e810_comms_pkg_enable": false,
+        "e810_driver_enable": false,
+        "expected_hyperthreading_state": "enabled",
+        "fdo": {
+            "dev_setup": true,
+            "manufacturer_addr": "https://65.0.204.191:30038",
+            "manufacturer_ip": "65.0.204.191",
+            "manufacturer_pass": "manufacturerpass",
+            "owner_ip": "65.0.204.191",
+            "owner_pass": "ownerpass",
+            "rv_pass": "rendezpass"
+        },
+        "fdo_controller": true,
+        "fdo_node": false,
+        "gather_subset": [
+            "all"
+        ],
+        "git_http_proxy": "",
+        "grep_hosts_4": {
+            "changed": false,
+            "cmd": "grep -E \"127\\.0\\.0\\.1.*ip-10-0-0-129\" /etc/hosts",
+            "delta": "0:00:00.005268",
+            "end": "2023-01-05 08:09:40.458405",
+            "failed": false,
+            "failed_when_result": false,
+            "msg": "",
+            "rc": 0,
+            "start": "2023-01-05 08:09:40.453137",
+            "stderr": "",
+            "stderr_lines": [],
+            "stdout": "127.0.0.1 localhost ip-10-0-0-129",
+            "stdout_lines": [
+                "127.0.0.1 localhost ip-10-0-0-129"
+            ]
+        },
+        "grep_hosts_6": {
+            "changed": false,
+            "cmd": "grep -E \"::1.*ip-10-0-0-129\" /etc/hosts",
+            "delta": "0:00:00.005242",
+            "end": "2023-01-05 08:09:40.840258",
+            "failed": false,
+            "failed_when_result": false,
+            "msg": "",
+            "rc": 0,
+            "start": "2023-01-05 08:09:40.835016",
+            "stderr": "",
+            "stderr_lines": [],
+            "stdout": "::1 ip6-localhost ip6-loopback ip-10-0-0-129",
+            "stdout_lines": [
+                "::1 ip6-localhost ip6-loopback ip-10-0-0-129"
+            ]
+        },
+        "group_names": [
+            "edgenode_group"
+        ],
+        "groups": {
+            "all": [
+                "controller",
+                "node01"
+            ],
+            "controller_group": [
+                "controller"
+            ],
+            "edgenode_group": [
+                "node01"
+            ],
+            "ungrouped": []
+        },
+        "harbor_registry_enable": false,
+        "harbor_timeout_min": 5,
+        "ht": {
+            "changed": false,
+            "skip_reason": "Conditional result was False",
+            "skipped": true
+        },
+        "hugepages_1G": 4,
+        "hugepages_2M": 0,
+        "hugepages_enabled": false,
+        "install_hwe_kernel_enable": false,
+        "install_userspace_drivers_enable": false,
+        "inventory_dir": "/home/openness/scratch/lp/dek/inventory/automated/dek_test",
+        "inventory_file": "/home/openness/scratch/lp/dek/inventory/automated/dek_test/inventory_dek_test.yml",
+        "inventory_hostname": "node01",
+        "inventory_hostname_short": "node01",
+        "iommu_enabled": true,
+        "isecl_cms_tls_hash": "",
+        "isecl_control_plane_ip": "",
+        "isecl_nfs_server": "",
+        "isecl_nfs_server_clients": [],
+        "isecl_ta_san_list": "",
+        "isolcpus": "2-4",
+        "isolcpus_enabled": false,
+        "k8s_custom_subnets": false,
+        "k8s_service_subnet": "10.96.0.0/16",
+        "kmra_apphsm_ip": "",
+        "kmra_enable": false,
+        "kubernetes_cnis": [
+            "calico"
+        ],
+        "kubernetes_service_port": "6443",
+        "kubernetes_service_port_https": "6443",
+        "kubevirt_enable": false,
+        "kubevirt_namespace": "kubevirt",
+        "kv_cpu_manager_enabled": true,
+        "limit": null,
+        "mem_reserved": 1024,
+        "mgmt_driver": "tg3",
+        "module_setup": true,
+        "ne_helm_charts_default_dir": "/opt/smartedge/helm-charts",
+        "ne_nfd_enable": false,
+        "ne_nsm_enable": false,
+        "node_device_mac": [
+            "xx:xx:xx:xx:xx:xx"
+        ],
+        "node_name": "ip-10-0-0-129",
+        "ntp_enable": false,
+        "ntp_servers": [],
+        "number_of_retries": 10,
+        "omit": "__omit_place_holder__3c4f44f7bba4045e87ec3d827f2c5e41bf6b4eec",
+        "openebs_enabled": false,
+        "openebs_namespace": "openebs",
+        "os_cpu_affinity_cpus": "",
+        "os_remove_yum_plugins": true,
+        "pccs_api_key": "",
+        "pccs_enable": false,
+        "pccs_user_password": "",
+        "platform_attestation_controller": false,
+        "platform_attestation_node": false,
+        "platform_profile": "dell_r750",
+        "playbook_dir": "/home/openness/scratch/lp/dek",
+        "project_dir": "/opt/smartedge",
+        "project_group": "ubuntu",
+        "proxy_env": {
+            "all_proxy": "",
+            "ftp_proxy": "",
+            "http_proxy": "",
+            "https_proxy": "",
+            "no_proxy": ""
+        },
+        "psp_enabled": true,
+        "retry_delay": 5,
+        "rook_ceph": {
+            "host_name": "{{ hostvars[groups['controller_group'][0]]['ansible_nodename'] }}",
+            "mon_count": 1,
+            "osds_per_device": "1",
+            "replica_pool_size": 1
+        },
+        "rook_ceph_enabled": false,
+        "rook_ceph_namespace": "rook-ceph",
+        "sgx_enabled": false,
+        "sgx_pccs_ip": "",
+        "sgx_pccs_port": "32666",
+        "sgx_prv_gid": 1002,
+        "sgx_use_secure_cert": false,
+        "single_node_deployment": true,
+        "split_network": false,
+        "sriov_detection_input_file": {
+            "configurations": {
+                "timeoutForFindPTPMaster": 1
+            },
+            "criteriaLists": {
+                "pf1": {
+                    "deviceId": [
+                        "158a",
+                        "0d58",
+                        1593,
+                        "159b",
+                        1592,
+                        "188a"
+                    ],
+                    "functionality": "APP",
+                    "numVFSupp": 64
+                },
+                "pf2": {
+                    "deviceId": [
+                        "158a",
+                        "0d58",
+                        1593,
+                        "159b",
+                        1592,
+                        "188a"
+                    ],
+                    "functionality": "APP",
+                    "numVFSupp": 64
+                },
+                "pf3": {
+                    "deviceId": [
+                        "158a",
+                        "0d58",
+                        1593,
+                        "159b",
+                        1592,
+                        "188a"
+                    ],
+                    "functionality": "APP",
+                    "numVFSupp": 64
+                },
+                "pf4": {
+                    "deviceId": [
+                        "158a",
+                        "0d58",
+                        1593,
+                        "159b",
+                        1592,
+                        "188a"
+                    ],
+                    "functionality": "APP",
+                    "numVFSupp": 64
+                }
+            }
+        },
+        "sriov_fec_operator_configure_enable": false,
+        "sriov_fec_operator_enable": false,
+        "sriov_network_detection_application_enable": true,
+        "sriov_network_node_policies": [
+            {
+                "device_type": "netdevice",
+                "name": "sriov-netdev-net-c0p0",
+                "num_vfs": 4,
+                "pf_names": [
+                    "eno12399"
+                ],
+                "priority": 99,
+                "resource_name": "sriov_netdev_net_c0p0",
+                "vendor": 8086
+            },
+            {
+                "device_type": "vfio-pci",
+                "name": "sriov-vfio-pci-net-c0p1",
+                "num_vfs": 4,
+                "pf_names": [
+                    "eno12409"
+                ],
+                "priority": 99,
+                "resource_name": "sriov_vfiopci_net_c0p1",
+                "vendor": 8086
+            },
+            {
+                "device_type": "netdevice",
+                "name": "sriov-netdev-net-c1p0",
+                "num_vfs": 4,
+                "pf_names": [
+                    "ens5f0"
+                ],
+                "priority": 99,
+                "resource_name": "sriov_netdev_net_c1p0",
+                "vendor": 8086
+            },
+            {
+                "device_type": "vfio-pci",
+                "name": "sriov-vfio-pci-net-c1p1",
+                "num_vfs": 4,
+                "pf_names": [
+                    "ens5f1"
+                ],
+                "priority": 99,
+                "resource_name": "sriov_vfiopci_net_c1p1",
+                "vendor": 8086
+            }
+        ],
+        "sriov_network_operator_configure_enable": false,
+        "sriov_network_operator_enable": false,
+        "sriov_networks": [
+            {
+                "ipam": "{\n\"type\": \"host-local\",\n\"subnet\": \"10.10.10.0/24\",\n\"rangeStart\": \"10.10.10.10\",\n\"rangeEnd\": \"10.10.10.41\",\n\"routes\": [{\n  \"dst\": \"0.0.0.0/0\"\n}],\n\"gateway\": \"10.10.10.1\"\n}",
+                "link_state": "enable",
+                "name": "sriov-netdev-network-c0p0",
+                "network_namespace": "smartedge-apps",
+                "resource_name": "sriov_netdev_net_c0p0",
+                "vlan": 0
+            },
+            {
+                "ipam": "{\n\"type\": \"host-local\",\n\"subnet\": \"10.10.20.0/24\",\n\"rangeStart\": \"10.10.20.10\",\n\"rangeEnd\": \"10.10.20.41\",\n\"routes\": [{\n  \"dst\": \"0.0.0.0/0\"\n}],\n\"gateway\": \"10.10.20.1\"\n}",
+                "link_state": "enable",
+                "name": "sriov-netdev-network-c1p0",
+                "network_namespace": "smartedge-apps",
+                "resource_name": "sriov_netdev_net_c1p0",
+                "vlan": 1
+            },
+            {
+                "ipam": "{}",
+                "link_state": "enable",
+                "name": "sriov-vfio-network-c0p1",
+                "network_namespace": "smartedge-apps",
+                "resource_name": "sriov_vfiopci_net_c0p1"
+            },
+            {
+                "ipam": "{}",
+                "link_state": "enable",
+                "name": "sriov-vfio-network-c1p1",
+                "network_namespace": "smartedge-apps",
+                "resource_name": "sriov_vfiopci_net_c1p1"
+            }
+        ],
+        "sriov_nics": {
+            "c0p0": "eno12399",
+            "c0p1": "eno12409",
+            "c1p0": "ens5f0",
+            "c1p1": "ens5f1"
+        },
+        "static_ip_cidr": "192.168.133.1/24",
+        "system_namespace": "smartedge-system",
+        "telemetry_enable": false,
+        "telemetry_flavor": "common",
+        "telemetry_fluentd_enable": false,
+        "telemetry_fluentd_forward_targets": [],
+        "telemetry_grafana_enable": true,
+        "telemetry_namespace": "telemetry",
+        "telemetry_node_exporter_port": 9100,
+        "telemetry_prometheus_alertmanager_targets": [],
+        "telemetry_prometheus_nodeport": 30000,
+        "telemetry_prometheus_nodeport_expose": false,
+        "telemetry_prometheus_remote_write_targets": [],
+        "telemetry_prometheus_retention": "15d",
+        "telemetry_prometheus_scrape_interval_seconds": 60,
+        "telemetry_prometheus_tls_secret_name": "prometheus-tls",
+        "telemetry_statsd_exporter_enable": true,
+        "telemetry_statsd_exporter_tcp_port": 8125,
+        "telemetry_statsd_exporter_udp_port": 8125,
+        "telemetry_telegraf_enable": true,
+        "telemetry_telegraf_port": 9105,
+        "topology_manager": {
+            "policy": "best-effort"
+        }
+    }
+}
+
+TASK [print vars about environment] ********************************************
+task path: /home/openness/scratch/lp/dek/tasks/print_vars.yml:10
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.195)       0:00:05.632 ****** 
+ok: [node01] => {}
+
+MSG:
+
+ansible ver: 2.13.1
+distro: Ubuntu 22.04
+hostname: ip-10-0-0-129
+cmdline: {'BOOT_IMAGE': '/boot/vmlinuz-5.15.0-1026-aws', 'root': 'PARTUUID=895d8984-5441-4c70-b87c-a6b6ebb8c95e', 'ro': True, 'console': ['tty1', 'ttyS0'], 'nvme_core.io_timeout': '4294967295', 'panic': '-1'}
+interfaces: ['eth0', 'lo']
+memory: {'real': {'total': 3920, 'used': 3128, 'free': 792}, 'nocache': {'free': 3486, 'used': 434}, 'swap': {'total': 0, 'free': 0, 'used': 0, 'cached': 0}}
+cpu: ['0', 'GenuineIntel', 'Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz', '1', 'GenuineIntel', 'Intel(R) Xeon(R) CPU E5-2686 v4 @ 2.30GHz']
+
+
+TASK [Set global variables for baseline ansible] *******************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:26
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.049)       0:00:05.682 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "project_user": "ubuntu"
+    },
+    "changed": false
+}
+
+TASK [check raw drive status] **************************************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:29
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.041)       0:00:05.724 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+META: ran handlers
+
+TASK [infrastructure/setup_baseline_ansible : Set global variables for baseline ansible] ***
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/setup_baseline_ansible/tasks/main.yml:4
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.059)       0:00:05.783 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "project_user": "ubuntu"
+    },
+    "changed": false
+}
+META: role_complete for node01
+
+TASK [infrastructure/build_noproxy : Adding kubernetes default CIDR to noproxy] ***
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:6
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.055)       0:00:05.838 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "_base_noproxy": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12"
+    },
+    "changed": false
+}
+
+TASK [infrastructure/build_noproxy : Adding calico CIDR to noproxy] ************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:10
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.047)       0:00:05.886 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "_base_noproxy": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16"
+    },
+    "changed": false
+}
+
+TASK [infrastructure/build_noproxy : Adding nodus CIDR to noproxy] *************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:15
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.043)       0:00:05.929 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/build_noproxy : Adding custom k8s services CIDR to noproxy] ***
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:20
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.031)       0:00:05.961 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/build_noproxy : Adding istio_noproxy to noproxy] **********
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:25
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.028)       0:00:05.990 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/build_noproxy : Create list of SmartEdge hostnames] *******
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:30
+Thursday 05 January 2023  13:39:09 +0530 (0:00:00.027)       0:00:06.017 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "_project_hostnames": "65.0.204.191,65.0.204.191"
+    },
+    "changed": false
+}
+
+TASK [infrastructure/build_noproxy : Adding SmartEdge machines to noproxy] *****
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:35
+Thursday 05 January 2023  13:39:10 +0530 (0:00:00.086)       0:00:06.104 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "_base_noproxy": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191"
+    },
+    "changed": false
+}
+
+TASK [infrastructure/build_noproxy : Adding docker_registry_mirrors to noproxy] ***
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:39
+Thursday 05 January 2023  13:39:10 +0530 (0:00:00.041)       0:00:06.145 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/build_noproxy : Adding static_ip_cidr to noproxy] *********
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:45
+Thursday 05 January 2023  13:39:10 +0530 (0:00:00.029)       0:00:06.175 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/build_noproxy : Adding base noproxy setting to user defined ones] ***
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:50
+Thursday 05 January 2023  13:39:10 +0530 (0:00:00.028)       0:00:06.203 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/build_noproxy : Update no_proxy in proxy_env] *************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:55
+Thursday 05 January 2023  13:39:10 +0530 (0:00:00.024)       0:00:06.228 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "proxy_env": {
+            "all_proxy": "",
+            "ftp_proxy": "",
+            "http_proxy": "",
+            "https_proxy": "",
+            "no_proxy": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191"
+        }
+    },
+    "changed": false
+}
+
+TASK [infrastructure/build_noproxy : Build noproxy result] *********************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/build_noproxy/tasks/main.yml:59
+Thursday 05 January 2023  13:39:10 +0530 (0:00:00.059)       0:00:06.287 ****** 
+ok: [node01] => {}
+
+MSG:
+
+Final noproxy value: localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191
+META: role_complete for node01
+
+TASK [baseline_ansible/infrastructure/os_proxy : set lowercase proxy settings] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_proxy/tasks/main.yml:14
+Thursday 05 January 2023  13:39:10 +0530 (0:00:00.057)       0:00:06.345 ****** 
+ok: [node01] => (item={'key': 'http_proxy', 'value': ''}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "found": 0,
+    "item": {
+        "key": "http_proxy",
+        "value": ""
+    }
+}
+ok: [node01] => (item={'key': 'https_proxy', 'value': ''}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "found": 0,
+    "item": {
+        "key": "https_proxy",
+        "value": ""
+    }
+}
+ok: [node01] => (item={'key': 'ftp_proxy', 'value': ''}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "found": 0,
+    "item": {
+        "key": "ftp_proxy",
+        "value": ""
+    }
+}
+ok: [node01] => (item={'key': 'no_proxy', 'value': 'localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191'}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "item": {
+        "key": "no_proxy",
+        "value": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191"
+    }
+}
+ok: [node01] => (item={'key': 'all_proxy', 'value': ''}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "found": 0,
+    "item": {
+        "key": "all_proxy",
+        "value": ""
+    }
+}
+
+TASK [baseline_ansible/infrastructure/os_proxy : set uppercase proxy settings] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_proxy/tasks/main.yml:26
+Thursday 05 January 2023  13:39:12 +0530 (0:00:02.005)       0:00:08.350 ****** 
+ok: [node01] => (item={'key': 'http_proxy', 'value': ''}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "found": 0,
+    "item": {
+        "key": "http_proxy",
+        "value": ""
+    }
+}
+ok: [node01] => (item={'key': 'https_proxy', 'value': ''}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "found": 0,
+    "item": {
+        "key": "https_proxy",
+        "value": ""
+    }
+}
+ok: [node01] => (item={'key': 'ftp_proxy', 'value': ''}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "found": 0,
+    "item": {
+        "key": "ftp_proxy",
+        "value": ""
+    }
+}
+ok: [node01] => (item={'key': 'no_proxy', 'value': 'localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191'}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "item": {
+        "key": "no_proxy",
+        "value": "localhost,virt-api,.svc,.svc.cluster.local,cdi-api,127.0.0.1,10.96.0.0/12,10.32.0.0/12,10.245.0.0/16,65.0.204.191,65.0.204.191"
+    }
+}
+ok: [node01] => (item={'key': 'all_proxy', 'value': ''}) => {
+    "ansible_loop_var": "item",
+    "backup": "",
+    "changed": false,
+    "found": 0,
+    "item": {
+        "key": "all_proxy",
+        "value": ""
+    }
+}
+META: role_complete for node01
+
+TASK [baseline_ansible/infrastructure/time_setup_ntp : include time/verify/defaults vars] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/time_setup_ntp/tasks/main.yml:5
+Thursday 05 January 2023  13:39:14 +0530 (0:00:01.813)       0:00:10.164 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [baseline_ansible/infrastructure/time_setup_ntp : remove ntp time set flag] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/time_setup_ntp/tasks/main.yml:8
+Thursday 05 January 2023  13:39:14 +0530 (0:00:00.049)       0:00:10.214 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [baseline_ansible/infrastructure/time_setup_ntp : setup ntp on RHEL-based distro] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/time_setup_ntp/tasks/main.yml:13
+Thursday 05 January 2023  13:39:14 +0530 (0:00:00.044)       0:00:10.258 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [baseline_ansible/infrastructure/time_setup_ntp : setup ntp on Debian-based distro] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/time_setup_ntp/tasks/main.yml:17
+Thursday 05 January 2023  13:39:14 +0530 (0:00:00.041)       0:00:10.299 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+META: 
+
+TASK [infrastructure/os_setup : OS Setup] **************************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/main.yml:5
+Thursday 05 January 2023  13:39:14 +0530 (0:00:00.051)       0:00:10.351 ****** 
+ok: [node01] => {}
+
+MSG:
+
+Setting up OS
+
+TASK [baseline_ansible/infrastructure/os_requirements/disable_swap : comment swap lines in /etc/fstab] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/disable_swap/tasks/main.yml:5
+Thursday 05 January 2023  13:39:14 +0530 (0:00:00.044)       0:00:10.396 ****** 
+ok: [node01] => {
+    "changed": false,
+    "rc": 0
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/disable_swap : perform daemon reload] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/disable_swap/tasks/main.yml:13
+Thursday 05 January 2023  13:39:14 +0530 (0:00:00.501)       0:00:10.898 ****** 
+ok: [node01] => {
+    "changed": false,
+    "name": null,
+    "status": {}
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/disable_swap : disable swap usage] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/disable_swap/tasks/main.yml:19
+Thursday 05 January 2023  13:39:15 +0530 (0:00:01.108)       0:00:12.007 ****** 
+ok: [node01] => {
+    "changed": false,
+    "cmd": [
+        "swapoff",
+        "-a"
+    ],
+    "delta": "0:00:00.004224",
+    "end": "2023-01-05 08:09:49.130892",
+    "rc": 0,
+    "start": "2023-01-05 08:09:49.126668"
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/disable_swap : get swap service unit name] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/disable_swap/tasks/main.yml:26
+Thursday 05 January 2023  13:39:16 +0530 (0:00:00.402)       0:00:12.410 ****** 
+ok: [node01] => {
+    "changed": false,
+    "cmd": "set -o pipefail | systemctl list-unit-files | grep \\.swap | awk '{print $1}'",
+    "delta": "0:00:00.966788",
+    "end": "2023-01-05 08:09:50.510201",
+    "rc": 0,
+    "start": "2023-01-05 08:09:49.543413"
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/disable_swap : stop swap service] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/disable_swap/tasks/main.yml:32
+Thursday 05 January 2023  13:39:17 +0530 (0:00:01.379)       0:00:13.790 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/disable_swap : mask swap service to /dev/null] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/disable_swap/tasks/main.yml:39
+Thursday 05 January 2023  13:39:17 +0530 (0:00:00.033)       0:00:13.824 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+META: role_complete for node01
+
+TASK [baseline_ansible/infrastructure/selinux : set SELinux to disable mode (temporary)] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/selinux/tasks/main.yml:7
+Thursday 05 January 2023  13:39:17 +0530 (0:00:00.079)       0:00:13.903 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [baseline_ansible/infrastructure/selinux : set SELinux to permissive mode (pernament)] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/selinux/tasks/main.yml:13
+Thursday 05 January 2023  13:39:17 +0530 (0:00:00.031)       0:00:13.935 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [baseline_ansible/infrastructure/selinux : disable SELinux (pernament)] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/selinux/tasks/main.yml:20
+Thursday 05 January 2023  13:39:17 +0530 (0:00:00.024)       0:00:13.960 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+META: 
+
+TASK [install dependencies] ****************************************************
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/disable_fingerprint_authentication/tasks/main.yml:5
+Thursday 05 January 2023  13:39:17 +0530 (0:00:00.035)       0:00:13.995 ****** 
+
+TASK [infrastructure/install_dependencies : install os packages] ***************
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_dependencies/tasks/main.yml:5
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.041)       0:00:14.036 ****** 
+included: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_dependencies/tasks/install_os_packages.yml for node01
+
+TASK [infrastructure/install_dependencies : Build full packages list] **********
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_dependencies/tasks/install_os_packages.yml:5
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.053)       0:00:14.090 ****** 
+ok: [node01] => {
+    "ansible_facts": {
+        "install_dependencies_full_list": []
+    },
+    "changed": false
+}
+
+TASK [infrastructure/install_dependencies : update list of apt packages] *******
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_dependencies/tasks/install_os_packages.yml:22
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.090)       0:00:14.181 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/install_dependencies : install os packages] ***************
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_dependencies/tasks/install_os_packages.yml:34
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.044)       0:00:14.225 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/install_dependencies : force install of excluded packages with disableexclude] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_dependencies/tasks/install_os_packages.yml:47
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.041)       0:00:14.267 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/install_dependencies : install python packages] ***********
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_dependencies/tasks/main.yml:11
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.028)       0:00:14.295 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+META: role_complete for node01
+
+TASK [baseline_ansible/infrastructure/disable_fingerprint_authentication : disable fingerprint via authconfig] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/disable_fingerprint_authentication/tasks/main.yml:8
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.039)       0:00:14.334 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+META: role_complete for node01
+
+TASK [infrastructure/os_setup : include_tasks] *********************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/main.yml:18
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.036)       0:00:14.371 ****** 
+included: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/reset_connection.yml for node01
+
+TASK [infrastructure/os_setup : reset connection] ******************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/reset_connection.yml:5
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.045)       0:00:14.416 ****** 
+META: reset connection
+
+TASK [baseline_ansible/infrastructure/configure_udev : Add udev kvm system rule] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/configure_udev/tasks/main.yml:4
+Thursday 05 January 2023  13:39:18 +0530 (0:00:00.063)       0:00:14.480 ****** 
+ok: [node01] => {
+    "backup": "",
+    "changed": false
+}
+
+TASK [baseline_ansible/infrastructure/configure_udev : Reload udev rules] ******
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/configure_udev/tasks/main.yml:16
+Thursday 05 January 2023  13:39:19 +0530 (0:00:01.239)       0:00:15.720 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [baseline_ansible/infrastructure/configure_udev : Retrigger udev] *********
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/configure_udev/tasks/main.yml:20
+Thursday 05 January 2023  13:39:19 +0530 (0:00:00.029)       0:00:15.749 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+META: role_complete for node01
+
+TASK [baseline_ansible/infrastructure/os_requirements/enable_ipv4_forwarding : enable IPv4 forwarding] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/enable_ipv4_forwarding/tasks/main.yml:5
+Thursday 05 January 2023  13:39:19 +0530 (0:00:00.035)       0:00:15.785 ****** 
+ok: [node01] => {
+    "changed": false
+}
+META: role_complete for node01
+
+TASK [Import dns_stub_listener] ************************************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/main.yml:25
+Thursday 05 January 2023  13:39:20 +0530 (0:00:00.518)       0:00:16.304 ****** 
+
+TASK [baseline_ansible/infrastructure/os_requirements/dns_stub_listener : enable systemd-resolved service] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/dns_stub_listener/tasks/main.yml:7
+Thursday 05 January 2023  13:39:20 +0530 (0:00:00.070)       0:00:16.374 ****** 
+ok: [node01] => {
+    "changed": false,
+    "enabled": true,
+    "name": "systemd-resolved",
+    "state": "started",
+    "status": {
+        "ActiveEnterTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "ActiveEnterTimestampMonotonic": "11425965301",
+        "ActiveExitTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "ActiveExitTimestampMonotonic": "11425839018",
+        "ActiveState": "active",
+        "After": "systemd-tmpfiles-setup.service systemd-networkd.service systemd-journald.socket -.mount systemd-sysusers.service tmp.mount system.slice",
+        "AllowIsolate": "no",
+        "AmbientCapabilities": "cap_setpcap cap_net_bind_service cap_net_raw",
+        "AssertResult": "yes",
+        "AssertTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "AssertTimestampMonotonic": "11425853102",
+        "Before": "shutdown.target network.target nss-lookup.target",
+        "BlockIOAccounting": "no",
+        "BlockIOWeight": "[not set]",
+        "BusName": "org.freedesktop.resolve1",
+        "CPUAccounting": "yes",
+        "CPUAffinityFromNUMA": "no",
+        "CPUQuotaPerSecUSec": "infinity",
+        "CPUQuotaPeriodUSec": "infinity",
+        "CPUSchedulingPolicy": "0",
+        "CPUSchedulingPriority": "0",
+        "CPUSchedulingResetOnFork": "no",
+        "CPUShares": "[not set]",
+        "CPUUsageNSec": "2215905000",
+        "CPUWeight": "[not set]",
+        "CacheDirectoryMode": "0755",
+        "CanClean": "runtime",
+        "CanFreeze": "yes",
+        "CanIsolate": "no",
+        "CanReload": "no",
+        "CanStart": "yes",
+        "CanStop": "yes",
+        "CapabilityBoundingSet": "cap_setpcap cap_net_bind_service cap_net_raw",
+        "CleanResult": "success",
+        "CollectMode": "inactive",
+        "ConditionResult": "yes",
+        "ConditionTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "ConditionTimestampMonotonic": "11425853098",
+        "ConfigurationDirectoryMode": "0755",
+        "Conflicts": "shutdown.target",
+        "ControlGroup": "/system.slice/systemd-resolved.service",
+        "ControlPID": "0",
+        "CoredumpFilter": "0x33",
+        "DefaultDependencies": "no",
+        "DefaultMemoryLow": "0",
+        "DefaultMemoryMin": "0",
+        "Delegate": "no",
+        "Description": "Network Name Resolution",
+        "DeviceAllow": "char-rtc r",
+        "DevicePolicy": "closed",
+        "Documentation": "\"man:systemd-resolved.service(8)\" \"man:org.freedesktop.resolve1(5)\" https://www.freedesktop.org/wiki/Software/systemd/writing-network-configuration-managers https://www.freedesktop.org/wiki/Software/systemd/writing-resolver-clients",
+        "DynamicUser": "no",
+        "EffectiveCPUs": "0-1",
+        "EffectiveMemoryNodes": "0",
+        "ExecMainCode": "0",
+        "ExecMainExitTimestamp": "n/a",
+        "ExecMainExitTimestampMonotonic": "0",
+        "ExecMainPID": "15902",
+        "ExecMainStartTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "ExecMainStartTimestampMonotonic": "11425871858",
+        "ExecMainStatus": "0",
+        "ExecStart": "{ path=/lib/systemd/systemd-resolved ; argv[]=/lib/systemd/systemd-resolved ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+        "ExecStartEx": "{ path=/lib/systemd/systemd-resolved ; argv[]=/lib/systemd/systemd-resolved ; flags=ambient ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+        "FailureAction": "none",
+        "FileDescriptorStoreMax": "0",
+        "FinalKillSignal": "9",
+        "FragmentPath": "/lib/systemd/system/systemd-resolved.service",
+        "FreezerState": "running",
+        "GID": "103",
+        "GuessMainPID": "yes",
+        "IOAccounting": "no",
+        "IOReadBytes": "18446744073709551615",
+        "IOReadOperations": "18446744073709551615",
+        "IOSchedulingClass": "2",
+        "IOSchedulingPriority": "4",
+        "IOWeight": "[not set]",
+        "IOWriteBytes": "18446744073709551615",
+        "IOWriteOperations": "18446744073709551615",
+        "IPAccounting": "no",
+        "IPEgressBytes": "[no data]",
+        "IPEgressPackets": "[no data]",
+        "IPIngressBytes": "[no data]",
+        "IPIngressPackets": "[no data]",
+        "Id": "systemd-resolved.service",
+        "IgnoreOnIsolate": "no",
+        "IgnoreSIGPIPE": "yes",
+        "InactiveEnterTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "InactiveEnterTimestampMonotonic": "11425851476",
+        "InactiveExitTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "InactiveExitTimestampMonotonic": "11425872581",
+        "InvocationID": "5ea778894e23436bb1ae1da06685b250",
+        "JobRunningTimeoutUSec": "infinity",
+        "JobTimeoutAction": "none",
+        "JobTimeoutUSec": "infinity",
+        "KeyringMode": "private",
+        "KillMode": "control-group",
+        "KillSignal": "15",
+        "LimitAS": "infinity",
+        "LimitASSoft": "infinity",
+        "LimitCORE": "infinity",
+        "LimitCORESoft": "0",
+        "LimitCPU": "infinity",
+        "LimitCPUSoft": "infinity",
+        "LimitDATA": "infinity",
+        "LimitDATASoft": "infinity",
+        "LimitFSIZE": "infinity",
+        "LimitFSIZESoft": "infinity",
+        "LimitLOCKS": "infinity",
+        "LimitLOCKSSoft": "infinity",
+        "LimitMEMLOCK": "65536",
+        "LimitMEMLOCKSoft": "65536",
+        "LimitMSGQUEUE": "819200",
+        "LimitMSGQUEUESoft": "819200",
+        "LimitNICE": "0",
+        "LimitNICESoft": "0",
+        "LimitNOFILE": "524288",
+        "LimitNOFILESoft": "1024",
+        "LimitNPROC": "15630",
+        "LimitNPROCSoft": "15630",
+        "LimitRSS": "infinity",
+        "LimitRSSSoft": "infinity",
+        "LimitRTPRIO": "0",
+        "LimitRTPRIOSoft": "0",
+        "LimitRTTIME": "infinity",
+        "LimitRTTIMESoft": "infinity",
+        "LimitSIGPENDING": "15630",
+        "LimitSIGPENDINGSoft": "15630",
+        "LimitSTACK": "infinity",
+        "LimitSTACKSoft": "8388608",
+        "LoadState": "loaded",
+        "LockPersonality": "yes",
+        "LogLevelMax": "-1",
+        "LogRateLimitBurst": "0",
+        "LogRateLimitIntervalUSec": "0",
+        "LogsDirectoryMode": "0755",
+        "MainPID": "15902",
+        "ManagedOOMMemoryPressure": "auto",
+        "ManagedOOMMemoryPressureLimit": "0",
+        "ManagedOOMPreference": "none",
+        "ManagedOOMSwap": "auto",
+        "MemoryAccounting": "yes",
+        "MemoryAvailable": "infinity",
+        "MemoryCurrent": "4640768",
+        "MemoryDenyWriteExecute": "yes",
+        "MemoryHigh": "infinity",
+        "MemoryLimit": "infinity",
+        "MemoryLow": "0",
+        "MemoryMax": "infinity",
+        "MemoryMin": "0",
+        "MemorySwapMax": "infinity",
+        "MountAPIVFS": "no",
+        "NFileDescriptorStore": "0",
+        "NRestarts": "0",
+        "NUMAPolicy": "n/a",
+        "Names": "systemd-resolved.service dbus-org.freedesktop.resolve1.service",
+        "NeedDaemonReload": "no",
+        "Nice": "0",
+        "NoNewPrivileges": "yes",
+        "NonBlocking": "no",
+        "NotifyAccess": "main",
+        "OOMPolicy": "stop",
+        "OOMScoreAdjust": "0",
+        "OnFailureJobMode": "replace",
+        "OnSuccessJobMode": "fail",
+        "Perpetual": "no",
+        "PrivateDevices": "yes",
+        "PrivateIPC": "no",
+        "PrivateMounts": "no",
+        "PrivateNetwork": "no",
+        "PrivateTmp": "yes",
+        "PrivateUsers": "no",
+        "ProcSubset": "all",
+        "ProtectClock": "yes",
+        "ProtectControlGroups": "yes",
+        "ProtectHome": "yes",
+        "ProtectHostname": "no",
+        "ProtectKernelLogs": "yes",
+        "ProtectKernelModules": "yes",
+        "ProtectKernelTunables": "yes",
+        "ProtectProc": "invisible",
+        "ProtectSystem": "strict",
+        "RefuseManualStart": "no",
+        "RefuseManualStop": "no",
+        "ReloadResult": "success",
+        "RemainAfterExit": "no",
+        "RemoveIPC": "no",
+        "Requires": "system.slice -.mount",
+        "RequiresMountsFor": "/run/systemd/resolve /var/tmp",
+        "Restart": "always",
+        "RestartKillSignal": "15",
+        "RestartUSec": "0",
+        "RestrictAddressFamilies": "AF_INET AF_INET6 AF_NETLINK AF_UNIX",
+        "RestrictNamespaces": "yes",
+        "RestrictRealtime": "yes",
+        "RestrictSUIDSGID": "yes",
+        "Result": "success",
+        "RootDirectoryStartOnly": "no",
+        "RuntimeDirectory": "systemd/resolve",
+        "RuntimeDirectoryMode": "0755",
+        "RuntimeDirectoryPreserve": "yes",
+        "RuntimeMaxUSec": "infinity",
+        "SameProcessGroup": "no",
+        "SecureBits": "0",
+        "SendSIGHUP": "no",
+        "SendSIGKILL": "yes",
+        "Slice": "system.slice",
+        "StandardError": "inherit",
+        "StandardInput": "null",
+        "StandardOutput": "journal",
+        "StartLimitAction": "none",
+        "StartLimitBurst": "5",
+        "StartLimitIntervalUSec": "10s",
+        "StartupBlockIOWeight": "[not set]",
+        "StartupCPUShares": "[not set]",
+        "StartupCPUWeight": "[not set]",
+        "StartupIOWeight": "[not set]",
+        "StateChangeTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "StateChangeTimestampMonotonic": "11425965301",
+        "StateDirectoryMode": "0755",
+        "StatusErrno": "0",
+        "StatusText": "Processing requests...",
+        "StopWhenUnneeded": "no",
+        "SubState": "running",
+        "SuccessAction": "none",
+        "SyslogFacility": "3",
+        "SyslogLevel": "6",
+        "SyslogLevelPrefix": "yes",
+        "SyslogPriority": "30",
+        "SystemCallArchitectures": "native",
+        "SystemCallErrorNumber": "1",
+        "SystemCallFilter": "_llseek _newselect accept accept4 access add_key alarm arch_prctl bind brk cacheflush capget capset chdir chmod chown chown32 clock_getres clock_getres_time64 clock_gettime clock_gettime64 clock_nanosleep clock_nanosleep_time64 clone clone3 close close_range connect copy_file_range creat dup dup2 dup3 epoll_create epoll_create1 epoll_ctl epoll_ctl_old epoll_pwait epoll_pwait2 epoll_wait epoll_wait_old eventfd eventfd2 execve execveat exit exit_group faccessat faccessat2 fadvise64 fadvise64_64 fallocate fchdir fchmod fchmodat fchown fchown32 fchownat fcntl fcntl64 fdatasync fgetxattr flistxattr flock fork fremovexattr fsetxattr fstat fstat64 fstatat64 fstatfs fstatfs64 fsync ftruncate ftruncate64 futex futex_time64 futimesat get_mempolicy get_robust_list get_thread_area getcpu getcwd getdents getdents64 getegid getegid32 geteuid geteuid32 getgid getgid32 getgroups getgroups32 getitimer getpeername getpgid getpgrp getpid getppid getpriority getrandom getresgid getresgid32 getresuid getresuid32 getrlimit getrusage getsid getsockname getsockopt gettid gettimeofday getuid getuid32 getxattr inotify_add_watch inotify_init inotify_init1 inotify_rm_watch io_cancel io_destroy io_getevents io_pgetevents io_pgetevents_time64 io_setup io_submit io_uring_enter io_uring_register io_uring_setup ioctl ioprio_get ioprio_set ipc kcmp keyctl kill lchown lchown32 lgetxattr link linkat listen listxattr llistxattr lremovexattr lseek lsetxattr lstat lstat64 madvise mbind membarrier memfd_create migrate_pages mkdir mkdirat mknod mknodat mlock mlock2 mlockall mmap mmap2 move_pages mprotect mq_getsetattr mq_notify mq_open mq_timedreceive mq_timedreceive_time64 mq_timedsend mq_timedsend_time64 mq_unlink mremap msgctl msgget msgrcv msgsnd msync munlock munlockall munmap name_to_handle_at nanosleep newfstatat nice oldfstat oldlstat oldolduname oldstat olduname open openat openat2 pause personality pidfd_open pidfd_send_signal pipe pipe2 poll ppoll ppoll_time64 prctl pread64 preadv preadv2 prlimit64 process_madvise process_vm_readv process_vm_writev pselect6 pselect6_time64 pwrite64 pwritev pwritev2 read readahead readdir readlink readlinkat readv recv recvfrom recvmmsg recvmmsg_time64 recvmsg remap_file_pages removexattr rename renameat renameat2 request_key restart_syscall rmdir rseq rt_sigaction rt_sigpending rt_sigprocmask rt_sigqueueinfo rt_sigreturn rt_sigsuspend rt_sigtimedwait rt_sigtimedwait_time64 rt_tgsigqueueinfo sched_get_priority_max sched_get_priority_min sched_getaffinity sched_getattr sched_getparam sched_getscheduler sched_rr_get_interval sched_rr_get_interval_time64 sched_setaffinity sched_setattr sched_setparam sched_setscheduler sched_yield select semctl semget semop semtimedop semtimedop_time64 send sendfile sendfile64 sendmmsg sendmsg sendto set_mempolicy set_robust_list set_thread_area set_tid_address set_tls setfsgid setfsgid32 setfsuid setfsuid32 setgid setgid32 setgroups setgroups32 setitimer setns setpgid setpriority setregid setregid32 setresgid setresgid32 setresuid setresuid32 setreuid setreuid32 setrlimit setsid setsockopt setuid setuid32 setxattr shmat shmctl shmdt shmget shutdown sigaction sigaltstack signal signalfd signalfd4 sigpending sigprocmask sigreturn sigsuspend socket socketcall socketpair splice stat stat64 statfs statfs64 statx swapcontext symlink symlinkat sync sync_file_range sync_file_range2 syncfs sysinfo tee tgkill time timer_create timer_delete timer_getoverrun timer_gettime timer_gettime64 timer_settime timer_settime64 timerfd_create timerfd_gettime timerfd_gettime64 timerfd_settime timerfd_settime64 times tkill truncate truncate64 ugetrlimit umask uname unlink unlinkat unshare userfaultfd utime utimensat utimensat_time64 utimes vfork vmsplice wait4 waitid waitpid write writev",
+        "TTYReset": "no",
+        "TTYVHangup": "no",
+        "TTYVTDisallocate": "no",
+        "TasksAccounting": "yes",
+        "TasksCurrent": "1",
+        "TasksMax": "4689",
+        "TimeoutAbortUSec": "1min 30s",
+        "TimeoutCleanUSec": "infinity",
+        "TimeoutStartFailureMode": "terminate",
+        "TimeoutStartUSec": "1min 30s",
+        "TimeoutStopFailureMode": "terminate",
+        "TimeoutStopUSec": "1min 30s",
+        "TimerSlackNSec": "50000",
+        "Transient": "no",
+        "Type": "notify",
+        "UID": "101",
+        "UMask": "0022",
+        "UnitFilePreset": "enabled",
+        "UnitFileState": "enabled",
+        "User": "systemd-resolve",
+        "UtmpMode": "init",
+        "WantedBy": "multi-user.target",
+        "Wants": "nss-lookup.target tmp.mount",
+        "WatchdogSignal": "6",
+        "WatchdogTimestamp": "Thu 2023-01-05 08:08:25 UTC",
+        "WatchdogTimestampMonotonic": "1296932109201",
+        "WatchdogUSec": "3min"
+    }
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/dns_stub_listener : disable DNSStubListener] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/dns_stub_listener/tasks/main.yml:14
+Thursday 05 January 2023  13:39:20 +0530 (0:00:00.572)       0:00:16.946 ****** 
+ok: [node01] => {
+    "backup": "",
+    "changed": false
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/dns_stub_listener : check if DNS entry is already defined] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/dns_stub_listener/tasks/main.yml:24
+Thursday 05 January 2023  13:39:21 +0530 (0:00:00.361)       0:00:17.308 ****** 
+changed: [node01] => {
+    "backup": "",
+    "changed": true,
+    "found": 1
+}
+
+MSG:
+
+1 line(s) removed
+
+TASK [baseline_ansible/infrastructure/os_requirements/dns_stub_listener : set DNS if undefined] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/dns_stub_listener/tasks/main.yml:33
+Thursday 05 January 2023  13:39:21 +0530 (0:00:00.388)       0:00:17.697 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/dns_stub_listener : update /etc/resolv.conf symlink] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/dns_stub_listener/tasks/main.yml:43
+Thursday 05 January 2023  13:39:21 +0530 (0:00:00.054)       0:00:17.752 ****** 
+changed: [node01] => {
+    "changed": true,
+    "dest": "/etc/resolv.conf",
+    "gid": 0,
+    "group": "root",
+    "mode": "0777",
+    "owner": "root",
+    "size": 32,
+    "src": "/run/systemd/resolve/resolv.conf",
+    "state": "link",
+    "uid": 0
+}
+
+TASK [baseline_ansible/infrastructure/os_requirements/dns_stub_listener : restart systemd-resolved service] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/os_requirements/dns_stub_listener/tasks/main.yml:54
+Thursday 05 January 2023  13:39:22 +0530 (0:00:00.505)       0:00:18.257 ****** 
+changed: [node01] => {
+    "changed": true,
+    "name": "systemd-resolved",
+    "state": "started",
+    "status": {
+        "ActiveEnterTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "ActiveEnterTimestampMonotonic": "11425965301",
+        "ActiveExitTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "ActiveExitTimestampMonotonic": "11425839018",
+        "ActiveState": "active",
+        "After": "systemd-tmpfiles-setup.service systemd-networkd.service systemd-journald.socket -.mount systemd-sysusers.service tmp.mount system.slice",
+        "AllowIsolate": "no",
+        "AmbientCapabilities": "cap_setpcap cap_net_bind_service cap_net_raw",
+        "AssertResult": "yes",
+        "AssertTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "AssertTimestampMonotonic": "11425853102",
+        "Before": "shutdown.target network.target nss-lookup.target",
+        "BlockIOAccounting": "no",
+        "BlockIOWeight": "[not set]",
+        "BusName": "org.freedesktop.resolve1",
+        "CPUAccounting": "yes",
+        "CPUAffinityFromNUMA": "no",
+        "CPUQuotaPerSecUSec": "infinity",
+        "CPUQuotaPeriodUSec": "infinity",
+        "CPUSchedulingPolicy": "0",
+        "CPUSchedulingPriority": "0",
+        "CPUSchedulingResetOnFork": "no",
+        "CPUShares": "[not set]",
+        "CPUUsageNSec": "2215905000",
+        "CPUWeight": "[not set]",
+        "CacheDirectoryMode": "0755",
+        "CanClean": "runtime",
+        "CanFreeze": "yes",
+        "CanIsolate": "no",
+        "CanReload": "no",
+        "CanStart": "yes",
+        "CanStop": "yes",
+        "CapabilityBoundingSet": "cap_setpcap cap_net_bind_service cap_net_raw",
+        "CleanResult": "success",
+        "CollectMode": "inactive",
+        "ConditionResult": "yes",
+        "ConditionTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "ConditionTimestampMonotonic": "11425853098",
+        "ConfigurationDirectoryMode": "0755",
+        "Conflicts": "shutdown.target",
+        "ControlGroup": "/system.slice/systemd-resolved.service",
+        "ControlPID": "0",
+        "CoredumpFilter": "0x33",
+        "DefaultDependencies": "no",
+        "DefaultMemoryLow": "0",
+        "DefaultMemoryMin": "0",
+        "Delegate": "no",
+        "Description": "Network Name Resolution",
+        "DeviceAllow": "char-rtc r",
+        "DevicePolicy": "closed",
+        "Documentation": "\"man:systemd-resolved.service(8)\" \"man:org.freedesktop.resolve1(5)\" https://www.freedesktop.org/wiki/Software/systemd/writing-network-configuration-managers https://www.freedesktop.org/wiki/Software/systemd/writing-resolver-clients",
+        "DynamicUser": "no",
+        "EffectiveCPUs": "0-1",
+        "EffectiveMemoryNodes": "0",
+        "ExecMainCode": "0",
+        "ExecMainExitTimestamp": "n/a",
+        "ExecMainExitTimestampMonotonic": "0",
+        "ExecMainPID": "15902",
+        "ExecMainStartTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "ExecMainStartTimestampMonotonic": "11425871858",
+        "ExecMainStatus": "0",
+        "ExecStart": "{ path=/lib/systemd/systemd-resolved ; argv[]=/lib/systemd/systemd-resolved ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+        "ExecStartEx": "{ path=/lib/systemd/systemd-resolved ; argv[]=/lib/systemd/systemd-resolved ; flags=ambient ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }",
+        "FailureAction": "none",
+        "FileDescriptorStoreMax": "0",
+        "FinalKillSignal": "9",
+        "FragmentPath": "/lib/systemd/system/systemd-resolved.service",
+        "FreezerState": "running",
+        "GID": "103",
+        "GuessMainPID": "yes",
+        "IOAccounting": "no",
+        "IOReadBytes": "18446744073709551615",
+        "IOReadOperations": "18446744073709551615",
+        "IOSchedulingClass": "2",
+        "IOSchedulingPriority": "4",
+        "IOWeight": "[not set]",
+        "IOWriteBytes": "18446744073709551615",
+        "IOWriteOperations": "18446744073709551615",
+        "IPAccounting": "no",
+        "IPEgressBytes": "[no data]",
+        "IPEgressPackets": "[no data]",
+        "IPIngressBytes": "[no data]",
+        "IPIngressPackets": "[no data]",
+        "Id": "systemd-resolved.service",
+        "IgnoreOnIsolate": "no",
+        "IgnoreSIGPIPE": "yes",
+        "InactiveEnterTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "InactiveEnterTimestampMonotonic": "11425851476",
+        "InactiveExitTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "InactiveExitTimestampMonotonic": "11425872581",
+        "InvocationID": "5ea778894e23436bb1ae1da06685b250",
+        "JobRunningTimeoutUSec": "infinity",
+        "JobTimeoutAction": "none",
+        "JobTimeoutUSec": "infinity",
+        "KeyringMode": "private",
+        "KillMode": "control-group",
+        "KillSignal": "15",
+        "LimitAS": "infinity",
+        "LimitASSoft": "infinity",
+        "LimitCORE": "infinity",
+        "LimitCORESoft": "0",
+        "LimitCPU": "infinity",
+        "LimitCPUSoft": "infinity",
+        "LimitDATA": "infinity",
+        "LimitDATASoft": "infinity",
+        "LimitFSIZE": "infinity",
+        "LimitFSIZESoft": "infinity",
+        "LimitLOCKS": "infinity",
+        "LimitLOCKSSoft": "infinity",
+        "LimitMEMLOCK": "65536",
+        "LimitMEMLOCKSoft": "65536",
+        "LimitMSGQUEUE": "819200",
+        "LimitMSGQUEUESoft": "819200",
+        "LimitNICE": "0",
+        "LimitNICESoft": "0",
+        "LimitNOFILE": "524288",
+        "LimitNOFILESoft": "1024",
+        "LimitNPROC": "15630",
+        "LimitNPROCSoft": "15630",
+        "LimitRSS": "infinity",
+        "LimitRSSSoft": "infinity",
+        "LimitRTPRIO": "0",
+        "LimitRTPRIOSoft": "0",
+        "LimitRTTIME": "infinity",
+        "LimitRTTIMESoft": "infinity",
+        "LimitSIGPENDING": "15630",
+        "LimitSIGPENDINGSoft": "15630",
+        "LimitSTACK": "infinity",
+        "LimitSTACKSoft": "8388608",
+        "LoadState": "loaded",
+        "LockPersonality": "yes",
+        "LogLevelMax": "-1",
+        "LogRateLimitBurst": "0",
+        "LogRateLimitIntervalUSec": "0",
+        "LogsDirectoryMode": "0755",
+        "MainPID": "15902",
+        "ManagedOOMMemoryPressure": "auto",
+        "ManagedOOMMemoryPressureLimit": "0",
+        "ManagedOOMPreference": "none",
+        "ManagedOOMSwap": "auto",
+        "MemoryAccounting": "yes",
+        "MemoryAvailable": "infinity",
+        "MemoryCurrent": "4640768",
+        "MemoryDenyWriteExecute": "yes",
+        "MemoryHigh": "infinity",
+        "MemoryLimit": "infinity",
+        "MemoryLow": "0",
+        "MemoryMax": "infinity",
+        "MemoryMin": "0",
+        "MemorySwapMax": "infinity",
+        "MountAPIVFS": "no",
+        "NFileDescriptorStore": "0",
+        "NRestarts": "0",
+        "NUMAPolicy": "n/a",
+        "Names": "systemd-resolved.service dbus-org.freedesktop.resolve1.service",
+        "NeedDaemonReload": "no",
+        "Nice": "0",
+        "NoNewPrivileges": "yes",
+        "NonBlocking": "no",
+        "NotifyAccess": "main",
+        "OOMPolicy": "stop",
+        "OOMScoreAdjust": "0",
+        "OnFailureJobMode": "replace",
+        "OnSuccessJobMode": "fail",
+        "Perpetual": "no",
+        "PrivateDevices": "yes",
+        "PrivateIPC": "no",
+        "PrivateMounts": "no",
+        "PrivateNetwork": "no",
+        "PrivateTmp": "yes",
+        "PrivateUsers": "no",
+        "ProcSubset": "all",
+        "ProtectClock": "yes",
+        "ProtectControlGroups": "yes",
+        "ProtectHome": "yes",
+        "ProtectHostname": "no",
+        "ProtectKernelLogs": "yes",
+        "ProtectKernelModules": "yes",
+        "ProtectKernelTunables": "yes",
+        "ProtectProc": "invisible",
+        "ProtectSystem": "strict",
+        "RefuseManualStart": "no",
+        "RefuseManualStop": "no",
+        "ReloadResult": "success",
+        "RemainAfterExit": "no",
+        "RemoveIPC": "no",
+        "Requires": "system.slice -.mount",
+        "RequiresMountsFor": "/run/systemd/resolve /var/tmp",
+        "Restart": "always",
+        "RestartKillSignal": "15",
+        "RestartUSec": "0",
+        "RestrictAddressFamilies": "AF_INET AF_INET6 AF_NETLINK AF_UNIX",
+        "RestrictNamespaces": "yes",
+        "RestrictRealtime": "yes",
+        "RestrictSUIDSGID": "yes",
+        "Result": "success",
+        "RootDirectoryStartOnly": "no",
+        "RuntimeDirectory": "systemd/resolve",
+        "RuntimeDirectoryMode": "0755",
+        "RuntimeDirectoryPreserve": "yes",
+        "RuntimeMaxUSec": "infinity",
+        "SameProcessGroup": "no",
+        "SecureBits": "0",
+        "SendSIGHUP": "no",
+        "SendSIGKILL": "yes",
+        "Slice": "system.slice",
+        "StandardError": "inherit",
+        "StandardInput": "null",
+        "StandardOutput": "journal",
+        "StartLimitAction": "none",
+        "StartLimitBurst": "5",
+        "StartLimitIntervalUSec": "10s",
+        "StartupBlockIOWeight": "[not set]",
+        "StartupCPUShares": "[not set]",
+        "StartupCPUWeight": "[not set]",
+        "StartupIOWeight": "[not set]",
+        "StateChangeTimestamp": "Wed 2022-12-21 11:03:19 UTC",
+        "StateChangeTimestampMonotonic": "11425965301",
+        "StateDirectoryMode": "0755",
+        "StatusErrno": "0",
+        "StatusText": "Processing requests...",
+        "StopWhenUnneeded": "no",
+        "SubState": "running",
+        "SuccessAction": "none",
+        "SyslogFacility": "3",
+        "SyslogLevel": "6",
+        "SyslogLevelPrefix": "yes",
+        "SyslogPriority": "30",
+        "SystemCallArchitectures": "native",
+        "SystemCallErrorNumber": "1",
+        "SystemCallFilter": "_llseek _newselect accept accept4 access add_key alarm arch_prctl bind brk cacheflush capget capset chdir chmod chown chown32 clock_getres clock_getres_time64 clock_gettime clock_gettime64 clock_nanosleep clock_nanosleep_time64 clone clone3 close close_range connect copy_file_range creat dup dup2 dup3 epoll_create epoll_create1 epoll_ctl epoll_ctl_old epoll_pwait epoll_pwait2 epoll_wait epoll_wait_old eventfd eventfd2 execve execveat exit exit_group faccessat faccessat2 fadvise64 fadvise64_64 fallocate fchdir fchmod fchmodat fchown fchown32 fchownat fcntl fcntl64 fdatasync fgetxattr flistxattr flock fork fremovexattr fsetxattr fstat fstat64 fstatat64 fstatfs fstatfs64 fsync ftruncate ftruncate64 futex futex_time64 futimesat get_mempolicy get_robust_list get_thread_area getcpu getcwd getdents getdents64 getegid getegid32 geteuid geteuid32 getgid getgid32 getgroups getgroups32 getitimer getpeername getpgid getpgrp getpid getppid getpriority getrandom getresgid getresgid32 getresuid getresuid32 getrlimit getrusage getsid getsockname getsockopt gettid gettimeofday getuid getuid32 getxattr inotify_add_watch inotify_init inotify_init1 inotify_rm_watch io_cancel io_destroy io_getevents io_pgetevents io_pgetevents_time64 io_setup io_submit io_uring_enter io_uring_register io_uring_setup ioctl ioprio_get ioprio_set ipc kcmp keyctl kill lchown lchown32 lgetxattr link linkat listen listxattr llistxattr lremovexattr lseek lsetxattr lstat lstat64 madvise mbind membarrier memfd_create migrate_pages mkdir mkdirat mknod mknodat mlock mlock2 mlockall mmap mmap2 move_pages mprotect mq_getsetattr mq_notify mq_open mq_timedreceive mq_timedreceive_time64 mq_timedsend mq_timedsend_time64 mq_unlink mremap msgctl msgget msgrcv msgsnd msync munlock munlockall munmap name_to_handle_at nanosleep newfstatat nice oldfstat oldlstat oldolduname oldstat olduname open openat openat2 pause personality pidfd_open pidfd_send_signal pipe pipe2 poll ppoll ppoll_time64 prctl pread64 preadv preadv2 prlimit64 process_madvise process_vm_readv process_vm_writev pselect6 pselect6_time64 pwrite64 pwritev pwritev2 read readahead readdir readlink readlinkat readv recv recvfrom recvmmsg recvmmsg_time64 recvmsg remap_file_pages removexattr rename renameat renameat2 request_key restart_syscall rmdir rseq rt_sigaction rt_sigpending rt_sigprocmask rt_sigqueueinfo rt_sigreturn rt_sigsuspend rt_sigtimedwait rt_sigtimedwait_time64 rt_tgsigqueueinfo sched_get_priority_max sched_get_priority_min sched_getaffinity sched_getattr sched_getparam sched_getscheduler sched_rr_get_interval sched_rr_get_interval_time64 sched_setaffinity sched_setattr sched_setparam sched_setscheduler sched_yield select semctl semget semop semtimedop semtimedop_time64 send sendfile sendfile64 sendmmsg sendmsg sendto set_mempolicy set_robust_list set_thread_area set_tid_address set_tls setfsgid setfsgid32 setfsuid setfsuid32 setgid setgid32 setgroups setgroups32 setitimer setns setpgid setpriority setregid setregid32 setresgid setresgid32 setresuid setresuid32 setreuid setreuid32 setrlimit setsid setsockopt setuid setuid32 setxattr shmat shmctl shmdt shmget shutdown sigaction sigaltstack signal signalfd signalfd4 sigpending sigprocmask sigreturn sigsuspend socket socketcall socketpair splice stat stat64 statfs statfs64 statx swapcontext symlink symlinkat sync sync_file_range sync_file_range2 syncfs sysinfo tee tgkill time timer_create timer_delete timer_getoverrun timer_gettime timer_gettime64 timer_settime timer_settime64 timerfd_create timerfd_gettime timerfd_gettime64 timerfd_settime timerfd_settime64 times tkill truncate truncate64 ugetrlimit umask uname unlink unlinkat unshare userfaultfd utime utimensat utimensat_time64 utimes vfork vmsplice wait4 waitid waitpid write writev",
+        "TTYReset": "no",
+        "TTYVHangup": "no",
+        "TTYVTDisallocate": "no",
+        "TasksAccounting": "yes",
+        "TasksCurrent": "1",
+        "TasksMax": "4689",
+        "TimeoutAbortUSec": "1min 30s",
+        "TimeoutCleanUSec": "infinity",
+        "TimeoutStartFailureMode": "terminate",
+        "TimeoutStartUSec": "1min 30s",
+        "TimeoutStopFailureMode": "terminate",
+        "TimeoutStopUSec": "1min 30s",
+        "TimerSlackNSec": "50000",
+        "Transient": "no",
+        "Type": "notify",
+        "UID": "101",
+        "UMask": "0022",
+        "UnitFilePreset": "enabled",
+        "UnitFileState": "enabled",
+        "User": "systemd-resolve",
+        "UtmpMode": "init",
+        "WantedBy": "multi-user.target",
+        "Wants": "nss-lookup.target tmp.mount",
+        "WatchdogSignal": "6",
+        "WatchdogTimestamp": "Thu 2023-01-05 08:08:25 UTC",
+        "WatchdogTimestampMonotonic": "1296932109201",
+        "WatchdogUSec": "3min"
+    }
+}
+META: role_complete for node01
+
+TASK [infrastructure/os_setup : include_tasks] *********************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/main.yml:30
+Thursday 05 January 2023  13:39:22 +0530 (0:00:00.718)       0:00:18.976 ****** 
+included: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/prepare_directory_tree.yml for node01
+
+TASK [infrastructure/os_setup : add group "ubuntu"] ****************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/prepare_directory_tree.yml:8
+Thursday 05 January 2023  13:39:23 +0530 (0:00:00.056)       0:00:19.033 ****** 
+ok: [node01] => {
+    "changed": false,
+    "gid": 1000,
+    "name": "ubuntu",
+    "state": "present",
+    "system": false
+}
+
+TASK [infrastructure/os_setup : create main directory] *************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/prepare_directory_tree.yml:13
+Thursday 05 January 2023  13:39:23 +0530 (0:00:00.493)       0:00:19.526 ****** 
+ok: [node01] => {
+    "changed": false,
+    "gid": 1000,
+    "group": "ubuntu",
+    "mode": "0755",
+    "owner": "ubuntu",
+    "path": "/opt/smartedge",
+    "size": 4096,
+    "state": "directory",
+    "uid": 1000
+}
+
+TASK [infrastructure/os_setup : create project subdirectories] *****************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/prepare_directory_tree.yml:21
+Thursday 05 January 2023  13:39:23 +0530 (0:00:00.340)       0:00:19.866 ****** 
+ok: [node01] => (item=/opt/smartedge/certs) => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "gid": 1000,
+    "group": "ubuntu",
+    "item": "/opt/smartedge/certs",
+    "mode": "0755",
+    "owner": "ubuntu",
+    "path": "/opt/smartedge/certs",
+    "size": 4096,
+    "state": "directory",
+    "uid": 1000
+}
+ok: [node01] => (item=/opt/smartedge/configs) => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "gid": 1000,
+    "group": "ubuntu",
+    "item": "/opt/smartedge/configs",
+    "mode": "0755",
+    "owner": "ubuntu",
+    "path": "/opt/smartedge/configs",
+    "size": 4096,
+    "state": "directory",
+    "uid": 1000
+}
+ok: [node01] => (item=/opt/smartedge/scripts) => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "gid": 1000,
+    "group": "ubuntu",
+    "item": "/opt/smartedge/scripts",
+    "mode": "0755",
+    "owner": "ubuntu",
+    "path": "/opt/smartedge/scripts",
+    "size": 4096,
+    "state": "directory",
+    "uid": 1000
+}
+
+TASK [infrastructure/os_setup : create edgednssvr directory] *******************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/prepare_directory_tree.yml:33
+Thursday 05 January 2023  13:39:24 +0530 (0:00:00.965)       0:00:20.832 ****** 
+skipping: [node01] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/os_setup : create edgedns directory] **********************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/prepare_directory_tree.yml:42
+Thursday 05 January 2023  13:39:24 +0530 (0:00:00.048)       0:00:20.880 ****** 
+skipping: [node01] => (item=/opt/smartedge/edgedns)  => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "item": "/opt/smartedge/edgedns",
+    "skip_reason": "Conditional result was False"
+}
+skipping: [node01] => (item=/opt/smartedge/edgedns/configs)  => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "item": "/opt/smartedge/edgedns/configs",
+    "skip_reason": "Conditional result was False"
+}
+skipping: [node01] => (item=/opt/smartedge/edgedns/certs)  => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "item": "/opt/smartedge/edgedns/certs",
+    "skip_reason": "Conditional result was False"
+}
+
+TASK [infrastructure/os_setup : create pv grafana directory] *******************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/prepare_directory_tree.yml:55
+Thursday 05 January 2023  13:39:24 +0530 (0:00:00.057)       0:00:20.938 ****** 
+ok: [node01] => {
+    "changed": false,
+    "gid": 1000,
+    "group": "ubuntu",
+    "mode": "0755",
+    "owner": "ubuntu",
+    "path": "/var/lib/smartedge//grafana",
+    "size": 4096,
+    "state": "directory",
+    "uid": 1000
+}
+
+TASK [infrastructure/os_setup : create pv prometheus directory] ****************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/prepare_directory_tree.yml:64
+Thursday 05 January 2023  13:39:25 +0530 (0:00:00.351)       0:00:21.290 ****** 
+ok: [node01] => {
+    "changed": false,
+    "gid": 1000,
+    "group": "ubuntu",
+    "mode": "0755",
+    "owner": "ubuntu",
+    "path": "/var/lib/smartedge//prometheus",
+    "size": 4096,
+    "state": "directory",
+    "uid": 1000
+}
+
+TASK [infrastructure/os_setup : include_tasks] *********************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/main.yml:31
+Thursday 05 January 2023  13:39:25 +0530 (0:00:00.355)       0:00:21.645 ****** 
+included: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/copy_tls_scripts.yml for node01
+
+TASK [infrastructure/os_setup : Copy tls related files to scripts directory] ***
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/copy_tls_scripts.yml:5
+Thursday 05 January 2023  13:39:25 +0530 (0:00:00.054)       0:00:21.699 ****** 
+ok: [node01] => (item=entrypoint_tls.sh) => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "checksum": "55506918fcb5bccfeb4b0c6580e4651328a09b70",
+    "dest": "/opt/smartedge/scripts/entrypoint_tls.sh",
+    "gid": 1000,
+    "group": "ubuntu",
+    "item": "entrypoint_tls.sh",
+    "mode": "0544",
+    "owner": "ubuntu",
+    "path": "/opt/smartedge/scripts/entrypoint_tls.sh",
+    "size": 387,
+    "state": "file",
+    "uid": 1000
+}
+ok: [node01] => (item=tls_pair.sh) => {
+    "ansible_loop_var": "item",
+    "changed": false,
+    "checksum": "9157516f9f8707654bf9503a4722153a95a8e9f2",
+    "dest": "/opt/smartedge/scripts/tls_pair.sh",
+    "gid": 1000,
+    "group": "ubuntu",
+    "item": "tls_pair.sh",
+    "mode": "0544",
+    "owner": "ubuntu",
+    "path": "/opt/smartedge/scripts/tls_pair.sh",
+    "size": 1606,
+    "state": "file",
+    "uid": 1000
+}
+
+TASK [Include install_packages] ************************************************
+task path: /home/openness/scratch/lp/dek/roles/infrastructure/os_setup/tasks/main.yml:34
+Thursday 05 January 2023  13:39:27 +0530 (0:00:01.905)       0:00:23.605 ****** 
+
+TASK [baseline_ansible/infrastructure/install_packages : prepare Debian-based distro] ***
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_packages/tasks/main.yml:5
+Thursday 05 January 2023  13:39:27 +0530 (0:00:00.082)       0:00:23.687 ****** 
+included: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_packages/tasks/debian.yml for node01
+
+TASK [baseline_ansible/infrastructure/install_packages : add repository] *******
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_packages/tasks/debian.yml:9
+Thursday 05 January 2023  13:39:27 +0530 (0:00:00.063)       0:00:23.750 ****** 
+fatal: [node01]: FAILED! => {}
+
+MSG:
+
+The conditional check 'not enable_local_apt_mirror' failed. The error was: error while evaluating conditional (not enable_local_apt_mirror): 'enable_local_apt_mirror' is undefined
+
+The error appears to be in '/home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_packages/tasks/debian.yml': line 9, column 5, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+  block:
+  - name: add repository
+    ^ here
+
+
+TASK [baseline_ansible/infrastructure/install_packages : run apt update] *******
+task path: /home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_packages/tasks/debian.yml:25
+Thursday 05 January 2023  13:39:27 +0530 (0:00:00.042)       0:00:23.793 ****** 
+fatal: [node01]: FAILED! => {}
+
+MSG:
+
+The conditional check 'not enable_local_apt_mirror' failed. The error was: error while evaluating conditional (not enable_local_apt_mirror): 'enable_local_apt_mirror' is undefined
+
+The error appears to be in '/home/openness/scratch/lp/dek/roles/baseline_ansible/infrastructure/install_packages/tasks/debian.yml': line 25, column 5, but may
+be elsewhere in the file depending on the exact syntax problem.
+
+The offending line appears to be:
+
+  rescue:
+  - name: run apt update
+    ^ here
+
+
+PLAY RECAP *********************************************************************
+node01                     : ok=52   changed=3    unreachable=0    failed=1    skipped=53   rescued=1    ignored=0   
+
+Thursday 05 January 2023  13:39:27 +0530 (0:00:00.016)       0:00:23.809 ****** 
+=============================================================================== 
+infrastructure/os_setup ------------------------------------------------- 4.93s
+baseline_ansible/infrastructure/os_proxy -------------------------------- 3.82s
+baseline_ansible/infrastructure/os_requirements/disable_swap ------------ 3.51s
+gather_facts ------------------------------------------------------------ 2.81s
+baseline_ansible/infrastructure/os_requirements/dns_stub_listener ------- 2.60s
+baseline_ansible/infrastructure/configure_udev -------------------------- 1.30s
+shell ------------------------------------------------------------------- 0.97s
+fail -------------------------------------------------------------------- 0.87s
+baseline_ansible/infrastructure/os_requirements/enable_ipv4_forwarding --- 0.52s
+infrastructure/build_noproxy -------------------------------------------- 0.51s
+include_tasks ----------------------------------------------------------- 0.40s
+infrastructure/install_dependencies ------------------------------------- 0.30s
+debug ------------------------------------------------------------------- 0.29s
+baseline_ansible/infrastructure/time_setup_ntp -------------------------- 0.19s
+set_fact ---------------------------------------------------------------- 0.17s
+baseline_ansible/infrastructure/install_packages ------------------------ 0.12s
+include_vars ------------------------------------------------------------ 0.10s
+baseline_ansible/infrastructure/selinux --------------------------------- 0.09s
+baseline_ansible/infrastructure/disable_fingerprint_authentication ------ 0.08s
+infrastructure/setup_baseline_ansible ----------------------------------- 0.06s
+stat -------------------------------------------------------------------- 0.05s
+assert ------------------------------------------------------------------ 0.05s
+command ----------------------------------------------------------------- 0.04s
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+total ------------------------------------------------------------------ 23.76s

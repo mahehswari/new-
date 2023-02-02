@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+- name: restart containerd
+  command: /bin/true
+  notify:
+    - containerd | restart containerd
+    - containerd | wait for containerd
+  become: yes
+
+- name: containerd | restart containerd
+  systemd:
+    name: containerd
+    state: restarted
+    enabled: yes
+    daemon-reload: yes
+  become: yes
+
+- name: containerd | wait for containerd
+  command: "{{ containerd_bin_dir }}/ctr images ls -q"
+  register: containerd_ready
+  retries: 8
+  delay: 4
+  until: containerd_ready.rc == 0
+  become: yes

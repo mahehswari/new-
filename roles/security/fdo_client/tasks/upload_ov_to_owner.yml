@@ -1,0 +1,9 @@
+---
+- name: Upload OV and trigger TO0
+  delegate_to: localhost
+  shell: 'bash {{ role_path }}/scripts/upload_ov_trigger_to0.sh -o {{ fdo.owner_ip }} -u apiUser -p {{ fdo.owner_pass }} -v {{ voucher_filename }}'
+  register: script_result
+  until: "'Success in triggering TO0' in script_result.stdout"
+  retries: 3
+  delay: 10
+

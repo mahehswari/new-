@@ -1,0 +1,77 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021-2022 Intel Corporation
+
+---
+
+- name: load common SR-IOV Network Operator variables
+  include_vars: "{{ role_path }}/../defaults/main.yml"
+
+- name: check if SR-IOV Network Operator deployment already exists
+  command: "kubectl get deployments.apps -n {{ sriov_network_operator_namespace }} {{ _sriov_network_operator.name }}"
+  ignore_errors: true
+  register: sno_deployment_status
+  changed_when: true
+
+- name: install SR-IOV Network Operator
+  block:
+  - name: pull and unarchive helm charts in tgz from sriov network operator repository
+    unarchive:
+      src: "{{ download_sriov_network_operator_pkg_url }}"
+      dest: "{{ ne_helm_charts_default_dir }}"
+      remote_src: yes      
+
+  - name: create namespace for SR-IOV Network Operator
+    include_role:
+      name: kubernetes/custom_namespace
+    vars:
+      - _custom_ns: [ "{{ sriov_network_operator_namespace }}" ]
+
+  - name: copy SR-IOV Network Operator admission controller cert manager configuration
+    template:
+      src: "{{ _sriov_network_operator.cert_manager_filename }}.j2"
+      dest: "{{ _sriov_network_operator_chart_dir }}/{{ _sriov_network_operator.cert_manager_filename }}"
+      mode: preserve
+
+  - name: apply SR-IOV Network Operator admission controller cert manager configuration
+    command: "kubectl apply -f  ./{{ _sriov_network_operator.cert_manager_filename }}"
+    args:
+      chdir: "{{ _sriov_network_operator_chart_dir }}"
+    changed_when: true
+    register: result
+    retries: "{{ apply_configs_retries }}"
+    until: result is succeeded
+    delay: "{{ apply_configs_delay }}"
+
+  - name: copy customized git patch for adding CPK device ID
+    template:
+      src: "{{ _sriov_network_operator.git_webhook_patch }}.j2"
+      dest: "{{ _sriov_network_operator_chart_dir }}/{{ _sriov_network_operator.git_webhook_patch }}"
+      mode: preserve
+
+  - name: apply git patch for SRIOV NO Webhook configmap
+    ansible.posix.patch:
+      src: "{{ _sriov_network_operator_chart_dir }}/{{ _sriov_network_operator.git_webhook_patch }}"
+      basedir: "{{ _sriov_network_operator_chart_dir }}"
+      remote_src: true
+      strip: 1
+    changed_when: true
+
+  - name: install SR-IOV Network Operator with helm
+    command: helm install --namespace={{ sriov_network_operator_namespace }} {{ _sriov_network_operator.name }} -f values.yaml --set-string operator.resourcePrefix="intel.com" --set-string operator.enableAdmissionController="true" .
+    ignore_errors: false
+    changed_when: false
+    args: 
+      chdir: "{{ _sriov_network_operator_chart_dir }}"
+
+  - name: patch SR-IOV Network Config daemon for custom NodeSelector
+    command: >
+      kubectl patch -n {{ sriov_network_operator_namespace }} sriovoperatorconfigs.sriovnetwork.openshift.io default
+      --type='json' -p='[{"op": "replace", "path": "/spec/configDaemonNodeSelector", "value":{
+      "{{ _sriov_network_operator_label.name }}":"{{ _sriov_network_operator_label.value }}"
+      }}]'
+    register: result
+    retries: "{{ patching_retries }}"
+    until: result is succeeded
+    delay: "{{ patching_delay }}"
+    changed_when: true
+  when: sno_deployment_status is failed

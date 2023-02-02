@@ -1,0 +1,428 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/se-config",
+    "definitions": {
+        "se-config": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "experience_kits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/experiencekit"
+                    }
+                },
+                "configurations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configuration"
+                    }
+                },
+                "installation_mode": {
+                    "type": "string",
+                    "enum": ["automatic", "manual"]
+                },
+                "install_os": {
+                    "type": "boolean"
+                },
+                "clusters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/cluster"
+                    }
+                },
+                "accounts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/account"
+                    }
+                },
+                "git": {
+                    "$ref": "#/definitions/git"
+                },
+                "esp": {
+                    "$ref": "#/definitions/esp"
+                },
+                "pxe": {
+                    "$ref": "#/definitions/pxe"
+                },
+                "docker": {
+                    "$ref": "#/definitions/docker"
+                },
+                "ntp_server": {
+                    "type": "string"
+                },
+                "admin_interface": {
+                    "$ref": "#/definitions/interface"
+                }
+            },
+            "required": ["clusters", "experience_kits"],
+            "title": "Intel Smart Edge Configuration"
+        },
+        "account": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "ssh-key": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                { 
+                    "required": ["name", "username"]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["ssh-key"]
+                        },
+                        {
+                            "required": ["password"]
+                        }
+                    ]
+                }
+            ],
+            "required": [
+                "name",
+                "username"
+            ],
+            "title": "Account"
+        },
+        "cluster": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "experience_kit": {
+                    "$ref": "#/definitions/experiencekit_ref"
+                },
+                "account": {
+                    "type": "string"
+                },
+                "configuration": {
+                    "type": "string"
+                },
+                "platform-profile": {
+                    "type": "string"
+                },
+                "hosts": {
+                    "$ref": "#/definitions/hosts"
+                }
+            },
+            "required": [
+                "name",
+                "experience_kit"
+            ],
+            "title": "Cluster definition"
+        },
+        "experiencekit_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "deployment": {
+                    "type": "string"
+                },
+                "configuration": {
+                    "type": "string"
+                }
+            },
+            "required": [ "name", "deployment" ],
+            "title": "Experience kit reference"
+        },
+        "hosts": {
+            "type": "object",
+            "additionalProperties": false,
+            "patternProperties": {
+                "^all|controller_group|edgenode_group|ptp_slave_group$": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/host"
+                    },
+                    "minItems": 1
+                }
+            },
+            "required": [],
+            "title": "Hosts"
+        },
+        "host": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "bmc": {
+                    "$ref": "#/definitions/bmc"
+                }
+            },
+            "required": ["name"]
+        },
+        "bmc": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "address",
+                "password",
+                "username"
+            ],
+            "title": "Bmc"
+        },
+        "configuration": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "group_vars": {
+                    "$ref": "#/definitions/vars"
+                },
+                "host_vars": {
+                    "$ref": "#/definitions/vars"
+                },
+                "sideload": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/sideloaditem"
+                    }
+                }
+            },
+            "allOf": [
+                {
+                    "required": ["name"]
+                },
+                {
+                    "anyOf": [
+                        {
+                            "required": ["group_vars"]
+                        },
+                        {
+                            "required": ["host_vars"]
+                        },
+                        {
+                            "required": ["sideload"]
+                        }
+                    ]
+                }
+            ],
+            "title": "Configuration of an experience kit"
+        },
+        "vars": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {},
+            "title": "Variables matching ansible groups"
+        },
+        "sideloaditem": {
+            "type":"object",
+            "properties": {
+                "source": {
+                    "type": "string"
+                },
+                "destination": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["source", "destination"]
+        },
+        "docker": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "registry_mirrors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dockerhub": {
+                    "$ref": "#/definitions/dockerhub"
+                }
+            },
+            "anyOf": [
+                {
+                    "required": ["dockerhub"]
+                },
+                {
+                    "required": ["registry_mirrors"]
+                }
+            ],
+            "title": "Docker additional donfiguration"
+        },
+        "dockerhub": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "password",
+                "username"
+            ],
+            "title": "Dockerhub"
+        },
+        "esp": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "branch": {
+                    "type": "string"
+                }
+            },
+            "required": [ "url" ],
+            "title": "Esp source"
+        },
+        "experiencekit": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http"
+                    ],
+                    "qt-uri-extensions": [
+                        ".git"
+                    ]
+                },
+                "branch": {
+                    "type": "string"
+                }
+            },
+            "allOf": [
+                {
+                    "required": ["name"]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["path"]
+                        },
+                        {
+                            "required": ["url"]
+                        }]
+                }
+            ],
+            "title": "Experience Kit definition"
+        },
+        "git": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "rsa-key": {
+                    "type": "string"
+                }
+            },
+            "oneOf": [
+                {
+                    "required": ["username", "password"]
+                },
+                {
+                    "required": ["rsa-key"]
+                }
+            ],
+            "title": "Git global configuration"
+        },
+        "interface": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 15,
+            "pattern": "^[\u0000-\u007f]+$",
+            "$comment": "Restricted to the 7-bit character set because Linux dev names are restricted to 15 bytes + null byte."
+        },
+        "pxe": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "network_dns_primary": {
+                    "type": "string"
+                },
+                "network_dns_secondary": {
+                    "type": "string"
+                },
+                "dhcp_range_minimum": {
+                    "type": "string"
+                },
+                "dhcp_range_maximum": {
+                    "type": "string"
+                },
+                "network_broadcast_ip": {
+                    "type": "string"
+                },
+                "network_gateway_ip": {
+                    "type": "string"
+                },
+                "host_ip": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "dhcp_range_maximum",
+                "dhcp_range_minimum",
+                "host_ip",
+                "network_broadcast_ip",
+                "network_dns_primary",
+                "network_dns_secondary",
+                "network_gateway_ip"
+            ],
+            "title": "PXE"
+        }
+    }
+}

@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+# root is where all buildkit state is stored.
+root =  "{{ buildkit_cfg_dir }}/buildkit"
+
+[worker.containerd]
+enabled = true
+namespace = "k8s.io"
+
+# insecure-entitlements allows insecure entitlements, disabled by default.
+insecure-entitlements = [ "network.host", "security.insecure" ]
+{% if docker_registry_mirrors is defined %}
+# registry configures a new Docker register used for cache import or output.
+[registry."docker.io"]
+  mirrors = [{% for host in docker_registry_mirrors %} "{{ host | replace('http://', '') | replace('https://', '') }}", {% endfor %}]
+
+{% for host in docker_registry_mirrors %}
+[registry."{{ host | replace('http://', '') | replace('https://', '') }}"]
+  http = {{ 'false 'if 'https://' in  host else 'true' }}
+  insecure = {{ 'false 'if 'https://' in host else 'true' }}
+{% endfor %}
+{% endif %}

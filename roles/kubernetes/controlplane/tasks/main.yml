@@ -1,0 +1,178 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2019-2022 Intel Corporation
+
+---
+- name: check if cluster exists
+  command: kubectl cluster-info
+  failed_when: false
+  register: cluster_info
+  changed_when: false
+
+- name: initialize cluster
+  block:
+    - name: create kubernetes cluster config
+      template:
+        src: config.yaml.j2
+        dest: "{{ _cluster_config_file }}"
+        mode: a=,u=rw
+      become: yes
+
+    - name: assemble kubelet and kubeadm to general config
+      assemble:
+        src: "{{ _kubernetes_config_dir }}"
+        dest: /tmp/config.yaml
+        mode: a=,u=rw
+        delimiter: "---"
+      become: yes
+
+    - name: initialize cluster
+      command: kubeadm init --config=/tmp/config.yaml
+      become: yes
+      changed_when: true
+
+    - name: get internal ips
+      command: hostname -I
+      register: internal_ips
+      changed_when: false
+
+    - name: create extfile
+      copy:
+        dest: "/tmp/extfile.txt"
+        content: |
+          subjectAltName = @alt_names
+
+          [alt_names]
+          {% for ip in internal_ips.stdout.split() %}
+          IP.{{ loop.index }}={{ ip }}
+          {% endfor %}
+
+    - name: copy kubernetes admin.conf to .kube/config
+      copy:
+        src: "{{ openssl_path }}"
+        dest: /tmp/openssl.cnf
+        mode: a=,u=rw
+        remote_src: true
+        owner: "{{ ansible_real_user_id | string }}"
+        group: "{{ ansible_real_group_id | string }}"
+      become: yes
+
+    - name: update /tmp/openssl.cnf with IP SAN
+      blockinfile:
+        dest: /tmp/openssl.cnf
+        block: |
+          [SAN]
+          subjectAltName = @alt_names
+
+          [alt_names]
+          {% for ip in internal_ips.stdout.split() %}
+          IP.{{ loop.index }}={{ ip }}
+          {% endfor %}
+      become: yes  
+
+    - name: create kubelet private key
+      command: >-
+        openssl genrsa -out /etc/kubernetes/pki/kubelet.key 4096
+      changed_when: false
+      become: yes
+
+    - name: create kubelet.csr
+      command: >-
+        openssl req -new -sha256 
+        -key /etc/kubernetes/pki/kubelet.key
+        -subj "/C=US/O=Intel Corporation/OU=Smart Edge"
+        -reqexts SAN
+        -config /tmp/openssl.cnf
+        -out /etc/kubernetes/pki/kubelet.csr
+      changed_when: false
+      become: yes
+
+    - name: create kubelet.crt
+      command: >-
+        openssl x509 -req 
+        -in /etc/kubernetes/pki/kubelet.csr 
+        -CA /etc/kubernetes/pki/ca.crt 
+        -CAkey /etc/kubernetes/pki/ca.key 
+        -CAcreateserial 
+        -out /etc/kubernetes/pki/kubelet.crt 
+        -days 500 
+        -sha256 
+        -extfile /tmp/extfile.txt
+      changed_when: false
+      become: yes
+
+    - name: copy cluster admin config(user)
+      block:
+        - name: create .kube dir
+          file:
+            path: .kube
+            state: directory
+            mode: a=,u=rwx
+        - name: copy kubernetes admin.conf to .kube/config
+          copy:
+            src: /etc/kubernetes/admin.conf
+            dest: .kube/config
+            mode: a=,u=rw
+            remote_src: true
+            owner: "{{ ansible_real_user_id | string }}"
+            group: "{{ ansible_real_group_id | string }}"
+          become: yes
+        - name: remove the taint to be able to schedule Pods on the control-plane node
+          command: kubectl taint nodes --all node-role.kubernetes.io/master-
+          when: single_node_deployment | default(false)
+
+    - name: copy cluster admin config(root)
+      block:
+        - name: create .kube dir
+          file:
+            path: /root/.kube
+            state: directory
+            mode: a=,u=rwx
+        - name: copy kubernetes admin.conf to /root/.kube/config
+          copy:
+            src: /etc/kubernetes/admin.conf
+            dest: /root/.kube/config
+            mode: a=,u=rw
+            remote_src: true
+      become: yes
+    - name: configure etcd user and group
+      block:
+        - name: create etcd user
+          group:
+            name: etcd 
+        - name: create etcd user
+          user:
+            name: etcd
+            group: etcd
+        - name: set user and group for etcd
+          file:
+            path: /var/lib/etcd
+            owner: etcd
+            group: etcd
+            mode: a=,u=rwx
+            recurse: yes
+      become: yes 
+    - name: update /var/lib/kubelet/config.yaml with kubelet tls files
+      blockinfile:
+        dest: /var/lib/kubelet/config.yaml
+        insertafter: 'tlsMinVersion:'
+        block: |
+          tlsCertFile: /etc/kubernetes/pki/kubelet.crt
+          tlsPrivateKeyFile: /etc/kubernetes/pki/kubelet.key
+      become: yes
+
+    - name: update /var/lib/kubelet/config.yaml with kubelet tls files
+      lineinfile:
+        dest: /etc/kubernetes/manifests/kube-apiserver.yaml
+        insertafter: '- --kubelet-preferred-address-types='
+        line: '    - --kubelet-certificate-authority=/etc/kubernetes/pki/kubelet.crt'
+      become: yes
+
+    - name: enable and restart kubelet
+      systemd:
+        name: kubelet
+        daemon_reload: true
+        enabled: true
+        masked: false
+        state: restarted
+      become: yes
+  when: cluster_info.rc == 1

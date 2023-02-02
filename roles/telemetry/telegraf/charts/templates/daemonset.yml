@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .Values.telegraf.name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.telegraf.name }}
+    app: {{ .Values.telegraf.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      name: {{ .Values.telegraf.name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.telegraf.name }}
+        app: {{ .Values.telegraf.name }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+        chart: {{ .Release.Name }}
+        name: {{ .Values.telegraf.name }}
+    spec:
+      serviceAccount: {{ .Values.telegraf.name }}
+      serviceAccountName: {{ .Values.telegraf.name }}
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true
+      containers:
+      - image: "{{ .Values.telegraf.image }}:{{ .Values.telegraf.tag }}"
+        name: {{ .Values.telegraf.name }}
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: {{ .Values.telegraf.port }}
+        volumeMounts:
+          - name: telegraf-config
+            mountPath: /etc/telegraf/telegraf.conf
+            subPath: telegraf.conf
+            readOnly: true
+          - name: certs
+            mountPath: {{ .Values.certs.certsDest }}
+          - name: varrun
+            mountPath: /hostfs/var/run
+            readOnly: true
+          - name: proc
+            mountPath: /hostfs/proc
+            readOnly: true
+          - name: dev
+            mountPath: /hostfs/dev
+            readOnly: true
+      terminationGracePeriodSeconds: 30
+      automountServiceAccountToken: true
+      volumes:
+        - name: telegraf-config
+          configMap:
+            name: {{ .Values.telegraf.configMap }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.certs.secretName }}
+        - name: varrun
+          hostPath:
+            path: /var/run
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: proc
+          hostPath:
+            path: /proc

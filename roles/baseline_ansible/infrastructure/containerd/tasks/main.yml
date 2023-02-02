@@ -1,0 +1,124 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+- name: load a variable file based on the OS type
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - ../vars
+
+- include_tasks: containerd_repo.yml
+
+- name: create containerd service systemd directory if it doesn't exist
+  file:
+    path: /etc/systemd/system/containerd.service.d
+    state: directory
+    mode: a=rx,u+w
+  become: yes
+
+- name: set up proxy
+  include_tasks: proxy.yml
+  when: >
+    "http_proxy" in proxy_env or
+    "https_proxy" in proxy_env
+
+- name: ensure containerd config directory
+  file:
+    dest: "{{ containerd_cfg_dir }}"
+    state: directory
+    mode: a=rx,u+w
+    owner: root
+    group: root
+  become: yes
+
+- name: copy containerd config file
+  template:
+    src: config.toml.j2
+    dest: "{{ containerd_cfg_dir }}/config.toml"
+    owner: "root"
+    mode: u=rw,g=r,o=
+  vars:
+    cfg_dir: "{{ containerd_cfg_dir }}"
+  notify: restart containerd
+  become: yes
+
+- name: create registry host directory
+  file:
+    path: "{{ containerd_cfg_dir }}/certs.d/docker.io"
+    owner: "{{ buildkit.owner }}"
+    mode: a=rx,u+w
+    state: directory
+    recurse: yes
+  become: yes
+  when: docker_registry_mirrors is defined
+
+- name: copy containerd registry host file
+  template:
+    src: docker_hosts.toml.j2
+    dest: "{{ containerd_cfg_dir }}/certs.d/docker.io/hosts.toml"
+    owner: "root"
+    mode: u=rw,g=r,o=
+  become: yes
+  when: docker_registry_mirrors is defined
+
+- name: ensure containerd packages are installed
+  package:
+    name: "{{ containerd_package_info.pkgs }}"
+    state: present
+  module_defaults:
+    apt:
+      update_cache: true
+    yum:
+      enablerepo: "{{ containerd_package_info.enablerepo | default(omit) }}"
+    dnf:
+      enablerepo: "{{ containerd_package_info.enablerepo | default(omit) }}"
+  register: containerd_task_result
+  until: containerd_task_result is succeeded
+  retries: 4
+  delay: 3
+  notify: restart containerd
+  when: containerd_package_info.pkgs|length > 0
+  become: yes
+
+- name: Check if crictl is installed
+  command: which crictl
+  register: crictl_query
+  failed_when: false
+  changed_when: false
+
+- include_tasks: crictl.yml
+  when: crictl_query.rc != 0
+
+- name: check if CNI is set
+  stat:
+    path: "/opt/cni/bin/bridge"
+  register: cni_bridge
+
+- name: set up CNI
+  include_tasks: CNI_plugins.yml
+  when: not cni_bridge.stat.exists
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: Check if nerdctl is installed
+  command: which nerdctl
+  register: nerdctl_query
+  failed_when: false
+  changed_when: false
+
+- include_tasks: nerdctl.yml
+  when: nerdctl_query.rc != 0
+
+- name: Check if buildctl is installed  #add buildkitd check
+  command: which buildctl 
+  register: buildctl_query
+  failed_when: false
+  changed_when: false
+
+- include_tasks: buildkit.yml
+  when: buildctl_query.rc != 0

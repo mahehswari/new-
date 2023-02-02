@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+- name: select right repository version
+  set_fact:
+    kernel_ml_repo_url: "{{ kernel_ml_repo7_url | default('') if ansible_distribution_version < '8' else kernel_ml_repo8_url | default('') }}"
+
+- name: fail if kernel_ml_repo_url is required, but not supplied
+  fail:
+    msg: "Requested kernel_ml_repo_url is either undefined or empty"
+  when:
+    - kernel_ml_repo_url is not defined or kernel_ml_repo_url|length == 0
+
+- name: fail if GPG key required, but not supplied
+  fail:
+    msg: "Requested kernel repository requires GPG key, but the kernel_ml_repo_key is either undefined or empty"
+  when:
+    - kernel_ml_repo_key is not defined or kernel_ml_repo_key|length == 0
+
+- name: import elrepo repository GPG key
+  rpm_key:
+    state: present
+    key: "{{ kernel_ml_repo_key }}"
+  become: yes
+
+- name: install elrepo repository needed for kernel-ml
+  package:
+    name:
+      - "{{ kernel_ml_repo_url }}"
+  become: yes

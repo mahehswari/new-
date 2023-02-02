@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021-2022 Intel Corporation
+
+---
+
+_cluster_config_file: "{{ _kubernetes_config_dir }}/cluster_config.yaml"
+
+openssl_path: "{{ '/etc/pki/tls/openssl.cnf' if ansible_os_family == 'RedHat' else '/etc/ssl/openssl.cnf' }}"
+
+k8s_custom_subnets: false
+k8s_service_subnet: "10.112.0.0/16"

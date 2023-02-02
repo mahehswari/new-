@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+- name: create certificates for telegraf
+  include_role:
+    name: kubernetes/certs
+  vars:
+    tls_secret_name: "{{ _cert_secret_name }}"
+    desired_namespace: "{{ telemetry_namespace }}"
+    dns_names: ["{{ _cert_server_name }}"]
+
+- name: create destination directory
+  file:
+    state: directory
+    path: "{{ ne_helm_charts_default_dir }}/telegraf"
+    mode: a=rx,u+w
+
+- name: copy Helm chart to the master node
+  copy:
+    src: "{{ role_path }}/charts/"
+    dest: "{{ ne_helm_charts_default_dir }}/telegraf/"
+    mode: preserve
+
+- name: template values.yml file into Chart directory
+  template:
+    src: values.yml.j2
+    dest: "{{ ne_helm_charts_default_dir }}/telegraf/values.yml"
+    mode: preserve
+
+- name: install telegraf using Helm
+  command:
+    argv:
+      - helm
+      - install
+      - telegraf
+      - --namespace
+      - "{{ telemetry_namespace }}"
+      - -f
+      - "{{ ne_helm_charts_default_dir }}/telegraf/values.yml"
+      - "{{ ne_helm_charts_default_dir }}/telegraf"
+  changed_when: true

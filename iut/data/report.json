@@ -1,0 +1,14 @@
+{
+    "iut": {
+        "paths": [
+            {
+                "parent": "logs",
+                "path": "se_*.log"
+            },
+            {
+                "path": "se_context.py",
+                "file_name": "se_context.py"
+            }
+        ]
+    }
+}

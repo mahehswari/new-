@@ -1,0 +1,130 @@
+---
+- name: Check installed OpenSSL version
+  command: 'openssl version'
+  register: openssl_installed_version
+  changed_when: false
+
+- name: Create top level directory
+  file:
+    path: '{{ homedir }}'
+    state: '{{ item }}'
+    owner: '{{ user }}'
+    group: '{{ user_group }}'
+    mode: 0755
+  become: yes
+  when: "'{{openssl_version}}' in '{{openssl_installed_version.stdout}}'"
+  with_items:
+    - absent
+    - directory      
+
+- name: Clone fdo client sdk repo
+  git:
+    repo: '{{ client_repo }}'
+    dest: '{{ destdir }}'
+    version: '{{ client_version }}'
+
+- name: Make install_tpm_libs & tpm_make_ready_ecdsa script executable
+  become: yes
+  file:
+    path: '{{ item }}'
+    owner: '{{ user }}'
+    group: '{{ user_group }}'
+    mode: 0755
+  loop:
+    - '{{destdir}}/utils/install_tpm_libs.sh'
+    - '{{destdir}}/utils/tpm_make_ready_ecdsa.sh'
+
+- name: Execute install_tpm_libs script
+  become: yes
+  shell:
+       '{{destdir}}/utils/install_tpm_libs.sh -i' # Installs all -t for onlt tpm2-tss
+
+- name: Install libcurl-openssl-dev
+  become: yes
+  apt:
+    name: libcurl4-openssl-dev
+    state: present
+
+- name: Install Safestring
+  git:
+    repo: 'https://github.com/intel/safestringlib.git'
+    dest: '{{ homedir }}/safestringlib'
+    version: "999ee3705620f145586cc9aaf12b8c62141a85e7"
+
+- name: Safestring make
+  make:
+    chdir: '{{ homedir }}/safestringlib'
+
+- name: Install Tinycbor
+  git:
+    repo: 'https://github.com/intel/tinycbor'
+    dest: '{{ homedir }}/tinycbor'
+    version: v0.6.0
+
+- name: Tinycbor make
+  make:
+    chdir: '{{ homedir }}/tinycbor'
+
+- name: Make pristine client sdk 
+  make:
+    chdir: '{{ destdir }}'
+    target: pristine
+  ignore_errors: yes 
+
+- name: CMake client sdk 
+  shell: 'cmake -DSELF_SIGNED_CERTS=true -DDA=tpm20_ecdsa256 .'
+  args:
+    chdir: '{{ destdir }}'
+  environment:
+    TINYCBOR_ROOT: "{{ homedir }}/tinycbor"
+    SAFESTRING_ROOT: "{{ homedir }}/safestringlib"
+
+- name: Make client sdk 
+  shell: 'make -j$(nproc)'
+  args:
+    chdir: '{{ destdir }}'
+
+- name: Make TPM ready
+  shell: './tpm_make_ready_ecdsa.sh -p {{ destdir }}/data'
+  args:
+    chdir: '{{ destdir }}/utils'
+
+- name: Generate keys
+  shell: './utils/keys_gen.sh .'
+  args:
+    chdir: '{{ destdir }}'
+
+- name: Copy FDO run scriprt
+  copy:
+    src: 'scripts/fdo_csdk.sh' 
+    dest: '{{ homedir }}'
+
+- name: Update run script ownership
+  file:
+    path: '{{ homedir }}/fdo_csdk.sh'
+    owner: '{{ user }}'
+    group: '{{ user_group }}'
+    mode: 0755
+  become: yes
+
+- name: Create soft links to build & data
+  file:
+    src: '{{ destdir }}/{{ item }}' 
+    dest: '{{ homedir }}/{{ item }}'
+    state: link
+  with_items:
+    - data
+    - build
+
+      #- name: Add proxy for manufacturer/owner/rv 
+      #  shell: echo "{{ proxy_env.https_proxy.split('//')[1]|trim }}" > '{{ destdir }}/data/{{ item }}'
+      #  with_items:
+      #    - mfg_proxy.dat
+      #    - owner_proxy.dat
+      #    - rv_proxy.dat
+      #  when: "'https_proxy' in proxy_env and proxy_env.https_proxy | length > 0"
+
+- name: Update manufacturer address
+  shell: echo '{{ fdo.manufacturer_addr|trim }}' > '{{ destdir }}/data/manufacturer_addr.bin'
+  when: 'fdo.manufacturer_addr | length > 0'
+

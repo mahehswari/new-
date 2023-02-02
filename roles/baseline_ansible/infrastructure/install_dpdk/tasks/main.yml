@@ -1,0 +1,111 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2019-2021 Intel Corporation
+
+---
+- name: Ensure that DPDK is built for the right kernel
+  meta: flush_handlers
+
+- name: get current kernel
+  command: uname -r
+  register: unamer
+  changed_when: false
+
+- name: DPDK build is not supported on CentOS 7.x with kernel-ml
+  fail:
+    msg: DPDK build is not supported on CentOS 7.x with kernel-ml
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_version < '8'
+    - unamer.stdout > '5'
+
+- name: check if dpdk_version is defined
+  assert:
+    that:
+      - dpdk_version is defined
+    fail_msg: "Required variable 'dpdk_version' is not defined"
+
+- name: install dependencies
+  include_role:
+    name: infrastructure/install_dependencies
+
+- name: modify DPDK installation source in offline mode
+  set_fact:
+    dpdk_download_url: "https://{{ hostvars[groups['controller_group'][0]]['ansible_host'] }}/{{ _dpdk_name }}.tar.xz"
+  when: offline_enable | default(false)
+
+- name: check if {{ dpdk_download_file }} already downloaded
+  stat:
+    path: "{{ dpdk_download_tmp_dest }}"
+  register: dpdk_downloaded
+
+- name: download DPDK
+  get_url:
+    url: "{{ dpdk_download_url }}"
+    dest: "{{ dpdk_download_tmp_dest }}"
+    checksum: "md5:{{ dpdk_checksum }}"
+  register: result
+  retries: "{{ number_of_retries | default(5) }}"
+  until: result is succeeded
+  delay: "{{ retry_delay | default(3) }}"
+  when: not dpdk_downloaded.stat.exists
+
+- name: check if {{  dpdk_download_file }} already unzipped
+  stat:
+    path: "{{ dpdk_install_dir }}/README"
+  register: dpdk_unzipped
+
+- name: ensure install dir exists
+  file:
+    path: "{{ dpdk_install_dir }}"
+    state: directory
+    owner: "{{ ansible_user | default(ansible_user_id) }}"
+    mode: a=rx,u+w
+
+- name: extract DPDK
+  unarchive:
+    src: "{{ dpdk_download_tmp_dest }}"
+    dest: "{{ dpdk_install_dir }}"
+    extra_opts: "--strip-components=1"
+    remote_src: true
+    creates: "{{ dpdk_install_dir }}/README"
+  when: not dpdk_unzipped.stat.exists
+
+- name: WA Fix for compilation error for rte_kni ko
+  command: sed -i 's/ -Werror//g'  "{{ dpdk_install_dir }}/kernel/linux/kni/Makefile"
+  args:
+    warn: false
+  when: dpdk_version is version("19.11", ">=") and dpdk_version is version("20.08", "<")
+
+- name: "Apply DPDK patches if provided"
+  block:
+    - name: check if local DPDK patches dir exists
+      stat:
+        path: "{{ dpdk_local_patches_dir }}"
+      connection: local
+      register: dpdk_patches_dir_exists
+
+    - name: find DPDK patches available
+      find:
+        paths: "{{ dpdk_local_patches_dir }}/{{ dpdk_base_name }}"
+        recurse: true
+      when: dpdk_patches_dir_exists.stat.exists|bool and dpdk_patches_dir_exists.stat.isdir|bool
+      register: patches_found
+
+    - name: apply DPDK patches
+      ansible.posix.patch:
+        remote_src: false
+        src: "{{ item.path }}"
+        basedir: "{{ dpdk_dir }}"
+        strip: 2
+        state: present
+      loop: "{{ patches_found.files }}"
+      when: patches_found.matched > 0
+  when: dpdk_local_patches_dir is defined
+
+- name: include install_dpdk task for DPDK <= 20.08 versions
+  include: "install_dpdk_make.yml"
+  when: dpdk_version is version("19.11", ">=") and dpdk_version is version("20.08", "<")
+
+- name: include install_dpdk task for DPDK >= 20.08 versions
+  include: "install_dpdk_meson.yml"
+  when: dpdk_version is version("20.08", ">=")

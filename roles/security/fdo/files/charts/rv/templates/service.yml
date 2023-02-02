@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.basename }}-svc
+  labels:
+    app: {{ .Values.rv.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.http_port }}
+      name: {{ .Values.service.http_name }}
+      targetPort: {{ .Values.service.http_targetPort }}
+      nodePort: {{ .Values.service.http_nodePort }}
+    - port: {{ .Values.service.https_port }}
+      name: {{ .Values.service.https_name }}
+      targetPort: {{ .Values.service.https_targetPort }}
+      nodePort: {{ .Values.service.https_nodePort }}
+  selector:
+    app: {{ .Values.rv.name }}

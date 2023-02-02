@@ -1,0 +1,300 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020-2021 Intel Corporation
+
+---
+# Playbook for single node Network Edge cluster deployment
+# Name: Developer Experience Kit (DEK)
+# Type: Recipe
+# Source: https://github.com/smart-edge-open/open-developer-experience-kits
+# IP status: SE-create
+# Description: The Developer Experience Kit lets you easily install and instantiate an Intel Smart Edge Open edge cluster.
+# Supported: Yes
+
+- hosts: edgenode_group
+  pre_tasks:
+    - name: set node name
+      set_fact: node_name={{ ansible_nodename | lower }}
+    - name: create helper variable
+      set_fact:
+        single_node_deployment: true
+    - name: check deployment settings
+      include_tasks: ./tasks/settings_check_ne.yml
+    - name: check deployment settings for single node deployment
+      include_tasks: ./tasks/settings_check_ne_single_node.yml
+    - name: print deployment settings
+      include_tasks: ./tasks/print_vars.yml
+    - name: Set global variables for baseline ansible
+      set_fact:
+        project_user: "{{ ansible_user }}"
+    - name: check raw drive status
+      include_tasks: ./tasks/disk_check.yml
+      when: rook_ceph_enabled | default(False) or openebs_enabled | default(False) 
+  handlers:
+    - import_tasks: "{{ playbook_dir }}/tasks/reboot_server.yml"
+  roles:
+    - role: infrastructure/setup_baseline_ansible
+    - role: infrastructure/build_noproxy
+    - role: baseline_ansible/infrastructure/os_proxy
+    - role: baseline_ansible/infrastructure/time_setup_ntp
+      # Name: Network Time Protocol (NTP)
+      # Type: Building block
+      # Domain: Networking service
+      # Source: https://www.ntp.org/
+      # IP status: Reuse
+      # Description: NTP is a protocol designed to synchronize the clocks of computers over a network.      
+      when: ntp_enable | default(False)
+    - role: infrastructure/os_setup
+    - role: infrastructure/check_redeployment
+    - role: baseline_ansible/infrastructure/install_rt_package
+      # Name: Kernel RT for Centos
+      # Type: Building block
+      # Domain: Operating System service
+      # IP status: Reuse
+      # Source: Official Ubuntu or CentOS Real-Time kernel distribution.      
+      # Description: Official optimized kernel for low latency and determinism. Also identified as kernel-rt or preempt-rt.
+      ##      
+      # Name: Tuned
+      # Type: Building block
+      # Domain: Operating System service
+      # Source: Part of official CentOS distribution.
+      # IP status: Reuse
+      # Description: Daemon for monitoring and adaptive tuning of system devices.      
+      when: kernel_rt_enable | default(False)
+    - role: infrastructure/install_hwe_kernel
+      # HWE kernel will be removed when we switch to 22.04 Ubuntu, no description required
+    - role: baseline_ansible/infrastructure/configure_sriov_kernel_flags
+      when: "iommu_enabled | default(True)"
+    - role: baseline_ansible/infrastructure/configure_hugepages
+      when: "hugepages_enabled | default(False)"
+    - role: baseline_ansible/infrastructure/configure_cpu_idle_driver
+      # Name: OS and Kernel configuration
+      # Type: Building block
+      # Domain: Platform service
+      # Source:  https://help.ubuntu.com/
+      # IP status: Reuse
+      # Description: Configure the OS services and driver to meet the perforamnce KPI's - IRQs, Huge pages, CPU Power Drivers       
+      when: "cpu_idle_driver_setup_enabled | default(False)"
+    - role: baseline_ansible/infrastructure/configure_cpu_isolation
+      when: "isolcpus_enabled | default(False)"
+    - role: baseline_ansible/infrastructure/configure_additional_grub_parameters
+      # Name: Boot loader configuration
+      # Type: Building block
+      # Domain: Platform service
+      # Source:  https://help.ubuntu.com/community/Grub2
+      # IP status: Reuse
+      # Description: Default boot loader and manager for Ubuntu. Used for customizing kernel by passing parameters supported by grub2 and linux kernel.
+      when: "additional_grub_parameters_enabled | default(False)"
+    - role: infrastructure/conditional_reboot
+    - role: infrastructure/e810_driver_update
+      # Name: Intel E810 Driver
+      # Type: Building block
+      # Domain: Platform service
+      # Source:  http://e1000.sourceforge.net
+      # IP status: Reuse
+      # Description: ice driver for Intel E810 family of Network cards.
+      when: e810_driver_enable | default(False)
+    - role: infrastructure/provision_sgx_enabled_platform
+      # Name: Intel Software Guard Extensions (Intel SGX)
+      # Type: Building block
+      # Domain: Zero trust Security
+      # Source: https://download.01.org/intel-sgx/sgx_repo/ubuntu
+      # IP status: Adopt-Enhance
+      # Description: Technology to protect select code and data from disclosure or modification using enclaves. 
+      when: sgx_enabled | default(False)
+
+    - role: baseline_ansible/infrastructure/install_golang
+      # Name: golang
+      # Type: Building block
+      # Domain: Operating System service
+      # Source: https://go.dev
+      # IP status: Reuse
+      # Description: Open source programming language with built-in concurrency and a robust standard library.
+      golang_additional_exports:
+        - "export GOPRIVATE=github.com/intel-innersource"
+
+    - role: infrastructure/git_repo_tool
+      when: "platform_attestation_controller | default(False) or platform_attestation_node | default(False)"
+
+    - role: infrastructure/docker
+      # Name: Docker
+      # Type: Building block
+      # Domain: Runtime service
+      # Source: https://www.docker.com
+      # IP status: Reuse
+      # Description: Container Runtime for Kubernetes
+
+- hosts: controller_group
+  pre_tasks:
+    - name: set node name
+      set_fact: node_name={{ ansible_nodename | lower }}
+    - name: create helper variable
+      set_fact:
+        single_node_deployment: true
+  handlers:
+    - import_tasks: "{{ playbook_dir }}/tasks/reboot_server.yml"
+  roles:
+    - role: infrastructure/setup_baseline_ansible
+    - role: infrastructure/build_noproxy
+      # Name: Proxy customization
+      # Type: Building block
+      # Domain: Provisioning service
+      # Source: Linux OS proxy 
+      # IP status: Reuse
+      # Description: Open-source http, https and gtp proxy configuration custamization for SE solution.
+    - role: kubernetes/install
+      # Name: Kubernetes
+      # Type: Building block
+      # Domain: Kubernetes core
+      # Source: https://github.com/kubernetes/kubernetes
+      # IP status: Reuse
+      # Description: Open-source system for automating deployment, scaling, and management of containerized applications.
+    - role: kubernetes/customize_kubelet
+      # Name: Customize Kubelet
+      # Type: Building block
+      # Domain: Kubernetes core
+      # Source: https://github.com/kubernetes/kubernetes
+      # IP status: Reuse
+      # Description: Primary "node agent" that runs on each node. It can register the node with the apiserver.
+    - role: kubernetes/controlplane
+      # Name: Customize cluster
+      # Type: Building block
+      # Domain: Kubernetes core
+      # Source: https://github.com/kubernetes/kubernetes
+      # IP status: Reuse
+      # Description: Set TLS version and select ciphers specific to Smart Edge SDL needs.
+    - role: kubernetes/helm
+      # Name: Helm
+      # Type: Building block
+      # Domain: App Life Cycle management Services
+      # Source: https://helm.sh
+      # IP status: Reuse
+      # Description: Helm Charts help you define, install, and upgrade even the most complex Kubernetes application.
+    - role: kubernetes/cni
+      # Name: Calico
+      # Type: Building block
+      # Domain: Networking service
+      # Source: https://github.com/projectcalico/calico
+      # IP status: Reuse
+      # Description: Open source networking and network security solution for containers, virtual machines, and native host-based workloads.
+      ##
+      # Name: Nodus
+      # Type: Building block
+      # Domain: Networking service
+      # Source: https://github.com/akraino-edge-stack/icn-nodus
+      # IP status: Adopt-Enhance
+      # Description: CNI supporting Multi ovn network, Multi-interface ovn and Service Function chaining(SFC).
+      ##
+      # Name: Multus
+      # Type: Building block
+      # Domain: Networking service
+      # Source: https://github.com/k8snetworkplumbingwg/multus-cni
+      # IP status: Reuse
+      # Description: CNI enabling attaching multiple network interfaces to pods.
+    - role: kubernetes/cert_manager
+      # Name: Cert-manager
+      # Type: Building block
+      # Domain: Authentication and Authorization
+      # Source: https://github.com/cert-manager/cert-manager
+      # IP status: Reuse
+      # Description: cert-manager adds certificates and certificate issuers as resource types in Kubernetes clusters, and simplifies the process of obtaining, renewing and using those certificates.
+    - role: kubernetes/harbor_registry/controlplane
+      # Name: Harbor registry
+      # Type: Building block
+      # Domain: Registry Service
+      # Source: https://github.com/goharbor/harbor
+      # IP status: Reuse
+      # Description: Open source registry that secures artifacts with policies and role-based access control.
+      when: "harbor_registry_enable | default(True)"
+    - role: kubernetes/create_namespaces
+      # Name: Namespace Customization
+      # Type: Building block
+      # Domain: Multi-tenancy service
+      # Source: Linux namespace
+      # IP status: Reuse
+      # Description: Customize namespace for Smart Edge services and Smart Edge user applications.
+    - role: kubernetes/default_netpol
+    - role: kubernetes/nfd
+      # Name: Node Feature Discovery (NFD)
+      # Type: Building block
+      # Domain: Accelerator orchestration
+      # Source: https://github.com/kubernetes-sigs/node-feature-discovery
+      # IP status: Adopt-Enhance
+      # Description: Kubernetes add-on for detecting hardware features and system configuration.
+      when: ne_nfd_enable | default(True)
+    - role: kubernetes/sgx_device_plugin
+      # Name: SGX
+      # Type: Building block
+      # Domain: Zero trust Security
+      # Source: https://github.com/intel/intel-device-plugins-for-kubernetes
+      # IP status: Adopt-Enhance
+      # Description: Allows contanarized workloads to use Intel SGX on platforms with SGX Flexible Launch Control enabled.
+      when: sgx_enabled | default(True)
+    - role: kubernetes/kubevirt
+      # Name: Kubevirt
+      # Type: Building block
+      # Domain: Virtualization
+      # Source: https://github.com/kubevirt/kubevirt
+      # IP status: Reuse
+      # Description: Virtual machine management add-on for Kubernetes
+      when: kubevirt_enable | default(False)
+
+    - role: infrastructure/device_sriov_detection
+      when: "sriov_network_operator_enable and sriov_network_operator_configure_enable and sriov_network_detection_application_enable | default(True)"
+    - role: baseline_ansible/kubernetes/operator/sriov_network_operator/prepare_node
+      reference_host: "{{ groups['controller_group'][0] }}"
+      when: "sriov_network_operator_enable | default(False)"
+    - role: baseline_ansible/kubernetes/operator/sriov_network_operator/install
+      # Name: SR-IOV Network Operator
+      # Type: Building block
+      # Domain: Networking service
+      # Source: https://github.com/k8snetworkplumbingwg/sriov-network-operator
+      # IP status: Adopt-Enhance
+      # Description: Provision and configure SR-IOV CNI plugin and Device plugin in Kubernetes cluster.
+      ##
+      # Name: Wireless FEC Operator
+      # Type: Building block
+      # Domain: Accelerator orchestration
+      # Source: https://github.com/smart-edge-open/sriov-fec-operator
+      # IP status: SE-Create
+      # Description: orchestrate and manage the resources/devices exposed by a range of Intel's vRAN FEC acceleration devices/hardware within the OpenShift or Kubernetes cluster.
+      ##
+      # Name: Intel Ethernet Operator
+      # Type: Building block
+      # Domain: Accelerator orchestration
+      # Source: https://github.com/intel/intel-ethernet-operator/
+      # IP status: SE-Create
+      # Description: orchestrate and manage the Firmware and DDP programming, configuration of the capabilities exposed by the Intel E810 Series network interface cards (NICs)
+      when: "sriov_network_operator_enable | default(False)"
+    - role: baseline_ansible/kubernetes/operator/sriov_network_operator/configure
+      when: "sriov_network_operator_enable and sriov_network_operator_configure_enable | default(False)"
+    - role: kubernetes/rook_ceph
+      # Name: Rook-ceph storage
+      # Type: Building block
+      # Domain: Storage Service
+      # Source: https://github.com/rook/rook
+      # IP status: Reuse
+      # Description: Open source cloud-native storage orchestrator for Kubernetes, providing the platform, framework, and support for a diverse set of storage solutions 
+      when: rook_ceph_enabled | default(False)
+    - role: kubernetes/openebs
+      # Name: OpenEBS storage
+      # Type: Building block
+      # Domain: Storage Service
+      # Source: https://github.com/openebs/openebs
+      # IP status: Reuse
+      # Description: Cloud native storage solutions sometimes called Container Attached Storage.
+      when: openebs_enabled | default(False)
+    - role: kubernetes/nsm
+      # Name: Network Service Mesh (NSM)
+      # Type: Building block
+      # Domain: Service Mesh
+      # Source: https://github.com/networkservicemesh/deployments-k8s
+      # IP status: Adopt-Enhance
+      # Description: Hybrid/Multi-cloud IP Service Mesh enabling L3 Zero Trust, Per workload granularity, Per Network Service Connectivity/Security/Observability, No changes to K8s, Works with your existing CNI, No changes to your workloads
+      when: "ne_nsm_enable | default(False)"
+
+- name: Provision security components
+  import_playbook: playbooks/security.yml
+
+- name: Provision telemetry components
+  import_playbook: playbooks/telemetry.yml
+  when: telemetry_enable | default(True)

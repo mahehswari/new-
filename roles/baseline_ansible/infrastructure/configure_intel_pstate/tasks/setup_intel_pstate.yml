@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+- name: validate that intel_pstate is defined correctly
+  fail:
+    msg: >
+      "intel_pstate_configuration accepts following options:
+      {{ acceptable_intel_pstate_values | join(', ') }}. Provided: {{ intel_pstate }}"
+  when:
+    - intel_pstate_configuration not in acceptable_intel_pstate_values
+
+- name: set kernel flags required for Intel PState scaling driver
+  set_fact:
+    intel_pstate_cmdline: 'GRUB_CMDLINE_LINUX="${GRUB_CMDLINE_LINUX} intel_pstate={{ intel_pstate_configuration }}" {{ intel_pstate_marker }}'
+
+- name: set intel_pstate configuration in /etc/default/grub
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX="\${GRUB_CMDLINE_LINUX}(.*?)" {{ intel_pstate_marker }}$'
+    line: '{{ intel_pstate_cmdline }}'
+    state: present
+    mode: a=r,u+w,g+w
+  register: grub
+  become: yes

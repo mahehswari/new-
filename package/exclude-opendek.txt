@@ -1,0 +1,5 @@
+roles/kubernetes/cni/nodus
+roles/kubernetes/rmd/
+roles/kubernetes/biosfw
+roles/infrastructure/ptp
+roles/kubernetes/istio

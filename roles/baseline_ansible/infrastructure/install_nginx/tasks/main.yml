@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+- name: Copy nginx config
+  copy:
+    src: "config/nginx.conf"
+    dest: "{{ tmp_full_config_path }}"
+    mode: a=r,u+w
+
+
+- name: create tls certificate for nginx registry
+  command: "/usr/local/bin/openssl req -newkey rsa:4096 -nodes -sha256 -keyout {{ tmp_full_cert_key_path }} -x509 -days 30 -out {{ tmp_full_cert_name_path }} -subj /C=US/O=Intel Corporation/OU=Smart Edge -addext subjectAltName=IP:127.0.0.1"
+  become: yes
+  changed_when: true
+
+- name: Create a nginx container
+  docker_container:
+    name: nginx
+    image: nginx
+    volumes:
+      - "{{ tmp_full_config_path }}:{{ full_config_path }}"
+      - "{{ tmp_full_cert_key_path }}:{{ full_cert_key_path }}"
+      - "{{ tmp_full_cert_name_path }}:{{ full_cert_name_path }}"
+    ports:
+      - "9000:80"
+      - "9443:443"
+  become: yes

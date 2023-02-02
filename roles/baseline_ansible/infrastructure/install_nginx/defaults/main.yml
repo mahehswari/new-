@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+config_path: "/etc/nginx"
+config_name: "nginx.conf"
+cert_key_name: "ssl-nginx.crt"
+cert_name: "ssl-nginx.key"
+
+full_config_path: "{{ config_path }}/{{ config_name }}"
+full_cert_key_path: "{{ config_path }}/{{ cert_key_name }}"
+full_cert_name_path: "{{ config_path }}/{{ cert_name }}"
+
+tmp_full_config_path: "/tmp/{{ config_name }}"
+tmp_full_cert_key_path: "/tmp/{{ cert_key_name }}"
+tmp_full_cert_name_path: "/tmp/{{ cert_name }}"

@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+- name: write containerd proxy drop-in
+  template:
+    src: http_proxy.conf.j2
+    dest: /etc/systemd/system/containerd.service.d/http-proxy.conf
+    mode: a=r,u+w
+  notify: restart containerd
+  become: yes

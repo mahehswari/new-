@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+[Unit]
+Description=BuildKit
+Requires=buildkit.socket
+After=buildkit.socket
+Documentation=https://github.com/moby/buildkit
+
+[Service]
+Type=notify
+NotifyAccess=all
+ExecStart=/usr/local/bin/buildkitd --addr fd:// 
+
+[Install]
+WantedBy=multi-user.target

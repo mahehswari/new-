@@ -1,0 +1,119 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+containerd_storage_dir: "/var/lib/containerd"
+containerd_state_dir: "/run/containerd"
+containerd_oom_score: 0
+
+
+containerd_sandbox_image: "k8s.gcr.io/pause:3.3"
+containerd_default_runtime: "runc"
+# containerd_snapshotter: "native"
+
+containerd_runtimes:
+  - name: runc
+    type: "io.containerd.runc.v2"
+    engine: ""
+    root: ""
+    options:
+      systemdCgroup: "true"
+
+containerd_grpc_max_recv_message_size: 16777216
+containerd_grpc_max_send_message_size: 16777216
+
+containerd_debug_level: "info"
+
+containerd_metrics_address: ""
+
+containerd_metrics_grpc_histogram: false
+
+
+containerd_max_container_log_line_size: -1
+
+containerd_cfg_dir: '/etc/containerd'
+containerd_bin_dir: /usr/bin
+
+# Path to runc binary
+runc_binary: /usr/bin/runc
+
+yum_repo_dir: /etc/yum.repos.d
+
+# Optional values for containerd apt repo
+containerd_package_info:
+  pkgs:
+
+containerd_repo_key_info:
+  repo_keys:
+
+containerd_repo_info:
+  repos:
+
+# Ubuntu docker-ce repo
+containerd_ubuntu_repo_base_url: "https://download.docker.com/linux/ubuntu"
+containerd_ubuntu_repo_gpgkey: "https://download.docker.com/linux/ubuntu/gpg"
+containerd_ubuntu_repo_repokey: "9DC858229FC7DD38854AE2D88D81803C0EBFCD88"
+containerd_ubuntu_repo_component: "stable"
+
+# Extra config to be put in {{ containerd_cfg_dir }}/config.toml literally
+containerd_extra_args: ''
+
+# Configure registry auth (if applicable to secure/insecure registries)
+containerd_registry_auth: []
+#  - registry: 10.0.0.2:5000
+#    username: user
+#    password: pass
+
+cri_socket: "/var/run/containerd/containerd.sock"
+
+image_arch: "amd64"
+local_release_dir: "/tmp/releases"
+bin_dir: /usr/local/bin
+
+crictl_version: "v1.22.0"
+crictl_download_url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ crictl_version }}/crictl-{{ crictl_version }}-{{ ansible_system | lower }}-{{ image_arch }}.tar.gz"
+crictl_checksums:
+  amd64:
+    v1.22.0: 45e0556c42616af60ebe93bf4691056338b3ea0001c0201a6a8ff8b1dbc0652a
+crictl_binary_checksum: "{{ crictl_checksums[image_arch][crictl_version] }}"
+crictl:
+  version: "{{ crictl_version }}"
+  dest: "{{ local_release_dir }}/crictl-{{ crictl_version }}-linux-{{ image_arch }}.tar.gz"
+  sha256: "{{ crictl_binary_checksum }}"
+  url: "{{ crictl_download_url }}"
+  owner: "root"
+  mode: "a=rx,u+w"
+
+nerdctl_cfg_dir: '/etc/nerdctl'
+nerdctl_version: "v0.21.0"
+nerdctl_download_url: "https://github.com/containerd/nerdctl/releases/download/{{ nerdctl_version }}/nerdctl-{{ nerdctl_version | replace('v','') }}-{{ ansible_system | lower }}-{{ image_arch }}.tar.gz"
+nerdctl_checksums:
+  amd64:
+    v0.21.0: 686aee1161d9bf4865f391aaa4957d416df13f00493d67797e1ee8aad68cd057
+nerdctl_binary_checksum: "{{ nerdctl_checksums[image_arch][nerdctl_version] }}"
+nerdctl:
+  version: "{{ nerdctl_version }}"
+  dest: "{{ local_release_dir }}/nerdctl-{{ nerdctl_version }}-linux-{{ image_arch }}.tar.gz"
+  sha256: "{{ nerdctl_binary_checksum }}"
+  url: "{{ nerdctl_download_url }}"
+  owner: "root"
+  mode: "a=rx,u+w"
+
+buildkit_cfg_dir: '/etc/buildkit'
+buildkit_version: "v0.10.3"
+buildkit_download_url: "https://github.com/moby/buildkit/releases/download/{{ buildkit_version }}/buildkit-{{ buildkit_version }}.{{ ansible_system | lower }}-{{ image_arch }}.tar.gz"
+buildkit:
+  version: "{{ buildkit_version }}"
+  dest: "{{ local_release_dir }}/buildkit-{{ buildkit_version }}-linux-{{ image_arch }}.tar.gz"
+  url: "{{ buildkit_download_url }}"
+  owner: "root"
+  mode: "a=rx,u+w"
+
+CNI_plugins_version: "v1.1.1"
+CNI_plugins_download_url: https://github.com/containernetworking/plugins/releases/download/{{ CNI_plugins_version }}/cni-plugins-{{ ansible_system | lower }}-{{ image_arch }}-{{ CNI_plugins_version }}.tgz
+CNI_plugins:
+  version: "{{ CNI_plugins_version }}"
+  dest: "{{ local_release_dir }}/CNI_plugins-{{ CNI_plugins_version }}-linux-{{ image_arch }}.tgz"
+  # sha256: "{{ CNI_plugins_binary_checksum }}"
+  url: "{{ CNI_plugins_download_url }}"
+  owner: "root"
+  mode: "a=rx,u+w"

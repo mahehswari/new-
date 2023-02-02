@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+intel_turbo_path: /sys/devices/system/cpu/intel_pstate/no_turbo
+intel_pstate_marker: "# intel_pstate"
+acceptable_intel_pstate_values:
+  - disable
+  - passive
+  - force
+  - no_hwp
+  - hwp_only
+  - support_acpi_ppc
+  - per_cpu_perf_limits

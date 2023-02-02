@@ -1,0 +1,176 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+- name: Create top level directory for FDO build
+  file:
+    path: '{{ destdir }}'
+    state: directory
+    owner: '{{ user }}'
+    group: '{{ user_group }}'
+    mode: 0755
+  become: yes
+
+- name: Clone fdo ri repo
+  git:
+    repo: '{{ pri_repo }}'
+    dest: "{{ destdir }}"
+    version: "{{ fdo_version }}"
+
+- name: Install maven
+  become: yes
+  apt:
+    name: maven
+    state: present
+
+- name: Create maven configuration directory
+  file:
+    state: directory
+    path: "$HOME/.m2"
+    mode: u+rwx
+  when: "'https_proxy' in proxy_env and proxy_env.https_proxy | length > 0"
+
+- name: Configure proxy for maven
+  copy:
+    src: "{{ role_path }}/files/mvn_settings.xml"
+    dest: "$HOME/.m2/settings.xml"
+  when: "'https_proxy' in proxy_env and proxy_env.https_proxy | length > 0"
+
+- name: Maven build the project
+  command: "mvn clean install"
+  args:
+    chdir: "{{ destdir }}"
+  changed_when: false
+
+
+- name: Check if namespace fdo already exists
+  command: kubectl get namespace fdo
+  register: fdo_ns_exists
+  changed_when: false
+  failed_when:
+    - fdo_ns_exists.rc != 0
+    - fdo_ns_exists.rc != 1
+
+- name: Create namespace fdo
+  command: kubectl create namespace fdo
+  when: fdo_ns_exists.rc == 1
+
+- name: set the password variables
+  set_fact:
+    role_variables: 
+      - { local: 'manufacturer-pass', global: '{{ fdo.manufacturer_pass }}'}
+      - { local: 'owner-pass', global: '{{ fdo.owner_pass }}'}
+      - { local: 'rv-pass', global: '{{ fdo.rv_pass}}'}
+
+- name: delete old fdo secret if it exists
+  command: kubectl delete secret -n "{{ fdo_namespace }}"  "{{ item }}" --ignore-not-found=true
+  changed_when: true
+  loop: "{{  role_variables }}"
+
+- name: create secret
+  command: >   
+      kubectl create secret -n {{ fdo_namespace  }} generic {{ item.local }}
+      --from-literal=db_user=sa
+      --from-literal=api_password={{ item.global }}
+      --from-literal=db_password={{ lookup('password', '/dev/null chars=ascii_letters,digits') }}
+      --from-literal=encrypt_password={{ lookup('password', '/dev/null chars=ascii_letters,digits') }}
+      --from-literal=ssl_password={{ lookup('password', '/dev/null chars=ascii_letters,digits') }}
+  changed_when: true
+  #  no_log: true
+  loop: "{{ role_variables }}"
+
+- name: Update certificate subject DNS
+  command: "grep -rli 'DNS:host.docker.internal' "
+  args:
+    chdir: "{{ destdir }}/component-samples/demo"
+  changed_when: false
+  register: filelist
+
+- name: Update certificate subject with DNS
+  lineinfile:
+    path: "{{ destdir }}/component-samples/demo/{{ item }}"
+    regexp: 'DNS:host.docker.internal'
+    line: "    - DNS:{{ server_ip }}"
+  loop: "{{ filelist.stdout_lines }}"
+
+- name: Update certificate subject witih IP
+  lineinfile:
+    path: "{{ destdir }}/component-samples/demo/{{ item }}"
+    regexp: 'IP:127.0.0.1'
+    line: "    - IP:{{ server_ip }}"
+  loop: "{{ filelist.stdout_lines }}"
+
+  #- name: Build images
+  #  command:
+  #    argv:
+  #      - nerdctl
+  #      - build
+  #      - -t
+  #      - "pri-fdo-{{ item }}:{{ fdo_version }}"
+  #      - "{{ destdir }}/component-samples/demo/{{ item }}/"
+  #  changed_when: false
+  #  become: yes
+  #  loop:
+  #    - owner
+  #    - manufacturer
+  #    - rv
+
+- name: Build container images
+  docker_image:
+    name: "pri-fdo-{{ item }}"
+    tag: "{{ fdo_version }}"
+    source: build
+    build:
+      path: "{{ destdir }}/component-samples/demo/{{ item }}/"
+    state: present
+  loop:
+    - owner
+    - manufacturer
+    - rv
+
+- name: Create charts directory
+  file:
+    state: directory
+    path: "{{ homedir }}/charts"
+    mode: u+rwx
+
+- name: Copy helm chart files
+  copy:
+    src: "charts/{{ item }}"
+    dest: "{{ homedir }}/charts"
+    directory_mode: u+rwx
+    mode: u+rw
+  loop:
+    - owner
+    - rv
+    - manufacturer
+
+- name: Template values.yml
+  become: yes
+  template:
+    src: "{{ role_path }}/files/charts/{{ item }}/values.yml"
+    dest: "{{ homedir }}/charts/{{ item }}/values.yml"
+    mode: u+rw
+  loop:
+    - owner
+    - rv
+    - manufacturer
+
+- name: Install {{ item }}
+  command: helm install --namespace=fdo {{ item }} -f "{{ homedir }}/charts/{{ item }}/values.yml" "{{ homedir }}/charts/{{ item }}"
+  changed_when: yes
+  loop:
+    - owner
+    - manufacturer
+    - rv
+
+- name: Initialize rvinfo and owner redirect
+  delegate_to: localhost
+  shell: 'bash {{ role_path }}/files/rv_update_redirect.sh {{ fdo.manufacturer_ip }} 30038 {{ fdo.manufacturer_pass }} {{ fdo.manufacturer_ip }} 30041 {{ fdo.owner_ip }} 30043 {{ fdo.owner_pass }}'
+  register: script_result
+  until: "'owner redirect update Success' in script_result.stdout"
+  retries: 3
+  delay: 10
+
+- name: Update svi messages to Owner service
+  include_tasks: svi_messages.yml
+

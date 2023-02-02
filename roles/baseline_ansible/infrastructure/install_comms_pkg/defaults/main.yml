@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+package_download_timeout: 60
+ice_comms_package_path: /lib/firmware/updates/intel/ice/ddp/
+ice_comms_package_symlink_file: ice.pkg
+ice_comms_download_dest_suf: comms_pkg
+ice_comms_package_name: E800CommsPackage.zip
+ice_comms_driver_name: ice   

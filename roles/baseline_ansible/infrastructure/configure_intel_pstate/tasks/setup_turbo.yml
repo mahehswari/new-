@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+- name: check if the pstate turbo management file is available
+  stat:
+    path: "{{ intel_turbo_path }}"
+  register: intel_pstate_folder
+
+- name: pstate turbo management file missing, playbook terminated
+  debug:
+    msg:
+      - "failed to configure sysfs turbo attribute for Intel pstate"
+      - "pstate turbo management file path is missing, please verify BIOS setting Hardware P-States is enabled"
+  failed_when: not intel_pstate_folder.stat.exists
+
+- name: set turbo_value=1 when turbo_active is true
+  set_fact:
+    turbo_value: 1
+  when:
+    - turbo_active
+
+- name: set turbo_value=0 when turbo_active is false
+  set_fact:
+    turbo_value: 0
+  when:
+    - not turbo_active
+
+- name: configure sysfs turbo attribute for Intel pstate
+  copy:
+    content: "{{ turbo_value }}"
+    dest: "{{ intel_turbo_path }}"
+    owner: root
+    group: root
+    mode: a=r,u+w
+  become: yes

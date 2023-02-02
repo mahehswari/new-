@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+namespace: fdo 
+
+basename: manufacturer
+
+matchLabels:
+  app: fdo-manufacturer
+
+manufacturer:
+  name: fdo-manufacturer
+  nameSpace: fdo
+  app_data: {{ manufacturer_app_data }}
+
+container:
+  name: fdo-manufacturer
+  image: pri-fdo-manufacturer
+  pullPolicy: IfNotPresent
+  tag: {{ fdo_version }}
+  http_port: 8039
+  https_port: 8038
+
+initContainer:
+  name: chmod-app-data
+  image: busybox
+  tag: 1.32
+  pullPolicy: IfNotPresent
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+
+secret:
+  name: manufacturer-pass
+
+configmap:
+  name: fdo-manufacturer-cmap
+  port: 8039
+  hosts: "0.0.0.0"
+
+service:
+  type: NodePort
+  https_name: https-port
+  https_port: 8038
+  https_targetPort: 8038
+  https_nodePort: 30038
+  http_name: http-port
+  http_port: 8039
+  http_targetPort: 8039
+  http_nodePort: 30039

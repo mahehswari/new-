@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+- name: ensure that intel_pstate settings are disabled when intel_pstate_enabled is false
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX=(.*?){{ intel_pstate_marker }}$'
+    state: absent
+  register: grub
+  become: yes
+  when: not intel_pstate_configuration_enabled
+
+- name: setup intel_pstate driver
+  include_tasks: setup_intel_pstate.yml
+  when:
+    - intel_pstate_configuration_enabled
+
+- name: setup turbo boost
+  include_tasks: setup_intel_pstate.yml
+  when:
+    - turbo_configuration_enabled
+
+# noqa because include_role cannot be used in a handler
+- name: update grub  # noqa no-handler
+  include_role:
+    name: infrastructure/update_grub
+  when:
+    - grub.changed

@@ -1,0 +1,17 @@
+all:
+  vars:
+    cluster_name: dek_test
+    deployment: dek
+    limit: null
+    platform_profile: dell_r750
+    single_node_deployment: true
+controller_group:
+  hosts:
+    controller:
+      ansible_host: 10.190.162.83
+      ansible_user: intel
+edgenode_group:
+  hosts:
+    node01:
+      ansible_host: 10.190.162.83
+      ansible_user: intel

@@ -1,0 +1,150 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+
+    "type": "object",
+    "properties": {
+        "git": {
+            "type": "object",
+            "properties": {
+                "user": { "type": "string" },
+                "password": { "type": "string" }
+            },
+            "required": ["user", "password"]
+        },
+        "ntp_server": { "type": "string" },
+        "esp": {
+            "type": "object",
+            "properties": {
+                "url": { "$ref": "#/$defs/url" },
+                "branch": { "type": "string" },
+                "dest_dir": { "type": "string" }
+            },
+            "required": ["url", "branch", "dest_dir"]
+        },
+        "dnsmasq": {
+            "type": "object",
+            "properties": {
+                "enabled": { "type": "boolean" }
+            }
+        },
+        "dhcp_client_address_freeze": { "type": "boolean" },
+        "usb_images": {
+            "type": "object",
+            "properties": {
+                "build": { "type": "boolean" },
+                "bios": { "type": "boolean" },
+                "efi": { "type": "boolean" },
+                "all_in_one": { "type": "boolean" },
+                "output_path": { "type": "string" }
+            }
+        },
+        "docker": {
+            "type": "object",
+            "properties": {
+                "registry_mirrors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dockerhub": {
+                    "type": "object",
+                    "properties": {
+                        "username": { "type": "string" },
+                        "password": { "type": "string" }
+                    }
+                }
+            }
+        },
+        "profiles": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" },
+                    "url": { "$ref": "#/$defs/url" },
+                    "path": { "type": "string" },
+                    "branch": { "type": "string" },
+                    "scenario": { "enum": ["single-node", "multi-node"] },
+                    "experience_kit": {
+                        "type": "object",
+                        "properties": {
+                            "url": { "$ref": "#/$defs/url" },
+                            "branch": { "type": "string" },
+                            "deployment": { "type": "string" },
+                            "lfs": {"type": "boolean"}
+                        },
+                        "required": ["url", "branch", "deployment"]
+                    },
+                    "bare_os": { "type": "boolean" }
+                },
+                "if": {
+                    "properties": { "bare_os": { "const": false } }
+                },
+                "then": {
+                    "required": ["experience_kit"]
+                },
+                "oneOf": [
+                    { "required": ["path"] },
+                    { "required": ["url"] }
+                ]
+            },
+            "minItems": 1
+        },
+        "bios": { "$ref": "#/$defs/bios" },
+        "bmc": { "$ref": "#/$defs/bmc" },
+        "hosts": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": { "$ref": "#/$defs/hostname"},
+                    "mac": { "oneOf": [{"type": "string"},
+                                       {"type": "array", "items": {"type": "string"}}]},
+                    "machine_id": {"type": "string"},
+                    "monitoring_enabled": {"type": "boolean"},
+                    "bios": { "$ref": "#/$defs/bios" },
+                    "bmc": { "$ref": "#/$defs/bmc" }
+                    },
+                "anyOf": [
+                    { "required": ["mac", "name"]},
+                    { "required": ["mac", "bios"]},
+                    { "required": ["bmc", "name"]},
+                    { "required": ["bmc", "bios"]}
+                ]
+                },
+            "minItems": 1
+        },
+        "admin_interface": { "type": "string" }
+    },
+    "required": ["profiles"],
+    "$defs": {
+        "url": {
+            "type": "string",
+            "pattern": "https?:\/\/"
+            },
+        "bmc": {
+            "type": "object",
+            "properties": {
+                "address": {"type": "string"},
+                "user": {"type": "string"},
+                "password": {"type": "string"}
+                },
+            "minProperties": 1
+            },
+        "bios": {
+            "type": "object",
+            "properties": {
+                "tpm": {"type": "boolean"},
+                "secure_boot": {"type": "boolean"}
+                },
+            "minProperties": 1
+            },
+        "hostname": {
+            "type": "string",
+            "pattern": "^(([a-z0-9]|[a-z0-9][a-z0-9-]*[a-z0-9]).)*([a-z0-9]|[a-z0-9][a-z0-9-]*[a-z0-9])$",
+            "minLength": 2,
+            "maxLength": 63
+            }
+        }
+}

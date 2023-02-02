@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+---
+- name: check if MPRA already exists
+  command: systemctl status mpa_registration_tool.service
+  ignore_errors: yes
+  changed_when: false
+  register: service_mpra_status
+
+- name: install MPRA
+  block:
+    - name: Creat directory for MPRA
+      file:
+        state: directory
+        path: "{{ item }}"
+        mode: u+rwx
+      loop:
+        - "{{ _mpra_dir }}"
+
+    - name: Download mpra_package
+      get_url:
+        url: "{{ _mpra_url }}/{{ item }}"
+        dest: "{{ _mpra_dir }}"
+      loop:
+        - "{{ _sgx_ra_network }}"
+        - "{{ _sgx_ra_uefi }}"
+        - "{{ _sgx_ra_service }}"
+
+    - name: Install mpra package
+      apt:
+        deb: "{{ _mpra_dir }}/{{ item }}"
+      become: true
+      loop:
+        - "{{ _sgx_ra_network_deb }}"
+        - "{{ _sgx_ra_uefi_deb }}"
+        - "{{ _sgx_ra_service_deb }}"
+      changed_when: yes
+  when: service_mpra_status.rc != 0

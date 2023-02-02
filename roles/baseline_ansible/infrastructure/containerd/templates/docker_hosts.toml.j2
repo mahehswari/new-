@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+server = "https://docker.io"
+{% for host in docker_registry_mirrors %}
+[host."{{ host }}"]
+  capabilities = ["pull", "resolve"]
+{% endfor %}

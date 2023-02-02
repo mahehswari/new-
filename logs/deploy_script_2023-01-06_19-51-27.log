@@ -1,0 +1,15 @@
+2023-01-06 19:51:27.741 INFO: Install collections
+2023-01-06 19:51:28.295 INFO: dek_test single_node_network_edge.yml: command: "/home/openness/.local/share/virtualenvs/dek-t4G_8wwI/bin/ansible-playbook -vv /home/openness/scratch/lp/dek/single_node_network_edge.yml --inventory /home/openness/scratch/lp/dek/inventory/automated/dek_test/inventory_dek_test.yml"
+2023-01-06 19:51:28.295 INFO: dek_test single_node_network_edge.yml: log file: "/home/openness/scratch/lp/dek/logs/dek_test_dek_2023-01-06_19-51-28_single_node_network_edge.yml.log"
+2023-01-06 19:51:33.302 INFO: Only one cluster is being deployed. Redirecting logs to stdout.
+2023-01-06 19:51:33.313 INFO: <Command '/usr/bin/tail -n 100000 -f /home/openness/scratch/lp/dek/logs/dek_test_dek_2023-01-06_19-51-28_single_node_network_edge.yml.log', pid 291065>: process started
+2023-01-06 19:58:34.771 ERROR: dek_test single_node_network_edge.yml: failed. Please check the logs: /home/openness/scratch/lp/dek/logs/dek_test_dek_2023-01-06_19-51-28_single_node_network_edge.yml.log
+2023-01-06 19:58:35.773 INFO: ====================
+2023-01-06 19:58:35.773 INFO: DEPLOYMENT RECAP:
+2023-01-06 19:58:35.773 INFO: ====================
+2023-01-06 19:58:35.773 INFO: DEPLOYMENT COUNT: 1
+2023-01-06 19:58:35.774 INFO: SUCCESSFUL DEPLOYMENTS: 0
+2023-01-06 19:58:35.774 INFO: FAILED DEPLOYMENTS: 1
+2023-01-06 19:58:35.774 INFO: DEPLOYMENT "dek_test": FAILED
+2023-01-06 19:58:35.774 INFO: ====================
+2023-01-06 19:58:35.774 INFO: Deployment failed, pulling logs

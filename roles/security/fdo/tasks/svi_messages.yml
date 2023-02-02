@@ -1,0 +1,24 @@
+---
+- name: Create script path for svi file upload
+  delegate_to: localhost
+  set_fact:
+    script_files:
+      - { file: 'test.sh', path: '{{ role_path }}/files/test.sh'}
+
+- name: Upload svi scripts to owner
+  delegate_to: localhost
+  shell: 'bash {{ role_path }}/files/upload_svi_script.sh {{ fdo.owner_ip }} 30043 {{ fdo.owner_pass }} {{ item.file }} {{ item.path }}'
+  register: script_result
+  until: "'Svi file upload to owner successful' in script_result.stdout"
+  retries: 3
+  delay: 10
+  loop: "{{ script_files }}"
+
+- name: Update svi messages to owner
+  delegate_to: localhost
+  shell: 'bash {{ role_path }}/files/svi_messages.sh {{ fdo.owner_ip }} 30043 {{ fdo.owner_pass }}'
+  register: script_result
+  until: "'Svi message update to owner successful' in script_result.stdout"
+  retries: 3
+  delay: 10
+

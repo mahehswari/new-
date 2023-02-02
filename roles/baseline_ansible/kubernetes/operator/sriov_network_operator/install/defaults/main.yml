@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021-2022 Intel Corporation
+
+---
+
+# SR-IOV Network Operator repo values
+_sriov_network_operator:
+  name: "sriov-network-operator"
+  version: "v1.2.0"
+  git_webhook_patch: "sriov_no_webhook.patch"
+  cert_manager_filename: "sriov_network_operator_selfsigned_cert.yml"
+
+download_sriov_network_operator_pkg_url: "https://github.com/k8snetworkplumbingwg/{{ _sriov_network_operator.name }}/releases/download/\
+                  {{ _sriov_network_operator.version }}/{{ _sriov_network_operator.name }}-{{ _sriov_network_operator.version[1:] }}.tgz"
+
+# Helm values
+_sriov_network_operator_chart_dir: "{{ ne_helm_charts_default_dir }}/sriov-network-operator"
+
+# Webhooks certificates values
+_sriov_network_operator_certs_dest: "{{ project_dir }}/certs/{{ _sriov_network_operator.name }}"
+_sriov_network_operator_ca_certs_dest: "{{ _sriov_network_operator_certs_dest }}/CA"
+_webhook_operator_service_certs_dir: "{{ _sriov_network_operator_certs_dest }}/webhook-operator-service"
+_network_resources_injector_certs_dir: "{{ _sriov_network_operator_certs_dest }}/network-resources-injector"
+
+# general variables
+patching_retries: 90
+patching_delay: 10

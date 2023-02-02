@@ -1,0 +1,63 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021-2022 Intel Corporation
+---
+- name: Add endorsement CA certificates to HVS
+  include_tasks: upload_only_ca_certs.yml
+
+- name: Get list of tpm endorsement certificates
+  uri:
+    method: GET
+    url: "https://{{ isecl_control_plane_ip }}:30443/hvs/v2/tpm-endorsements"
+    headers:
+      Accept: application/json
+      Authorization: "Bearer {{ isecl_global_admin_bearer_token }}"
+    body_format: json
+    validate_certs: no
+    return_content: yes
+    status_code:
+      - 200
+  register: hvs_endorsement_certs
+  until: hvs_endorsement_certs is not failed
+  retries: 10
+  delay: 10
+
+- name: Get hardware uuid of node
+  shell: "set -o pipefail && dmidecode | grep -i uuid | sed -e 's/UUID: //' -e 's/^[[:space:]]*//'"
+  become: true
+  register: hardware_uuid
+  changed_when: hardware_uuid.rc != 0
+
+- name: Check if hardware uuid is non-empty
+  fail:
+    msg: Failed to get hardware uuid
+  when: hardware_uuid.stdout | length == 0
+
+- name: Find EK certificate in HVS endorsment certificates
+  set_fact:
+    endorsement_cert_info: "{{ hvs_endorsement_certs.json | json_query(endorsement_cert_query) }}"
+  vars:
+    endorsement_cert_query: "tpmendorsements[?certificate=='{{ host_tpm_ek_pem.stdout }}'].hardware_uuid"
+
+- name: Add endorsement certificates to HVS
+  uri:
+    method: POST
+    url: "https://{{ isecl_control_plane_ip }}:30443/hvs/v2/tpm-endorsements"
+    headers:
+      Accept: application/json
+      Authorization: "Bearer {{ isecl_global_admin_bearer_token }}"
+    body:
+      certificate: "{{ host_tpm_ek_pem.stdout }}"
+      comment: "EK cert of {{ hardware_uuid.stdout }}"
+      hardware_uuid: "{{ hardware_uuid.stdout }}"
+      issuer: "{{ host_tpm_issuer_root_ca_name.stdout }}"
+      revoked: false
+    body_format: json
+    validate_certs: no
+    return_content: yes
+    status_code:
+      - 201
+  register: add_endorsement_ek_certs_to_hvs
+  until: add_endorsement_ek_certs_to_hvs is not failed
+  retries: 10
+  delay: 10
+  when: "endorsement_cert_info | length == 0"

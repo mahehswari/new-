@@ -1,0 +1,2295 @@
+commit c38138a4dbbd6991962b276e013140b54ef892e1
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Sun Jan 8 02:05:33 2023 +0530
+
+    Add sample script for svi post ISecL removal
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 74a4b07ecc5d043ec60c0dffbe3ebdd664e70c94
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Sun Jan 8 01:57:27 2023 +0530
+
+    Do not send tpm ek to extend voucher
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 88f20d8411b197cd87c1d83d66f38f0fe25fff07
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Sun Jan 8 01:17:01 2023 +0530
+
+    Add conditional checks for mvn proxy
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 53224e40ece627d5dfbd9a2120408b59d1461404
+Author: manju956 <manjunath.a.c@intel.com>
+Date:   Fri Dec 9 09:47:12 2022 +0000
+
+    Decouple ISecL changes integrated with FDO
+    
+    Signed-off-by: manju956 <manjunath.a.c@intel.com>
+
+commit 66bb2f91eacd251c00b10ce76fc9a04098c707cc
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Oct 25 12:28:29 2022 +0530
+
+    Update owner interaction scripts to default port
+    
+    - Update owner cert retrieval script & ov upload script
+      to use 30042 (hardcoded; Needs to be made configurable
+      for all services).
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit cd2c03d7d3e54671205b1469503864646c87f34c
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Oct 25 12:24:42 2022 +0530
+
+    Improve AAS/HVS cert download
+    
+    - Increase retries to 5 and handle error case for download
+      of HVS/AAS CA cert
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit c937195234d08381d14d4b7e8be28d699f40a763
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Oct 25 12:22:56 2022 +0530
+
+    Undo ISecl temporary fix for vulnerability
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 1e189b1893cf6b038a8b5e5ee61f732d1d03c644
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Oct 25 12:14:42 2022 +0530
+
+    Handle proxy for fdo-client daemon via template
+    
+    - Add template proxy file for fdo-client daemon
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit b4690fe370c1c3676e4ae612fb20265fa5663682
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Oct 18 14:45:45 2022 +0530
+
+    Add result check in cert download from HVS/AAS
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 54984174ecbbf0359996a91d142368723b3bfb48
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Oct 18 11:54:23 2022 +0530
+
+    Add check for dev_setup for final reboot after to0
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 9128caf2d5a6638917d88e259985a2892561c6ed
+Author: manju956 <manjunath.a.c@intel.com>
+Date:   Fri Oct 14 10:38:46 2022 +0530
+
+    Add proxy config for fdo service daemon
+    
+    Signed-off-by: manju956 <manjunath.a.c@intel.com>
+
+commit 18669c8b39049ad9d8f7ab252d7977e2c9e741df
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Oct 13 16:01:27 2022 +0530
+
+    Move extend_voucher execution to ansible host
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 4475e002810eaebe349afccf47396a1ac78de8a9
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Oct 13 15:55:49 2022 +0530
+
+    Read isecl creddentials from ansible variables
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 898bba79d390923789c4238721307d805ff3340e
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Oct 13 15:52:29 2022 +0530
+
+    Add retries to get HVS/AAS ca cert retrieval
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 99b4d65512d5133e53e1cbddc42bd52557aa13d7
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Wed Oct 12 12:34:21 2022 +0530
+
+    Remediate security vulnerability for govmomi
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 9ea8bbf087a9411d6e2e8a6b3ef080a4eecc1afb
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Wed Oct 12 09:36:55 2022 +0530
+
+    Automate device onboard sequence for dev environment
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 68e21e0480033e9e68c273f82a956e72b60ad844
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Oct 11 11:10:03 2022 +0530
+
+    Seggregate extend_upload for air-gapped scenario
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 208a73675ea86868b95dd93698ea541440ac4597
+Author: manju956 <manjunath.a.c@intel.com>
+Date:   Mon Oct 10 17:04:01 2022 +0530
+
+    Trigger device onboarding from systemd service
+    
+    Signed-off-by: manju956 <manjunath.a.c@intel.com>
+
+commit bb1f42a2de8e92902edadb9d5d685896dc1227c9
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Mon Oct 3 14:49:45 2022 +0530
+
+    Move fdo client task in security playbook
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 710a69374734ac449900e14cf4a2fcc6fb28d4c7
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Mon Oct 3 11:56:45 2022 +0530
+
+    Trim trailing newline for hw uuid
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 365dd9e72f660876632d9e9a06d3a611fc60b1fe
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Sat Oct 1 16:27:51 2022 +0530
+
+    Update ansibles to upload root CA cert of tpm
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 31ff3a1b75ae60f3d86614d979546214fd8d8006
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Sat Oct 1 11:23:12 2022 +0530
+
+    Enable ISecL deployment on node with FDO
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit f6b7742114b88e4ad603daa5ba173aae1040930f
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Sat Oct 1 10:42:23 2022 +0530
+
+    Update svi mesaage related scripts
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 7df6bee260f72d13b588f50d9e1d92d08994a88a
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Sep 27 18:00:17 2022 +0530
+
+    Add retry to get pod-name with trustagent-suefi label
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 39a61ecf5b81387b537a40478e4ba3d7571f9f67
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Wed Sep 21 10:33:21 2022 +0530
+
+    Update connection_string late during TO2
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit f7ef5848b7b69fc9beb9bcc5c368a7dfd2d56ed4
+Author: Karthika Murthy <karthika.murthy@intel.com>
+Date:   Fri Sep 2 06:14:27 2022 +0000
+
+    Adding restart script
+    
+    Signed-off-by: Karthika Murthy <karthika.murthy@intel.com>
+
+commit ccf9af762ef1eb0b45c10f739f8dea8060b51fe8
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Sep 1 12:07:19 2022 +0530
+
+    Add status code to svi svc_url
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit f4b8ad5d564fe4a44f71b1cbe53bbf8964320d9d
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Sep 1 11:56:04 2022 +0530
+
+    Fixes for self signed certs at HVS/AAS
+    
+    - Integrate task to get HVS/AAS certs into main.yml
+    - Hardcode hw uuid to ignore dmidecode error
+    - hardcode password username for token
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 87ffc15f64a6782230fb369666ae4a937097ee9b
+Author: manju956 <manjunath.a.c@intel.com>
+Date:   Tue Aug 30 15:25:33 2022 +0530
+
+    Get ISecL services CA certificates for FDO Owner service
+    
+    Signed-off-by: manju956 <manjunath.a.c@intel.com>
+
+commit add83968d0f9a23f351a3eee0de4c0e92f3d13a1
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Mon Aug 29 10:33:04 2022 +0530
+
+    Send root ca cert from svi messages
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 322b0dc4ab6d84e42589dbc55722f457b0312990
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Mon Aug 29 10:19:18 2022 +0530
+
+    Update client repo in integration
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 629c7216375afe9126d1fa6d5514f3893376f958
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Mon Aug 22 18:03:57 2022 +0530
+
+    Convert ansible task for file upload to script invication
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit db4df8ed885dac7237969048f694ba211dd4d054
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Mon Aug 22 12:21:35 2022 +0530
+
+    Update svi_messages file name
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 400b1e58443601e4486c706e9ec9b1868a7fd394
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Fri Aug 19 12:41:49 2022 +0530
+
+    Create svi messages and integrate
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit cc2a8d0aa6718a0c3c52da653043b34c77c7b8d2
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Wed Aug 17 12:46:02 2022 +0530
+
+    Resolve certificate parse issue
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 3b5b73c715266d8c0fab526e89c8608ef8766be7
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Aug 11 16:12:58 2022 +0530
+
+    Changes for adding TPM ek to ownership voucher
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 3a7a3818589f46fb58507612ce37ab050a95c7b3
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Fri Aug 5 20:05:43 2022 +0530
+
+    Update rvinfo/redirect script flows
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 3107dc1d1794822a8aa37c7a1c8bfa1e76bce54b
+Author: Murthy, Karthika <karthika.murthy@intel.com>
+Date:   Mon Aug 8 09:48:56 2022 +0000
+
+    MPRA Changes
+    
+    Signed-off-by: Murthy, Karthika <karthika.murthy@intel.com>
+
+commit ed4fc1d5b05ee45816255ce00e281b1921271ad5
+Author: Murthy, Karthika <karthika.murthy@intel.com>
+Date:   Sun Aug 7 13:38:54 2022 +0000
+
+    fixed Isecl pod issue
+    
+    Signed-off-by: Murthy, Karthika <karthika.murthy@intel.com>
+
+commit 3e3ba22ebfd15584d0f804e3b59eb919ecb9b186
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Fri Aug 5 20:05:43 2022 +0530
+
+    Update rvinfo/redirect script flows
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit b57e9bb88efb43908508cc1a3fd0c1abe3ed5339
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Fri Aug 5 12:50:07 2022 +0530
+
+    Update client to latest release
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit be2f64861fc0998cf093a32296ae2911f9a72836
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Aug 4 15:46:59 2022 +0530
+
+    Update fdo binary run option for self signed
+    
+    - Update linux-client option to ss for self signed certsc
+    - Update repo version to master that holds libcurl changes
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit da1b3f9bb678062fde06e72f8ec4cb26dc8a2e6e
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Wed Aug 3 11:03:41 2022 +0530
+
+    Enable docker temporarily; DIsable nerdctl
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit a77c39cb0553125264d44efbc53a597cb521bf83
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Tue Aug 2 17:08:34 2022 +0530
+
+    Update release to latest and password flows
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit af12268dfde3276a119dbb89aa1787041de33835
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Wed Jul 27 12:30:40 2022 +0530
+
+    Enable device provisioning via FDO
+    
+     - Read FDO server passwords from variables
+     - Update k8s secret names for FDO server
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 8b7678120e3ddd6966f78957e0e3c62b850a2cf7
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Jul 21 18:55:48 2022 +0530
+
+    Keys generation for FDO client
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit b5df5e193ef0e2a9d3a4f3705405410e8e6c53fe
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Jul 21 16:07:58 2022 +0530
+
+    Update to include proxy rv fix
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 062b6cc619babe51cfab2fe69b42da5912aa6630
+Author: manju956 <manjunath.a.c@intel.com>
+Date:   Tue Aug 2 16:25:27 2022 +0530
+
+    Update rvinfo on manufacturer and owner redirection
+    
+    Signed-off-by: manju956 <manjunath.a.c@intel.com>
+
+commit d7a8476259cb132205a76c9d08dfb0d379a1e2b6
+Author: manju956 <manjunath.a.c@intel.com>
+Date:   Mon Aug 1 16:43:47 2022 +0530
+
+    TA bootstrap and registration flow durign TO-2
+    
+    Signed-off-by: manju956 <manjunath.a.c@intel.com>
+
+commit 5521f5130748269dd6d89f5411a95a0d2f8b0817
+Author: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+Date:   Thu Jul 14 11:22:19 2022 +0530
+
+    Add client ansible
+    
+    Signed-off-by: Rajeev Ranjan <rajeev2.ranjan@intel.com>
+
+commit 01314e932d2b72eea351e90e70a9383d6e73236a
+Author: Murthy, Karthika <karthika.murthy@intel.com>
+Date:   Mon Jul 11 07:13:11 2022 +0000
+
+    Integrating FDO with DEK
+    
+    Signed-off-by: Murthy, Karthika <karthika.murthy@intel.com>
+
+commit e225a994c43ef22f486602bc5841180095cd5dd4
+Author: Bruno Panasiewicz <109345317+brunpan@users.noreply.github.com>
+Date:   Tue Sep 27 09:07:10 2022 +0200
+
+    ESS-18833: Review and Merge Unit Tests (#914)
+    
+    
+    
+    Co-authored-by: Weronika Andrzejewska <weronikax.andrzejewska@intel.com>
+    Co-authored-by: Piotr Goś <piotrx.gos@intel.com>
+
+commit 4ddea8bbd268f49aebb4e67762254f9120a202b4
+Author: Sunil Parida <sunil.kumar.parida@intel.com>
+Date:   Mon Sep 26 12:35:02 2022 +0530
+
+    fix pyOpenSSL and cryptography version (#918)
+
+commit 391dbd1c59372becfd1de91b58deda440c700871
+Author: Dariusz Walczak <dariuszx.walczak@intel.com>
+Date:   Wed Sep 21 15:21:53 2022 +0200
+
+    Minor provisioning UX fixes (#908)
+    
+    * Added closing success messages
+    
+    * Product name included in the CLI help messages is now taken from the toolchain config
+
+commit 3961a177b35d820578053aadc4bdf97c2ad0ae11
+Author: Krzysztof Jezewski <krzysztofx.jezewski@intel.com>
+Date:   Tue Sep 20 15:22:15 2022 +0200
+
+    Pegasus/ess 18897 (#907)
+    
+    * Create admin_machine_group dir if needed
+    
+    * Add missing import iut.slo.error
+
+commit 25a1bfbc2c6f73a210d4cca199c1ba469ce64fe1
+Author: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+Date:   Mon Sep 19 22:47:50 2022 +0200
+
+    GA related fixes (#898)
+    
+    ESS-16758 Change mode + add recuse option for etcd dir #890
+    ESS-18516 Remove dependencies to harbor registry #894
+    ESS-18581 Align certificates for Crypto SAFE #899
+    ESS-18586: Ubuntu profile should set static IP during installation #897
+
+commit 3623536dec3e44c09c80dcd6306dd6204acfd0df
+Author: kendrickclark <57541864+kendrickclark@users.noreply.github.com>
+Date:   Mon Sep 19 08:03:25 2022 -0400
+
+    Disable root mount for node exporter (#902)
+    
+    Co-authored-by: Kendrick Clark <kendrickclark@intel.com>
+
+commit 98edea0500a02cff4c56e027c21bfde632a3c86c
+Author: kendrickclark <57541864+kendrickclark@users.noreply.github.com>
+Date:   Fri Sep 16 13:15:22 2022 -0400
+
+    Add SE CA for sending prometheus alerts/metrics , and for fluentd (#900)
+    
+    * Add SE CA for sending prometheus alerts/metrics , and for fluentd
+    
+    * Fix cert path
+    
+    Co-authored-by: Kendrick Clark <kendrickclark@intel.com>
+    Co-authored-by: Nolan, Christopher <christopher.nolan@intel.com>
+
+commit c2f5ce455899b6082a1ba83e83180ec94e51db2a
+Author: Christopher Nolan <christopher.nolan@intel.com>
+Date:   Thu Sep 15 14:55:45 2022 +0100
+
+    ESS-18286 Fix telegraf kube_inventory metrics (#878)
+
+commit 96b3744724591a66b5d8517f579c22017e7a8f0c
+Author: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+Date:   Thu Sep 15 15:00:18 2022 +0200
+
+    Submodule update 2022_09_15__14_10_22 (#896)
+
+commit d73e22f678dfbefe93c089a4314609bf43e9e6f1
+Author: Magda Zielinska <magdax.zielinska@intel.com>
+Date:   Wed Sep 14 11:32:13 2022 +0200
+
+    Pylint fix for missing timeout argument in monitoring.py (#895)
+
+commit 6162ddb7ece4a41420e38923ee6ef0e6d82128f0
+Author: kendrickclark <57541864+kendrickclark@users.noreply.github.com>
+Date:   Fri Sep 9 12:30:36 2022 -0400
+
+    WIP: Add input.kubernetes plugin for collection pod metrics (#868)
+    
+    * Add input.kubernetes plugin for collection pod metrics
+    
+    * Remove tls flags
+    
+    * update url for kubelet api
+    
+    Co-authored-by: Kendrick Clark <kendrickclark@intel.com>
+
+commit cb0feb2224fabcef8a3201ef243a07c13294e67b
+Author: Christopher Nolan <christopher.nolan@intel.com>
+Date:   Thu Sep 8 15:21:52 2022 +0100
+
+    Enable mTLS for FluentD (#846)
+
+commit f8850d5f5b8ab2724021477d9f05d6c83aef95a5
+Author: Bartosz Lesniewski <bartosz.lesniewski@intel.com>
+Date:   Tue Aug 30 18:59:13 2022 +0200
+
+    Update schema, call added hook (#793)
+    
+    * Pass platform_cfg to install init hook
+    
+    * Allow additional properties in platform_cfg schema
+    
+    This temporary measure allows for other projects to add properties
+    and not interfere with the schema.
+    
+    * Add 'mac' property in platform_cfg schema
+    
+    * Add missing platform_cfg parameter
+    
+    Co-authored-by: Radoslaw Jablonski <radoslaw.jablonski@intel.com>
+    Co-authored-by: jablonski-r <105025787+jablonski-r@users.noreply.github.com>
+
+commit b79194fa2c160b3f74203c28c4b7ed8273059c75
+Author: gfurkiotis <67271827+gfurkiotis@users.noreply.github.com>
+Date:   Mon Aug 29 12:36:19 2022 +0200
+
+    Removed insecure harbor access (#826)
+    
+    * Removed insecure harbor access
+
+commit 2ca52dfa3f7e4fbad9473cd763a508c203b2ad05
+Author: Mariusz Przysiezniuk <mariuszx.przysiezniuk@intel.com>
+Date:   Thu Aug 25 11:13:36 2022 +0200
+
+    Bluehat/22.06 upgrades (#767)
+    
+    * helm upgrade to v3.8.0 (#615)
+    * [ESS-15624] Harbor Upgrade to v2.5.1 (#620)
+    * Upgrade Calico to newest release 3.24.0 (#624)
+    * upgraded multus to version v3.9 (#626)
+    * Upgrade Docker to version 20.10.17 (#633)
+    * ESS 15628 Upgrade cert-manager to v1.8.1 (#641)
+    * kubevirt update (#685)
+    * observability telemetary components upgraded (#714)  (#720)
+    * prometheus image upgraded to 2.36.1
+    * Switch from ansible to ansible core (#617)
+    * Replaced telegraf image building with directly using intel/observability-telegraf image (#747)
+    * Observability updates
+    ESS-16948 Update Volumet mounts for telegraf
+    ESS-15974 Replace cadvisor with telegraf kube_inventory plugin
+
+commit eb87082eb4deb7a2de6affa6b4a5dcc40dc0c208
+Author: Mateusz Szelest <mateuszx.szelest@intel.com>
+Date:   Wed Aug 24 11:44:54 2022 +0200
+
+    Configurable Cluster DNS IP (#830)
+
+commit 1920baa842fd680b0d773f8d5c1a740986d092bc
+Author: kendrickclark <57541864+kendrickclark@users.noreply.github.com>
+Date:   Tue Aug 23 12:22:56 2022 -0400
+
+    alert manager config changes (#817)
+    
+    * alert manager config changes
+    
+    * fix prometheus spelling
+    
+    Co-authored-by: Kendrick Clark <kendrickclark@intel.com>
+
+commit c54b3a3abbd6e358b2eefc02329d68ae1158e7ab
+Author: Bazyli Kot <bazylix.kot@intel.com>
+Date:   Fri Aug 19 14:17:17 2022 +0200
+
+    ESS-17435 Remote mount https fail on cert (#799) (#819)
+    
+    * cherry pick changes from feature/offline-install and main to work with newest fixes
+    
+    * add idrac attributes retrieval methods
+    
+    * add patching idrac manager methods, check and disable cert warnings when installing
+    
+    * empty line update
+    
+    * update message to be more specific
+
+commit 18ed060ec0b38b2779a7e403223743161285a956
+Author: damiankopyto <damian.kopyto@intel.com>
+Date:   Wed Aug 17 19:14:45 2022 +0100
+
+    ESS-17553 (#804)
+    
+    Moving the default management interface variable to be controlled globally.
+
+commit e93365b4f3539739f8016401162fcb23de13eac8
+Author: Bruno Panasiewicz <109345317+brunpan@users.noreply.github.com>
+Date:   Wed Aug 17 13:13:25 2022 +0200
+
+    ESS-17351: Allow to define network interface for admin machine (#806)
+    
+    Co-authored-by: Callum Noble <callum.noble@gmail.com>
+    Co-authored-by: Sebastian Wieczorek <sebastianx.wieczorek@intel.com>
+
+commit 35e743c4ed49f7a2858ab49cbc193572b231f9b4
+Author: Christopher Nolan <christopher.nolan@intel.com>
+Date:   Thu Aug 11 17:49:37 2022 +0100
+
+    ESS-11097 enable TLS for fluentd connection (#786)
+
+commit e0e10528ea5f32231cbc42fd0b4d8049b2350996
+Author: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+Date:   Thu Aug 4 18:15:52 2022 +0200
+
+    Remove wait condition (#776)
+
+commit 6ead1f08ce8e9571ab238963ac2a71a78f760929
+Author: Dariusz Walczak <dariuszx.walczak@intel.com>
+Date:   Thu Aug 4 16:14:48 2022 +0200
+
+    ESS-17146: Improved the amount of details logged by the redfish_virtual_media script (#774)
+    
+    * Made the redfish_virtual_media script log more detailes
+    
+    * Added a possible solution for ESS-17146 and ESS-17200
+    
+    * Increased the redfish response timeout
+    
+    Co-authored-by: Karol Grzadziel <karolx.grzadziel@intel.com>
+
+commit f8b6ab90b1ba161d4618118b31cc472b7bff053f
+Author: Dariusz Walczak <dariuszx.walczak@intel.com>
+Date:   Thu Aug 4 15:56:20 2022 +0200
+
+    Increase the install timeout to 120 minutes (#772)
+    
+    Co-authored-by: Karol Grzadziel <karolx.grzadziel@intel.com>
+
+commit 18e1bc286eaa70fdf6609e35d6669aeb13b34dde
+Author: Michał Przepłata <michalx.przeplata@intel.com>
+Date:   Thu Aug 4 14:21:26 2022 +0200
+
+    Fix issue with empty NIC slot (#771)
+
+commit 1322fd3957ffcf55516e3072fe0ba9c0261a1f9f
+Author: Monika Rymsza <monikax.rymsza@intel.com>
+Date:   Thu Aug 4 11:49:22 2022 +0200
+
+    openebs reinstall bug fix (#752)
+
+commit b35cfb254f236440c69e4c6bd2bf91d25b3568f9
+Author: Mateusz Szelest <mateuszx.szelest@intel.com>
+Date:   Wed Aug 3 15:06:40 2022 +0200
+
+    ESS-16404: Modify ESP to assign K8S pods and service subnets (#734)
+    
+    * ESS-16404: Modify ESP to assign K8S pods and service subnets
+    
+    * Add custom subnet to no_proxy + updated conditional for cluster config
+    
+    * Set flag to false by default + added comment
+    
+    * Updated copyright headers
+
+commit 9535fa0e9f381e2972000b7c09b34aa23f99b120
+Author: Filip Antkowiak <104206456+fantkowx@users.noreply.github.com>
+Date:   Tue Aug 2 16:44:01 2022 +0200
+
+    ESS-16866 : Calico timeout bug fix (#748)
+    
+    * add retries to calico pods status check
+
+commit b41ba12569a8db4bca7ce8c11719513a933bd83d
+Author: Dariusz Walczak <dariuszx.walczak@intel.com>
+Date:   Sat Jul 30 10:08:53 2022 +0200
+
+    ESS-10891: Added support for full online provisioning using IUT (#756)
+    
+    * ESS-11903: Create frame of the Install and Upgrade Toolchain (#445)
+    
+    * ESS-11903: Establishing frame of the SE Install & Upgrade Toolchain
+    
+    * Fixed some pylint warnings
+    
+    * Tweaked the build command and the common arguments
+    
+    * Extracted the se_context.py from the se_config.py (to allow its automated replacement). Added se_config_cli.py implementation
+    
+    * Extracted the 'iut' python library outside of the 'seo' library
+    
+    * Added frame of the se_deploy.py script
+    
+    * Tweaked the help string for the '--config' argument
+    
+    * Fixed the file comment
+    
+    * Solved two pylint findings (f-string-without-interpolation)
+    
+    * Disabled the 'unused-argument' pylint warning
+    
+        Rationale:
+            The 'package_root' argument is expected by the iut.run.run function which is responsible for calling the
+            parse_args function. All the other parse_args functions are using it. It may happen that in the future this
+            specific parse_args function will also need it.
+    
+    * Added missing copyright tag
+    
+    * Removed not needed shebang directives
+    
+    * ESS-12914: Improved offline docs duplicates detection (#451)
+    
+    * Submodule update 28042022 with ESS-13086 fix (#458)
+    
+    * Implementation of warning in case of article id duplicate.
+    
+    * Checking of duplicated article id between files
+    
+    * Description of the force flag is changed.
+    
+    * Tweaked the duplicate article ids message
+    
+    * Fine tuned the command help
+    
+    Co-authored-by: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+    Co-authored-by: “patryktrzepizur” <“patrykx.trzepizur@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * [ESS-13028] The Generate Docs Tools Output is Not Clean (#463)
+    
+    * ESS-12806: Implement Build Offline Documentation Action (IUP/A/10) (#472)
+    
+    * IUT: Propagated the package root path to the actual 'main' functions
+    
+    * WiP: Extended the toolchain config by variables needed to generate the offline documentation
+    
+    * Tweaked log formats
+    
+    * WiP: Added first implementation of the 'build_offline_docs' function
+    
+    * Extended the 'build_offline_docs' function to optionally clone the docs repository
+    
+    * Retreating from the idea of paths specified as lists
+    
+    * generate_docs.py: Tweaked a debug message
+    
+    * Fixed some pylint whitespace warnings (bad-continuation)
+    
+    * ESS-12756: Add error message generation function (#450)
+    
+    * Create seo_error.py file
+    
+    * Article path
+    
+    * Changes for lynx and path
+    
+    * Changes acording to ESS-13028
+    
+    * Change to error message and pylint fixes
+    
+    * Gap change
+    
+    * Integrated the 'format_iut_error_msg' function with the IUT commands. Introduced the 'IutError' exception class
+    
+    * Fixed to use the iut.error.IutError
+    
+    * Silenced bandit false positive (subprocess.run invocation)
+    
+    * Eliminated a pylint warning (unused-variable)
+    
+    * Eliminated a pylint warning (missing-module-docstring)
+    
+    Co-authored-by: “Patryk_Trzepizur” <“patrykx.trzepizur@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-12863: Initial implementation of the create package metadata file action (IUP/A/27) (#474)
+    
+    * Initial implementation of metadata file creation
+    
+    * Bandit fixes
+    
+    * Bandit fixes
+    
+    * Removed provisioning config loading and ESP clone information retrieval as they won't exist at this stage of package building
+    
+    * Moved the custom YAML dumper to the seo.yaml module
+    
+    * Added some structure to the metadata file
+    
+    * Added 'strip_credentials' function
+    
+    * Refined the 'build_offline_docs' (renamed to 'init_metadata').
+    
+    * Got rid of the file loading at the function beginning
+    * Added git describe output collection
+    
+    * Added INTERNAL_ERROR code
+    
+    * Replaced the 'reset_metadata_timestamp' function with the 'update_package_metadata_file' function
+    
+    * Got rid of two pylint warnings (reimported and missing-function-docstring)
+    
+    Co-authored-by: Michal Przeplata <micprz91@users.noreply.github.com>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-12809: Add output directory creation (#478)
+    
+    * add directory creation logic
+    
+    * output path is required
+    
+    * udpate json parse
+    
+    * update warning
+    
+    * bandit subprocess errors trim
+    
+    * pylint errors fix
+    
+    * shorten line
+    
+    * bandit ignore move to work
+    
+    * add checks for root path, warn in case either version or name diff
+    
+    * change path to str, remove flag not supported for all platforms
+    
+    * some extra out tabs
+    
+    * endline
+    
+    * move dir.py to iut module
+    
+    * naming and error handling updates
+    
+    * add empty line as test commit
+    
+    * [ESS-13469] Unexpected Article ID Crashed the Generate Docs Tool (#484)
+    
+    * ESS-13677: Improving the readability of logs (generate_docs.py) (#473)
+    
+    - Date and time are displayed at the beginning of the log (debug mode)
+    - Script name and line number were added (debug mode)
+    - All "INFO" messages were changed into debug
+    - config_logger function was added
+    
+    * ESS-13835: Implement the Copy SE Platform Configuration action (IUP/A/9) (#479)
+    
+    * Config file copy operation was added.
+    
+    * Copy operation is moved into the function
+    
+    Co-authored-by: “patryktrzepizur” <“patrykx.trzepizur@intel.com”>
+    
+    * [ESS-13905] Article IDs Shouldn't Be Converted to ALL-CAPS (#490)
+    
+    * ESS-13902: Multiple Article Ids Result in a Corrupted Article File Name ESS-13903: Article ID Is Taken From Any HTML Argument (#489)
+    
+    Changed regex expression to pick up only html id tags and check, if they can be used as valid article filenames.
+    
+    * ESS-13559: Modify the install and upgrade toolchain wrappers (#482)
+    
+    Modified Install and Upgrade Toolchain command wrappers to pass the toolchain configuration data to the commands' main functions.
+    
+    Co-authored-by: “magdaxzielinska” <“magdax.zielinska@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-14087: Fix offline docs generation to use the toolchain config (#496)
+    
+    * ESS-14091: Clear some extended PyLint warnings (#497)
+    
+    * ESS-13976: Initial SE Platform Config Handling (#493)
+    
+    * ESS-14092: Fixed product information handling in the metadata file and output directory creation actions (#498)
+    
+    * Moved the metadata create and update functions to a separate iut module
+    
+    * The product name and version is now taken from the toolchain config.
+    
+        Other changes:
+            * Added the 'iut.metadata.get_path' function
+            * Changed signatures of the 'update_package_metadata_file' and 'init_metadata' to take the toolchain config and
+              the output path rather than the metadata file path
+            * Modified yaml dumping method to enable unicode output
+    
+    * Renamed two of the metadata file handling functions
+    
+        * Renamed 'update_package_metadata_file' function to 'update_file'
+        * Renamed 'init_metadata' function to 'create_file'
+    
+    * Tweaked log statement to make the message easier to read
+    
+    * Updated the 'create_output_path' function to use actual product name and version. Tweaked warning and log messages.
+    
+    * Added short variant to the force option
+    
+    * Added success info message to the 'create_output_path' function
+    
+    * Promoted all the 'seo.error.AppException' exceptions to 'iut.error.IutError'
+    
+        Rationale:
+            These errors are supposed to be presented to the system operator and we are supposed to provide troubleshooting
+            articles for them
+    
+    * Silenced bandit warning (B404)
+    
+        B404[bandit]: LOW: Consider possible security implications associated with subprocess module)
+    
+    * ESS-14012: Configure the toolchain to use proper docs repo branch (#503)
+    
+    * Added package build succeeded message
+    
+    * Referenced the IUT-4 article
+    
+    * Switched the offline documentation generator to use the 'feature/install-upgrade-toolchain' branch of the docs repo
+    
+    * Fixed a pylint warning (logging-format-interpolation)
+    
+    * ESS-14112 json schema for config file (#507)
+    
+    Co-authored-by: Sebastian Wieczorek <sebix112@users.noreply.github.com>
+    
+    * ESS-13901: Article not terminated by non article section (#506)
+    
+    Added functionality to discard rest of article file when a higher level heading occurs.
+    
+    * config json schema typo fix
+    
+    * ESS-13555: Add generation of a minimal DEK platform config (#523)
+    
+    * Added generation of a minimal platform configuration passing the schema check
+    
+    * Fixed a pylint warning (bad-continuation)
+    
+    * Fixed the default experience_kit to use path rather than url
+    
+    * ESS-13115: Fixed section references (#491)
+    
+    * ESS-14176: Initial version of the Monitoring Service (#508)
+    
+    * Implemented the POST /machines endpoint
+    
+    * Fixed pylint warning (wrong-import-order)
+    
+    * Added copyright header
+    
+    * Added copyright headers
+    
+    * Implemented the GET /machines and PUT /machines/:mid/status handlers
+    
+    * Provided an initial, working development environment
+    
+    * Cleared some golint findings
+    
+    * Added basic support for machine IP address storage
+    
+    * Added missing copyright header
+    
+    * Extracted the machine storage to a separate package
+    
+    * Renamed the 'data' package to 'machine'
+    
+    * Made the machine storage function names shorter
+    
+    * Added 'output' directory to the docker-ignore file
+    
+    * Moved request handlers to a separate package
+    
+    * Renamed the 'machine' package to 'machines'
+    
+    * Made some type names shorter
+    
+    * Working around the missing copyright header issue
+    
+    * Another futile attempt to satisfy bandit
+    
+    * Added missing copyright headers
+    
+    * ESS-14396: Create MAC retrieval redfish mechanism (#526)
+    
+    * inital testing of nic listing
+    
+    * unwrap dict
+    
+    * update map
+    
+    * get specific nic endpoint
+    
+    * further info digup
+    
+    * filter sub nic
+    
+    * remove prints
+    
+    * get for the first subport
+    
+    * add all ports
+    
+    * review updates and more documentation
+    
+    * ESS-14116: Generate ansible configuration from the Smart Edge Platform configuration (#515)
+    
+    Co-authored-by: Bazyli Kot <26172808+bazko1@users.noreply.github.com>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-14117: Generate Provisioning Configuration (IUP/A/11) (#531)
+    
+    * ESS-14117: Generate Provisioning Configuration (IUP/A/11)
+    
+    * Multiple hosts credentials refactor
+    
+    * Integration with se_install_cli.py
+    
+    * Code refactor
+    
+    * if statement improvement
+    
+    * Pylint fix
+    
+    * pylint fix
+    
+    * Unnecessary code was removed
+    
+    * Made the 'account' field of the 'cluster' object a required field
+    
+    * Updated 'generate_provisioning_config' function documentation (added parameters description)
+    
+    * Made use of the seo.yaml.get_dumper function to customize the generated yaml format
+    
+    * Added 'profile' section to the troubleshooting config
+    
+    * Renamed the 'cfg' parameter of the 'generate_provisioning_config' function to 'platform_cfg'
+    
+    * WiP: Integrating the provisioning config generation
+    
+    * Enabled the docker section generation again
+    
+    * Fixed few pylint issues (undefined-variable)
+    
+    * Fixed few pylint issues (bad-continuation, bad-whitespace)
+    
+    * Fixed a pylint issue (bad-continuation)
+    
+    * Fixed a pylint issue (bad-continuation)
+    
+    * Got rid of multiple pylint warnings
+    
+    * Fixed few pylint issues (bad-whitespace, bad-continuation)
+    
+    * Removed a call to just removed dummy function
+    
+    * Reverted a minor regression in scripts/deploy_esp/deploy_esp.py
+    
+    Co-authored-by: “Patryk Trzepizur” <“patrykx.trzepizur@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-14157: Create Package Checksum File (#517)
+    
+    * Add checksum file
+    
+    * Add subprocess
+    
+    * Review fixes
+    
+    * Changed package root
+    
+    * Quick fix
+    
+    * Change output directory and placement of function call
+    
+    * Quick rename fix
+    
+    * Fixed action order
+    
+    * Tweaked the 'create_package_checksum_file' function
+    
+    * Silenced two subprocess related bandit issues
+    
+    * Fixed a pylint issue (unused-variable)
+    
+    Co-authored-by: “magdaxzielinska” <“magdax.zielinska@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * typo fix
+    
+    * ESS-14118: Implement Build ESP Services action (IUP/A/12) (#524)
+    
+    * Added support for command line git credentials, added imports, amended one typo
+    
+    * Added build iut module, imported build module in relevant files
+    
+    * Minor changes
+    
+    * Fixed a minor regression
+    
+    * Eliminated 3 pylint issues (f-string-without-interpolation, unused-variable, unused-import)
+    
+    * Fixed the build_services action to take the provisioning config generated by the 'generate_provisioning_config' function
+    
+    * Fixed a pylint issue (unused-import)
+    
+    * Fixed a pylint issue (no-value-for-parameter)
+    
+    * build_services: Removed 'is online' check, tweaked logs, changed working directory
+    
+    * The iut.build.build_services function doesn't take CLI args as its first argument anymore
+    
+    * Added sudo to the deploy_esp.py script invocation to avoid requiring sudo for the entire toolchain script
+    
+    * Made the code a little more liberal: fixed a crash occurring when the 'dockerhub' section is not defined at all
+    
+    * Made the deploy_esp script more liberal - it shouldn't crash when there is no 'git' section in the config
+    
+    * Fixed the 'copy_config' function to explicitly specify the destination file name
+    
+        This change is made to make the config file name predictable and consistent with its default value
+    
+    * Added the temporary paths to the platform config. Adjusted the ESP temporary dir names
+    
+    * Added the 'remove_esp_dirs' function
+    
+    * A common temporary directory will now be created at the script start to avoid dirs premature deletions and to allow sharing of outputs between actions
+    
+    * Added the package config file configuration variable
+    
+    * Fixed a bug in the 'remove_esp_dirs' function
+    
+    * Fixed the ESP services building to work with a cloned profile and git credentials
+    
+    * Silenced bandit false positive
+    
+    * Eliminated pylint warning (unused-import)
+    
+    * Silenced pylint warning (consider-using-with)
+    
+        The directory should be preserved for the entire function (so the narrowing of its life time is not desired). It
+        will later be removed during the object destruction. The only thing 'with' will achieve is an unnecessary extra
+        level of code indentation.
+    
+    * Fixed a pylint issue (undefined-variable)
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-14678: Create Metadata Checksum File (#546)
+    
+    * Add create metadata checksum file action
+    
+    * Spacing between functions^
+    
+    * Review changes: move function to checksum.py
+    
+    * Minor change
+    
+    Co-authored-by: “magdaxzielinska” <“magdax.zielinska@intel.com”>
+    
+    * ESS-14175: se_install calls deploy.py in order to deploy the clusters according to the SE configuration (#547)
+    
+    Co-authored-by: Bazyli Kot <26172808+bazko1@users.noreply.github.com>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-14189: Integrate monitoring service with IUT scripts (#535)
+    
+    * Added toolchain_cfg['prog'] and fine-tuned an exception message in the 'create_output_path' function
+    
+    * Added initial support for monitoring service building, stopping, and running
+    
+    * Added support for saving the monitoring service image to the built package
+    
+    * Silenced a bandit warning (B404: security implications considered)
+    
+    * Fixed a pylint warning (trailing-whitespace)
+    
+    * Eliminated a pylint warning (unused-argument)
+    
+    * Renamed 'cfg' to 'platform_cfg'
+    
+    * Added registration of machines in the monitoring service
+    
+    * Fixed the 'retrieve_machine_data' function and tweaked the 'register_machines' one
+    
+    * Fixed to capture the 'retrieve_machine_data' function result
+    
+    * Improved function comments
+    
+    * Fixed the pylint configuration file to not irritate newer versions of pylint (it complained about multiple issues)
+    
+    * Fixed two pylint issues (import-error and wrong-import-order)
+    
+    * Reverted pylint configuration file changes.
+    
+        The changes together with other changes will be applied to the main branch and later merged to the
+        feature/install-upgrade-toolchain branch to avoid extensive conflicts.
+    
+    This reverts commit 44ff2127497a17fd3c8fc983350833628d45ff5a.
+    
+    * ESS-14187: Implement monitoring service waiting loop (#560)
+    
+    * Added the 'sync_machines_status' function
+    
+    * Added a documentation comment to the 'sync_machines_status' function
+    
+    * Tweaked a log message
+    
+    * Fixed a pylint issue (consider-using-set-comprehension)
+    
+    * ESS-14120: Implement run ESP services action (IUP/A/22) (#556)
+    
+    * ESS-14120: Implement run ESP services action (IUP/A/22)
+    
+    * Removed cleanup flag when running command
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-14843: Monitoring variables pass to profile (#559)
+    
+    * add monitoring related fields to schema
+    
+    * add handling of monitoring variables
+    
+    * write new variables to out dict
+    
+    * add example into default_config.yml
+    
+    * ESS-14191: Implement Install Operating System Action (IUP/A/23) (#554)
+    
+    * Provision hosts with OS
+    
+    * Bandit fix
+    
+    * Fixes
+    
+    * Extracted the OS install function to a separate module
+    
+    * Initial integration
+    
+    * Added missing import
+    
+    * Fixed a pylint issue (unused-import)
+    
+    Co-authored-by: Michal Przeplata <micprz91@users.noreply.github.com>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-15018: Provide a Frame of the SE Report Command (#564)
+    
+    * Provide a Frame of the SE Report Command
+    
+    * Quic fix
+    
+    * Add se_report_cli.py file
+    
+    * Tweaked all the command descriptions to use the formal SE platform name
+    
+    * Silenced 4 instances of the consider-using-f-string pylint clue
+    
+    * Fixed a pylint issue (consider-using-with)
+    
+    * Revert "Silenced 4 instances of the consider-using-f-string pylint clue"
+    
+    This reverts commit f041207cab08c740bb2564d9cf047b028b03a7c2.
+    
+    Co-authored-by: “magdaxzielinska” <“magdax.zielinska@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-15047: Added config data checks (#571)
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    Co-authored-by: Bazyli Kot <bazylix.kot@intel.com>
+    
+    * Tweaked the 'path too long' error message format
+    
+    * ESS-15057 Pass mac-id to config (#574)
+    
+    * add hosts config with machine info
+    
+    * macs have to be list
+    
+    * non context tmp file
+    
+    * remove traling whitespace
+    
+    * ESS-15131: UX: Git Credentials Options Available in Commands Not Needing Them (#581)
+    
+    Separation of IUT authentication helper arguments.
+    
+    * ESS-15147: Handling platform profile in IUT (#584)
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    Co-authored-by: Mateusz Szelest <mateuszx.szelest@intel.com>
+    
+    * Fixing broken merge d0dcd89586e18bb838713af0169404ddc4fe4dad
+    
+    * Fixing broken merge d0dcd89586e18bb838713af0169404ddc4fe4dad again
+    
+    * add force flag to stopping esp (#597)
+    
+    * Ansibles do not like empty yaml files with three dots closing yaml (#599)
+    
+    * ESS-15016: Enhance IUT commands to produce log files (#590)
+    
+    * Enhanced the se_*.py commands to log also to files. Added runtime environment logging.
+    
+    * Eliminated two bandit false positives
+    
+    * Removed unnecessary 'iut.config.config_logger' function call
+    
+    * Added signal handler and modified wait loop (#583)
+    
+    * Added signal handler and modified wait loop
+    
+    * handle pylint errors
+    
+    Co-authored-by: Michal Przeplata <micprz91@users.noreply.github.com>
+    Co-authored-by: Bazyli Kot <bazylix.kot@intel.com>
+    
+    * ESS-15167 Handle machine install finish (#594)
+    
+    * initial integration prototype
+    
+    * fix int to integer in commands
+    
+    * docs and minor fix for config issue
+    
+    * handle update exception, timeout handle
+    
+    * minor fixes
+    
+    * pylint fix conform to naming pattern
+    
+    * add logging of message state change
+    
+    * fix typo, kill all on exceeded
+    
+    * line too long add indent
+    
+    * rm trailing whitespace
+    
+    * set default profile branch to be feature/install-upgrade-toolchain
+    
+    * ESS-15206: Change method of getting IP address (#582)
+    
+    * ESS-15134: Complete the Deploy Command Online Implementation (#598)
+    
+    * Added missing invocation for se_deploy_cli.py
+    
+    * Created common function for ansible configuration and deployment
+    
+    * ESS-15040: Initial SE Report command implementation and Log Collector interface extension (#605)
+    
+    * log_collector: Removed unused 'verbose' option
+    
+    * log_collector: Slightly polished the argument parsing code
+    
+    * log_collector: Fixed to tolerate missing 'paths' list
+    
+    * log_collector: Tweaked the 'read_config_json' function
+    
+    * log_collector: Improved output file handling. Added output directory handling
+    
+    * log_collector: Added support for stdin config
+    
+    * log_collector: Added handling of malformed JSON config
+    
+    * log_collector: Fixed to tolerate missing 'commands' list
+    
+    * Made use of log_collector in the initial implementation of the se_report.py script
+    
+    * Added the initial report config
+    
+    * Silenced two bandit false positives
+    
+    * Eliminated 3 pylint issues (missing-function-docstring, undefined-variable, and unused-import)
+    
+    * ESS-15135: Add metod of recognizing the offline install context (#595)
+    
+    * Add metod of recognizing the offline install context
+    
+    * Revert "Add metod of recognizing the offline install context"
+    
+    This reverts commit d71788c8cb5430e349a9ba340e5a34950fcdc444.
+    
+    * Add metod of recognizing the offline install context
+    
+    * Quick fix
+    
+    * Minor changes
+    
+    * Flag fix
+    
+    * Review changes
+    
+    * Removing todo comment
+    
+    * Remove todo comment
+    
+    * Brought back the EoF newline
+    
+    * Pylint changes
+    
+    Co-authored-by: “magdaxzielinska” <“magdax.zielinska@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-15686 reorganizing single node settings (#618)
+    
+    * ESS-15635: Add a Schema for Toolchain Config (#612)
+    
+    * Toolchaing schema config is added, integartion of schema validator with iut.run.run function
+    
+    * Added new line on the end of the file
+    
+    * minor changes
+    
+    * Added format in url fields and additionalPproperties
+    
+    * minor change
+    
+    * Exception handling refactor
+    
+    * Added required fileds into toolchain schema, additional exception for opening the file
+    
+    * validate_toolchain_cfg function has been moved into run.py
+    
+    * Title fileds have been deleted
+    
+    * Function description update
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * data field has been added in se_context, toolchain_cfg.json has been moved to the new path.
+    
+    Co-authored-by: “Patryk Trzepizur” <“patrykx.trzepizur@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * Use new official ESP release (#622)
+    
+    Co-authored-by: Michal Przeplata <micprz91@users.noreply.github.com>
+    
+    * ESS-15890: Remove ESP services run action from the build command (#628)
+    
+    * Imported the pylint configuration file from the Virgo repository
+    
+    * Set the output format to 'colorized'
+    
+    * Eliminated two pylint issues (consider-using-f-string)
+    
+    * Eliminated three pylint issues (consider-using-with)
+    
+    * Eliminated three pylint findings (use-dict-literal and use-dict-literal)
+    
+    * ESS-15890: Removed the ESP services run action execution from the build script
+    
+    * Added accidentally removed copyright header
+    
+    * Minor improvement of the  function
+    
+        * The seo module mustn't depend on the iut module (it is a cyclic dependency)
+        * Improved the error message
+    
+    * Made use of the seo.yaml.load and seo.yaml.save functions
+    
+    * Made use of the seo.yaml.save function in yet another place
+    
+    * Fixed the build script to create the metadata file before building the monitoring service
+    
+    * Silenced a false positive bandit hit (B506: Use of unsafe yaml load)
+    
+    * Eliminated pylint issue (unused-import)
+    
+    * ESS-15809: Fix False Failure of the OS Install End Waiting Loop (#629)
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-15816: Passwords provided via CLI are cleared before the command is logged (#632)
+    
+    Co-authored-by: Bazyli Kot <bazylix.kot@intel.com>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * bandit nosec in unit tests
+    
+    * ESS-15641: Implement copy experience kits action (#627)
+    
+    * non contextual tempfile
+    
+    * add copy eks module
+    
+    * working on listing proper files
+    
+    * update implementation should copy correctly
+    
+    * fix type to mapping, operate on platform config
+    
+    * avoid recurse copying
+    
+    * path has to be relative
+    
+    * minor refactor for less code, working on filter to ignore outdir
+    
+    * force abspath, more logging
+    
+    * logic fix
+    
+    * fix for proper pathing of ignred files
+    
+    * need to extend array
+    
+    * extend .iutignore as .gitignore
+    
+    * appending is bad idea as it appends each run
+    
+    * change back as removed by mistake
+    
+    * udpate cloning
+    
+    * filter abs paths, copy symlinks too
+    
+    * hadle error, update docs
+    
+    * update call arguments
+    
+    * documentation update and example fill
+    
+    * naming fix
+    
+    * typo
+    
+    * pylint and bandit updates
+    
+    * pylint updates for se_build_cli
+    
+    * execute loop in case set not empty
+    
+    * rename params to more specific
+    
+    * use rel path for copy log
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * message improvements
+    
+    * add initial iutignore
+    
+    * imporve debug cmd print
+    
+    * further comment style updates
+    
+    * handle error, copy function does not need to preserve metadata
+    
+    * unpack fix
+    
+    * wrong index fix
+    
+    * update message
+    
+    * filter error message updated
+    
+    * pylint fixes for config
+    
+    * add copyright
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * hardcoding ESP to v2.5.2
+    
+    * pylint fixes
+    
+    * ESS-15643: Implement copy deployment toolchain wrappers action (IUP/A/49) (#642)
+    
+    * Implementation of copy deployment toolchain wrappers  (IUP/A/49)
+    
+    * Experimenting with CODEOWNERS file
+    
+    * ESS-16104: Enable deploy_esp.py tool file logging (#654)
+    
+    * Extracted the logger configuration from the iut.config to the seo.config module to make it shareable between the IUT commands and the deploy_esp command
+    
+    * Modified the deploy_esp.py invocations to specify the logs directory and not specify the sudo -E flag
+    
+    * Tweak an if condition
+    
+    Co-authored-by: Bazyli Kot <bazylix.kot@intel.com>
+    
+    * Bringing back the '-E' option to the sudo execution of the deploy_esp.py script
+    
+    * [PORT] Fixed a pylint issue (undefined-variable) {62f18df2}
+    
+    * Added missing copyright header
+    
+    Co-authored-by: Bazyli Kot <bazylix.kot@intel.com>
+    
+    * Define the provisioning code owners (#657)
+    
+    * Initial proposition of the provisioning code owners rules
+    
+    * Added '/CODEOWNERS' rule. Sorted provisioning code rules
+    
+    * Fixed a pylint issue (undefined-variable)
+    
+    * Update CODEOWNERS
+    
+    Co-authored-by: Sebastian Wieczorek <sebastianx.wieczorek@intel.com>
+    
+    * ESS-15802: Monitoring Service Build Commands Will Use Sudo (#665)
+    
+    * ESS-15802: Fixed the monitoring service related docker commands to work for the user who isn't the memeber of the docker group
+    
+    * Ensured that the ownership of the entire content of the output directory is consistent
+    
+    * Added missing import
+    
+    * Silenced bandit warning (subprocess usage)
+    
+    * ESS-16278: Provide troubleshooting article links also in the online mode (#659)
+    
+    * ESS-16278: Provide troubleshooting article links also in the online mode
+    
+    * Fixed the document mapping
+    
+    * Added the iut.docs module
+    
+    * Fixed a trivial bug in the '_regenerate_se_context' function
+    
+    * Moved the 'format_iut_error_msg' and 'build_offline_docs' functions
+    
+        * Moved the 'build_offline_docs' function to the 'docs' module (to keep the main script file lean).
+        * Moved the 'format_iut_error_msg' function to the 'run' module (to break cyclic import dependency).
+    
+    * Added description of the 'docs.map' property
+    
+    * ESS-15893: The Log Collector Script Is Not Covered By Pylint (#637)
+    
+    Changed log_collector to log_collector.py, and created a symlink pointing to it, for backward compatibility. Minor other linter issues resolved.
+    
+    * ESS-15801: Failed to build the provisioning services (python dependencies) (#660)
+    
+    * 'dependencies' field has been added to the toolchain_cfg file.
+    * `iut_requirements.txt` with dependencies has been added.
+    * All `try import` have been removed.
+    * Dependencies validation has been implemented at the very beginning of the command execution.
+    
+    * ESS-15042: Install and upgrade integration missing parts (#653)
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * Integartion of validation dependencies with se_build (#669)
+    
+    Co-authored-by: “Patryk Trzepizur” <“patrykx.trzepizur@intel.com”>
+    
+    * ESS-15801: Fix for paths in requirements file. (#670)
+    
+    * ESS-15996: The generated provisioning config uses hard coded ESP version (#667)
+    
+    * ESP values are taken from the default_cfg.yml if `esp` field does not exist in toolchain config.
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * Added copying of log collector python script to target machine for Robot Framework compatibility (#684)
+    
+    * ESS-15772: Implement new parameters for se_config.py (#647)
+    
+    * Implement new parameters for se_config.py
+    
+    * Change se.yml to se.yaml in se_context.py and config.py
+    
+    * Moved args, added functionality
+    
+    * Code changes
+    
+    * Add checking if file exists
+    
+    * Corrected spelling and typos, handling error, moved print function
+    
+    * Corrected spelling, changed error type, deleted unwanted check
+    
+    * Add FileNotFoundError, PermissionError exception
+    
+    * Add creating directory
+    
+    * Revert "Add creating directory"
+    
+    This reverts commit 91e7660e8ad7400e211206007bfa48524ed5d1f5.
+    
+    * Delete unwanted exepttion errors
+    
+    * Got rid of an unused import (iut.monitoring)
+    
+    * Added a warning when no -p nor -o option is specified
+    
+    * Fixed a bug in the 'save_config' function
+    
+    Co-authored-by: “magdaxzielinska” <“magdax.zielinska@intel.com”>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * Missing ESP services stop (#689)
+    
+    * ESS-16436 generating ssh key when needed (#696)
+    
+    * Suppress InsecureRequestWarning in redfishapi module (#698)
+    
+    * Sample DEK context  (#699)
+    
+    * Fixed indentation in the default config
+    
+    * Brought back the accounts section to the default config
+    
+    * ESS-16278: General IUT user experience improvements (#666)
+    
+    * Removed placeholders from the command help messages
+    
+    * Minor tweaks in the 'seo.yaml.load' and 'seo.yaml.save' functions
+    
+    * Replaced the exception messages generated by the 'seo.yaml.load' to make it more contextual
+    
+    * Improved a passive-aggressive comment
+    
+    * Fixed a pylint issue (no-else-raise)
+    
+    * Small UX tweaks in the 'iut.build.build_services' function
+    
+    * Added missing import
+    
+    * Tweaked the 'clear_password' function interface to return an updated copy of provided args
+    
+    * Repeated the command line log to put it closer to the error message
+    
+    * Tweaked a log message
+    
+    * Tweaked the 'seo.yaml.load' function to preserve the file name in the yaml error message
+    
+    * Improved presentation of the YAML file parsing error details
+    
+    * Updated se_requirements.txt
+    
+    * ESS-15885 - Minor redfishapi changes for testsability (#715)
+    
+    * change fixed sys id
+    
+    * manager id can be always taken from api
+    
+    * leave iutignore for now
+    
+    * ESS-16228: Implement Verify Package Checksums Action (IUP/A/47) (#705)
+    
+    Added functionality to verify packages being built
+    
+    * ESS-16478: Upgraded ESP to v2.5.3 (to solve ESP build failure) (#721)
+    
+    * ESS-16564: Implemetation of se_requirements file generation in the offline mode (#701)
+    
+    * implemetation of se_requirements file generation in the offline mode, realtive paths were added to the se_context
+    
+    * Pylint fix
+    
+    * minor change
+    
+    * pylint fix
+    
+    Co-authored-by: “Patryk Trzepizur” <“patrykx.trzepizur@intel.com”>
+    
+    * ESS-16321: Move se_platform_config.json to the new destination (#672)
+    
+    * Move se_platform_config.json to iut/data/schema/, changed in iut/config.py path to the file
+    
+    * Revert "Move se_platform_config.json to iut/data/schema/, changed in iut/config.py path to the file"
+    
+    This reverts commit ea6c3678b1a103991815336c9dc2e29ee722e31d.
+    
+    * Move se_platform_config.json to iut/data/schema/, changed in iut/config.py path to the file
+    
+    * Pylint fix
+    
+    * Changed line wrapping
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * ESS-16343: Ignore output_path when copying EK (#719)
+    
+    Prevent a vestigial out directory from appearing inside of the copied
+    Experience Kit by broadening the implicit ignore setting from outdir to
+    output_path.
+    
+    * ESS-16781: Patching virgo generated config with controller IP (#712)
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    Co-authored-by: ebelkin <eyal.belkin@intel.com>
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    it brings main changes too
+    
+    * ESS-16230: Add the se_env.py command and introduce slo modules (#722)
+    
+    * Moved the 'deps' module from 'iut' to 'iut.slo' to emphasise its standard library only (SLO) character
+    
+    * Minor tweaks
+    
+    * Moved the 'system' module to the 'slo' submodule
+    
+    * Comment formatting tweak
+    
+    * Added missing copyright header
+    
+    * Moved the 'augment_toolchain_cfg' function to the 'slo' submodule
+    
+    * Moved the contents of the 'seo.error' module to the 'seo.slo.error' module. The 'seo.error' module left with convenience imports
+    
+    * Tweaked some comments
+    
+    * Moved the logger configuration code to the 'seo.slo' module
+    
+    * Moved the contents of the 'iut.error' module to the 'iut.slo.error' module. The 'iut.error' module was left for convenience purposes
+    
+    * Split the 'run' funtion into two variants. Moved some functions to the 'slo' submodule
+    
+    * Moved some docs related functions to the 'slo' submodule
+    
+    * Moved the 'deps' module from 'seo' to 'seo.slo'
+    
+    * Added frame of the se_env.py script
+    
+    * Fixed the _SEO_REQUIREMENTS path
+    
+    * Moved the 'add_debug_argument' and 'add_help_argument' functions to the 'iut.slo.config' module.
+    
+    * Added 'primary_ek' auto variable to the toolchain config
+    
+    * Initial implementation of the provisioning system prerequisites install action
+    
+    * Added initial implementation of the 11-iut-auto.yml file generation
+    
+    * Fixed a trivial bug in the 'configure_env_install' function
+    
+    * Fixed another bug in the 'configure_env_install' function
+    
+    * Added generation of 'docker_registry_mirrors' variable
+    
+    * Silenced some bandit false positives
+    
+    * Wrapped too long line
+    
+    * Added support for insecure registries
+    
+    * ESS-16230: Improve the se_env.py (#729)
+    
+    * Moved the 'deps' module from 'iut' to 'iut.slo' to emphasise its standard library only (SLO) character
+    
+    * Minor tweaks
+    
+    * Moved the 'system' module to the 'slo' submodule
+    
+    * Comment formatting tweak
+    
+    * Added missing copyright header
+    
+    * Moved the 'augment_toolchain_cfg' function to the 'slo' submodule
+    
+    * Moved the contents of the 'seo.error' module to the 'seo.slo.error' module. The 'seo.error' module left with convenience imports
+    
+    * Tweaked some comments
+    
+    * Moved the logger configuration code to the 'seo.slo' module
+    
+    * Moved the contents of the 'iut.error' module to the 'iut.slo.error' module. The 'iut.error' module was left for convenience purposes
+    
+    * Split the 'run' funtion into two variants. Moved some functions to the 'slo' submodule
+    
+    * Moved some docs related functions to the 'slo' submodule
+    
+    * Moved the 'deps' module from 'seo' to 'seo.slo'
+    
+    * Added frame of the se_env.py script
+    
+    * Fixed the _SEO_REQUIREMENTS path
+    
+    * Moved the 'add_debug_argument' and 'add_help_argument' functions to the 'iut.slo.config' module.
+    
+    * Added 'primary_ek' auto variable to the toolchain config
+    
+    * Initial implementation of the provisioning system prerequisites install action
+    
+    * Added initial implementation of the 11-iut-auto.yml file generation
+    
+    * Fixed a trivial bug in the 'configure_env_install' function
+    
+    * Fixed another bug in the 'configure_env_install' function
+    
+    * Added generation of 'docker_registry_mirrors' variable
+    
+    * Silenced some bandit false positives
+    
+    * Wrapped too long line
+    
+    * Added support for insecure registries
+    
+    * Fix the iut.slo.deps.load function to consider the spotted file links to be relative to the currently processed file rather than the current directory
+    
+    * Fixed the deps.load function to consider the dependencies file path to be relative to the repository root
+    
+    * Added two warning comments
+    
+    * ESS-16112: Git config is propagated from platform config (#702)
+    
+    * ESS-16112 git configuration is propagated from platform config
+    
+    additional refactoring in config.py
+    
+    * platform config is only storage of configuration
+    
+    * rolling back docker config copy as deploy_esp cannot live without it
+    
+    * missing function call
+    
+    * Refactored the git credentials handling code
+    
+    * Minor comment fix
+    
+    * Made the deploy_esp.py script resistant to the missing ntp_server config file parameter
+    
+    Co-authored-by: Dariusz Walczak <dariuszx.walczak@intel.com>
+    
+    * Fixed seo.slo.error references in the seo.slo.deps module (#735)
+    
+    * ESS-16781: Fix multiple account protection (#736)
+    
+    * Fixed the 'generate_provisioning_config' function
+    
+        The previous code has failed when there were 2 clusters refering to the same account and there was only one account definition
+    
+    * Added extra comment
+    
+    * Fixed issue with bad bmc url address being constructed (#738)
+    
+    * ESS-16676: se_install_cli.py: No BMC address validation results in confusing error messages 2 (#740)
+    
+    * Revert "Fixed issue with bad bmc url address being constructed (#738)" (#741)
+    
+    This reverts commit d2357abe3c09223ae0a12547b53dc0d073c068e8.
+    
+    * Revert "ESS-16676: se_install_cli.py: No BMC address validation results in confusing error messages 2 (#740)"
+    
+    This reverts commit 88ca6ece9a3af6132389a6cbfeeb66189d9964cb.
+    
+    * ESS-16852: Apply workaround for XR12 uOS boot failure (#744)
+    
+    * ESS-16984: Provide install and deploy scripts initialization hook (#742)
+    
+    * Initial implementation of iut hooks
+    
+    * Fixed the hooks.install.init hook logging statement
+    
+    * Sorted the path.part properties alphabetically
+    
+    * Silenced two pylint warnings (unused-argument, wrong-import-order)
+    
+    * Silenced multiple bandit complaints (all of them subprocess related) (#754)
+    
+    * ESS-16781: Fixed the way the node configs are patched with the controller address on Virgo (#755)
+    
+    * Fixed the way the node configs are patched with the controller address on Virgo
+    
+    * Fixed a bug introduced by PR #702
+    
+    Co-authored-by: patryktrzepizur <patrykx.trzepizur@intel.com>
+    Co-authored-by: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+    Co-authored-by: “patryktrzepizur” <“patrykx.trzepizur@intel.com”>
+    Co-authored-by: Jakub Rym <jakubx.rymsza@intel.com>
+    Co-authored-by: Magda Zielinska <magdax.zielinska@intel.com>
+    Co-authored-by: Michał Przepłata <michalx.przeplata@intel.com>
+    Co-authored-by: Michal Przeplata <micprz91@users.noreply.github.com>
+    Co-authored-by: bazko1 <bazylix.kot@intel.com>
+    Co-authored-by: “magdaxzielinska” <“magdax.zielinska@intel.com”>
+    Co-authored-by: Sebastian Wieczorek <sebastianx.wieczorek@intel.com>
+    Co-authored-by: Sebastian Wieczorek <sebix112@users.noreply.github.com>
+    Co-authored-by: Bazyli Kot <26172808+bazko1@users.noreply.github.com>
+    Co-authored-by: Mateusz Szelest <mateuszx.szelest@intel.com>
+    Co-authored-by: Krzysztof Jezewski <krzysztofx.jezewski@intel.com>
+    Co-authored-by: Bruno Panasiewicz <109345317+brunpan@users.noreply.github.com>
+
+commit 6f19298926d8b459d137b957ec8f50c9ea921e45
+Author: damiankopyto <damian.kopyto@intel.com>
+Date:   Fri Jul 29 10:52:53 2022 +0100
+
+    ddp support (#726)
+    
+    * Adding the ICE Comms package installation as part of E810 configuration
+
+commit afd7cc51f4d8e44482c5812be638e60b6e776c83
+Author: ConorMcNelis <60985221+ConorMcNelis@users.noreply.github.com>
+Date:   Wed Jul 27 12:36:49 2022 +0100
+
+    Added the configuration values for CPU Pinning and hugepage config fo… (#586)
+    
+    * Added the configuration values for CPU Pinning and hugepage config for XR12
+    
+    * Hugepages and CPU Pinning configuration added to Dell_xr12 and generic
+    
+    Co-authored-by: Christopher Nolan <christopher.nolan@intel.com>
+
+commit b70fc62f2140d9e6f4d64aa8c824c6a3c858f3aa
+Author: Monika Rymsza <monikax.rymsza@intel.com>
+Date:   Wed Jul 27 12:23:31 2022 +0200
+
+    enable CPUManager (#706)
+    
+    * enable CPUManager
+
+commit 25185dd6288f532f3021df585935d84eab0acb07
+Author: Filip Antkowiak <104206456+fantkowx@users.noreply.github.com>
+Date:   Wed Jul 27 09:41:15 2022 +0200
+
+    extend calico wait time to 10 min (#730)
+
+commit 35c8a6919167ca189ada1ed463efa46342de7fd6
+Author: weizhao1 <wei.zhao1@intel.com>
+Date:   Mon Jul 25 18:34:52 2022 +0800
+
+    update nsm_version from 1.3.1 to 1.4.0 (#723)
+    
+    NSM version 1.3.1 does not support future k8s v1.24, we have to upgrade it to adapt.
+
+commit dfc260280ccf5609856d8bd419654cd0e0259527
+Author: ebelkin <eyal.belkin@intel.com>
+Date:   Thu Jul 21 13:24:46 2022 +0100
+
+    Adding option to the user for configure PF to have NO IPV4 (#697)
+
+commit ea78a0836dd11d6a9f0b59a4d3adc1d68ed0f3d4
+Author: Filip Antkowiak <104206456+fantkowx@users.noreply.github.com>
+Date:   Tue Jul 19 16:37:43 2022 +0200
+
+    ESS-15252: Cert Manager failing for service unavailable bug fix (#686)
+    
+    * add checks for calico, cert-manager pods status
+    
+    * Update roles/kubernetes/cert_manager/tasks/install_cert_manager.yml
+    
+    Co-authored-by: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+    
+    * switch from kubectl wait to helm --wait
+    
+    Co-authored-by: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+
+commit 29dbef369fa626cadec720c29a5dfcda8da13246
+Author: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+Date:   Thu Jul 14 17:33:05 2022 +0200
+
+    ESS-16329 Update hwe kernel version to 5.15 and ice/iavf drivers (#674)
+    
+    * Update hwe kernel version to 5.15 and ice/iavf drivers
+    * Submodule update to include #130 on baseline-ansible
+
+commit ca19094be79ae49f24cfdcede68a98a4ffe97d7d
+Author: joanna kossakowska <joanna.kossakowska@intel.com>
+Date:   Thu Jul 14 16:17:24 2022 +0100
+
+    submodule update (#682)
+
+commit b969e254d04824e1e22a785a9bdf3c74f2e101cc
+Author: Filip Antkowiak <104206456+fantkowx@users.noreply.github.com>
+Date:   Thu Jul 14 15:44:49 2022 +0200
+
+    yaml playbook parser adjustment (#645)
+    
+    * Update single_node_network_edge.yml
+    
+    * Update telemetry.yml
+    
+    * added yaml comment parser
+    
+    * Create se-solution.md
+    
+    * Update
+    
+    * Add domain and IP status
+    
+    * Update se-solution.md
+    
+    * Update se-solution.md
+    
+    * Update single_node_network_edge.yml
+    
+    * Fix order of fields
+    
+    * updating
+    
+    * update
+    
+    * Update default_config.yml
+    
+    * Update default_config.yml
+    
+    * Update single_node_network_edge.yml
+    
+    * Update single_node_network_edge.yml
+    
+    * added combining files option WIP
+    
+    * prevented duplication when combining files
+    
+    * update the BB
+    
+    * Update single_node_network_edge.yml
+    
+    * Update security.yml
+    
+    * Update security.yml
+    
+    * Update telemetry.yml
+    
+    * new line bug on windows fix, extended file combining options
+    
+    * changed csv column order
+    
+    * update
+    
+    * formatting changes
+    
+    * Pylint fixes
+    
+    * Additional pylint fixes
+    
+    * Added support for PWEK parsing
+    
+    * Update yaml_parser.py
+    
+    * update
+    
+    * support multiple blocks for one role
+    
+    * Update single_node_network_edge.yml
+    
+    * deleted debug prints
+    
+    * added status field for components
+    
+    * fixed -o option not working with file combiner
+    
+    * fixed parser not using deployment settings
+    
+    * fixed problems with file paths when using -f. -in
+    
+    * delete unnecessary steps in settings sorting
+    
+    * fixed parser loading setting from wrong deployments
+    
+    * changed yaml parser method order
+    
+    * refactored yaml parser
+    
+    * pylint fixes
+    
+    * pylint fixes
+    
+    * small code refactor
+    
+    * create baseplate for parsing virgo repository
+    
+    * move yaml parser to scripts directory
+    
+    * pylint fixes
+    
+    * disable virgo related features
+    
+    * Update single_node_network_edge.yml
+    
+    Co-authored-by: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+    
+    Co-authored-by: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+    Co-authored-by: Krishnamurthy Jambur <krishna.j.murthy@intel.com>
+
+commit 48115ed47b462a03c2d470269df9270848767e33
+Author: Filip Antkowiak <104206456+fantkowx@users.noreply.github.com>
+Date:   Mon Jul 11 14:36:55 2022 +0200
+
+    fix kubelet apiserver not working with internal ips on aws (#658)
+    
+    * fix kubelet apiserver ignoring internal ips
+    
+    * role name change
+    
+    * replace shell with command
+    
+    * fix linter issues
+    
+    * additional linter fix
+
+commit 20049f795c5ce4b248cce4c73c7d53fd22fe9976
+Author: ebelkin <eyal.belkin@intel.com>
+Date:   Thu Jul 7 14:50:02 2022 +0100
+
+    SR-IOV Algorithm: Moving IPV4 capability from filtering (#648)
+    
+    * 1) Removing the IPV4 check from the basic filtering. 2) Adding the IPV4 capability to the configurations. 3) Adding the IPV4 capability to DetectDevices and CheckDevicesAgainstSpecificCriteriaList functions.
+    
+    * Updating the unit tests after the move of the IPV4 from the basic filtering to the configurations.
+    
+    * Code review fixes
+
+commit 8db4988a6cf491f3c53ba679453431368e57753f
+Author: Christopher Nolan <christopher.nolan@intel.com>
+Date:   Wed Jul 6 10:59:09 2022 +0100
+
+    ESS-15807 Fix cadvisor pod restart (#635) (#636)
+
+commit 91438cd16981b1ff14bcd0c43f005720126cdf83
+Author: maszmar <mariuszx.masztalerczuk@intel.com>
+Date:   Wed Jul 6 10:04:10 2022 +0200
+
+    ESS-14479: Fix kube-bench etcd issue (#607)
+    
+    * ESs-14479
+    
+    * Add become
+    
+    * Ess-14479 review fix
+    
+    Conflicts:
+            roles/kubernetes/controlplane/tasks/main.yml
+    
+    Co-authored-by: Karina Murawko-Wisniewska <karinax.murawko-wisniewska@intel.com>
+    Co-authored-by: Mariusz Przysiezniuk <mariuszx.przysiezniuk@intel.com>
+
+commit 839a4487f946f3ff57383398eb7ee140981f954b
+Author: Michał Przepłata <michalx.przeplata@intel.com>
+Date:   Thu Jun 30 12:05:07 2022 +0200
+
+    ESS-15786: Enhance redfish scripts for missing error message (#623)
+
+commit f8d81f8c9c069d383ea61a169c921d48a7074d73
+Author: joanna kossakowska <joanna.kossakowska@intel.com>
+Date:   Thu Jun 30 10:34:48 2022 +0100
+
+    baseline-ansible submodule update to include golang uninstall fix (#621)
+
+commit 6a43ccbcd42cc803faed9f74df53778cf60ea22d
+Author: Sebastian Wieczorek <sebastianx.wieczorek@intel.com>
+Date:   Wed Jun 29 16:06:51 2022 +0200
+
+    ESS-15647 Sideload does not include files and directories starting with .git (#619)
+
+commit b6d4735cca23d11676f62cca4dea684f47aedbfd
+Author: Emmett Cowan <emmett.cowan@intel.com>
+Date:   Wed Jun 29 09:44:20 2022 +0100
+
+    fix for prepare_drive.yaml finding USB (#603)
+
+commit a990d4741c58634af61b01b557631e079e16f420
+Author: Filip Antkowiak <104206456+fantkowx@users.noreply.github.com>
+Date:   Mon Jun 27 09:30:02 2022 +0200
+
+    ESS-14480: Fix 1.2.6 kube-bench issue related to setting kubelet-certificate-authority (#596)
+    
+    * set --kubelet-certificate-authority parameter
+    
+    * code refactor
+    
+    * added centos support
+
+commit 8738c69c4d0a5e131e4d69998527d821cf8fbb92
+Author: Bazyli Kot <bazylix.kot@intel.com>
+Date:   Fri Jun 24 17:45:33 2022 +0200
+
+    ESS-15650 lfs support (#616)
+    
+    * add enable lfs option
+    
+    * casting boolean to str
+    
+    * make default value the same type as returned from dict

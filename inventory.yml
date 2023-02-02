@@ -1,0 +1,21 @@
+dek  dek# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+all:
+  vars:
+    cluster_name: dek_test        # NOTE: Use `_` instead of spaces.
+    deployment: verification_controller                               # NOTE: Available deployment type: Developer expirience kits (dek).
+    single_node_deployment: true  # Request single node deployment (true/false).
+    platform_profile: dell_r750   # HW profile
+    limit:                        # Limit ansible deployment to certain inventory group or hosts
+controller_group:
+  hosts:
+    controller:
+      ansible_host: 10.190.162.83
+      ansible_user: intel
+edgenode_group:
+  hosts:
+    node01:
+      ansible_host: 10.190.162.83
+      ansible_user: intel

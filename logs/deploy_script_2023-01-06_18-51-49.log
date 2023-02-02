@@ -1,0 +1,26 @@
+2023-01-06 18:51:49.590 INFO: Install collections
+2023-01-06 18:51:50.126 INFO: dek_test single_node_network_edge.yml: command: "/home/openness/.local/share/virtualenvs/dek-t4G_8wwI/bin/ansible-playbook -vv /home/openness/scratch/lp/dek/single_node_network_edge.yml --inventory /home/openness/scratch/lp/dek/inventory/automated/dek_test/inventory_dek_test.yml"
+2023-01-06 18:51:50.126 INFO: dek_test single_node_network_edge.yml: log file: "/home/openness/scratch/lp/dek/logs/dek_test_dek_2023-01-06_18-51-50_single_node_network_edge.yml.log"
+2023-01-06 18:51:55.133 INFO: Only one cluster is being deployed. Redirecting logs to stdout.
+2023-01-06 18:51:55.144 INFO: <Command '/usr/bin/tail -n 100000 -f /home/openness/scratch/lp/dek/logs/dek_test_dek_2023-01-06_18-51-50_single_node_network_edge.yml.log', pid 257980>: process started
+2023-01-06 18:51:55.144 ERROR: dek_test single_node_network_edge.yml: failed. Please check the logs: /home/openness/scratch/lp/dek/logs/dek_test_dek_2023-01-06_18-51-50_single_node_network_edge.yml.log
+2023-01-06 18:51:56.146 INFO: ====================
+2023-01-06 18:51:56.146 INFO: DEPLOYMENT RECAP:
+2023-01-06 18:51:56.146 INFO: ====================
+2023-01-06 18:51:56.146 INFO: DEPLOYMENT COUNT: 1
+2023-01-06 18:51:56.146 INFO: SUCCESSFUL DEPLOYMENTS: 0
+2023-01-06 18:51:56.147 INFO: FAILED DEPLOYMENTS: 1
+2023-01-06 18:51:56.147 INFO: DEPLOYMENT "dek_test": FAILED
+2023-01-06 18:51:56.147 INFO: ====================
+2023-01-06 18:51:56.147 INFO: Deployment failed, pulling logs
+2023-01-06 18:52:52.530 INFO: 
+2023-01-06 18:52:52.530 INFO: Signal "2" caught, killing deployments...
+2023-01-06 18:52:52.531 INFO: All deployments stopped
+2023-01-06 18:52:52.531 INFO: ====================
+2023-01-06 18:52:52.531 INFO: DEPLOYMENT RECAP:
+2023-01-06 18:52:52.531 INFO: ====================
+2023-01-06 18:52:52.531 INFO: DEPLOYMENT COUNT: 1
+2023-01-06 18:52:52.531 INFO: SUCCESSFUL DEPLOYMENTS: 0
+2023-01-06 18:52:52.531 INFO: FAILED DEPLOYMENTS: 1
+2023-01-06 18:52:52.531 INFO: DEPLOYMENT "dek_test": FAILED
+2023-01-06 18:52:52.532 INFO: ====================

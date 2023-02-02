@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ _sriov_network_operator.name }}-selfsigned-issuer"
+  namespace: "{{ sriov_network_operator_namespace }}"
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: operator-webhook-service
+  namespace: "{{ sriov_network_operator_namespace }}"
+spec:
+  secretName: operator-webhook-service
+  dnsNames: 
+  - operator-webhook-service.sriov-network-operator.svc
+  issuerRef:
+    name: "{{ _sriov_network_operator.name }}-selfsigned-issuer"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: network-resources-injector-service
+  namespace: "{{ sriov_network_operator_namespace }}"
+spec:
+  secretName: network-resources-injector-secret
+  dnsNames:
+  - network-resources-injector-service.sriov-network-operator.svc
+  issuerRef:
+    name: "{{ _sriov_network_operator.name }}-selfsigned-issuer"

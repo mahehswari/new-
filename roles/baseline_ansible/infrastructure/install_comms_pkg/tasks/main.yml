@@ -1,0 +1,96 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+
+- name: dependencies not satisfied
+  fail:
+    msg: "Please define: \n- ice_comms_package_url\n- ice_comms_package_checksum
+         \n- current_mgmt_driver\n- ice_comms_package_version\n variables if you want to use that role.\nSee README for examples."
+  when: >
+    ice_comms_package_url is undefined or
+    ice_comms_package_checksum is undefined or
+    ice_comms_package_version is undefined or
+    current_mgmt_driver is undefined
+
+- name: Check if a ddp package is already installed
+  stat:
+    path: "{{ ice_comms_package_path }}{{ ice_comms_package_symlink_file }}"
+  register: package_exists
+
+- name: get current ice comms package version
+  shell:  set -o pipefail && ls -ls {{ ice_comms_package_path }}{{ ice_comms_package_symlink_file }} | awk -F '->' '{print $2}' | awk -F "(comms-|.pkg)" '{print $2}'
+  register: installed_version
+  changed_when: false
+  failed_when: false
+  when: package_exists.stat.exists
+
+- name: install selected package
+  block:
+    - name: create directory for ice comms package download
+      tempfile:
+        state: directory
+        suffix: "-{{ ice_comms_download_dest_suf }}"
+      register: _ice_comms_download_dest
+
+    - name: download ice comms package
+      get_url:
+        url: "{{ ice_comms_package_url }}"
+        dest: "{{ _ice_comms_download_dest.path }}/{{ ice_comms_package_name }}"
+        checksum: "{{ ice_comms_package_checksum }}"
+        timeout: "{{ package_download_timeout }}"
+      register: downloaded_ice_comms_package
+      until: downloaded_ice_comms_package is not failed
+      retries: "{{ number_of_retries | default(5) }}"
+  
+    - name: unzip ice comms package content
+      unarchive:
+        src: "{{ _ice_comms_download_dest.path }}/{{ ice_comms_package_name }}"
+        dest: "{{ _ice_comms_download_dest.path }}"
+        list_files: true
+        remote_src: true
+        mode: a=r,u+w
+
+    - name: unzip ddp package
+      unarchive:
+        src: "{{ _ice_comms_download_dest.path }}/ice_comms-{{ ice_comms_package_version }}.zip"
+        dest: "{{ ice_comms_package_path }}"
+        list_files: true
+        remote_src: true
+        mode: a=r,u+w
+      register: untar_results
+      become: yes
+
+    - name: install the new package
+      file:
+        src: "{{ untar_results.dest }}{{ untar_results.files[0] }}"
+        dest: "{{ ice_comms_package_path }}{{ ice_comms_package_symlink_file }}"
+        state: link
+      become: yes
+    
+    - name: update initramfs
+      shell: update-initramfs -u -k $(uname -r)
+      become: yes
+      changed_when: false
+      failed_when: false
+
+    - name: unload {{ ice_comms_driver_name }} module
+      modprobe:
+        name: "{{ ice_comms_driver_name }}"
+        state: absent
+      become: yes
+      when: current_mgmt_driver != ice_comms_driver_name
+
+    - name: reboot if driver is used by management interface
+      reboot:
+        reboot_timeout: 1200  # wait up to 20 minutes
+      become: yes
+      when: current_mgmt_driver == ice_comms_driver_name
+
+  when: (installed_version.stdout | default('')) != ice_comms_package_version
+
+- name: load {{ ice_comms_driver_name }} module
+  modprobe:
+    name: "{{ ice_comms_driver_name }}"
+    state: present
+  become: yes

@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2019-2022 Intel Corporation
+
+---
+
+- name: fail if hostname is localhost
+  fail:
+    msg: "Hostname cannot be localhost"
+  when: '"localhost" in ansible_nodename'
+
+- name: check /etc/hosts for ipv4 hostname
+  shell: grep -E "127\.0\.0\.1.*{{ ansible_nodename }}" /etc/hosts
+  register: grep_hosts_4
+  failed_when: grep_hosts_4.rc == 1
+  changed_when: false
+
+- name: check /etc/hosts for ipv6 hostname
+  shell: grep -E "::1.*{{ ansible_nodename }}" /etc/hosts
+  register: grep_hosts_6
+  failed_when: grep_hosts_6.rc == 1
+  changed_when: false
+
+- name: fail if hostname missing in /etc/hosts
+  fail:
+    msg: "Hostname should be present in /etc/hosts for both ipv4 and ipv6."
+  when: grep_hosts_4.rc == 1 or grep_hosts_6.rc == 1
+
+- name: check if hostname complies with Kubernetes standards
+  assert:
+    that: ansible_nodename is match('^([a-z0-9]+(\.|-)?)+[a-z0-9]+$')

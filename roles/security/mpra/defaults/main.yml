@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+
+_mpra_dir: "{{ project_dir }}/mpra"
+_mpra_url: "https://download.01.org/intel-sgx/sgx-dcap/1.14/linux/tools/SGXMultiPackageAgent/ubuntu20.04-server/debian_pkgs"
+
+_sgx_ra_network: "devel/libsgx-ra-network-dev/libsgx-ra-network-dev_1.14.100.3-focal1_amd64.deb"
+_sgx_ra_uefi: "devel/libsgx-ra-uefi-dev/libsgx-ra-uefi-dev_1.14.100.3-focal1_amd64.deb"
+_sgx_ra_service: "misc/sgx-ra-service/sgx-ra-service_1.14.100.3-focal1_amd64.deb"
+
+_sgx_ra_network_deb: "libsgx-ra-network-dev_1.14.100.3-focal1_amd64.deb"
+_sgx_ra_uefi_deb: "libsgx-ra-uefi-dev_1.14.100.3-focal1_amd64.deb"
+_sgx_ra_service_deb: "sgx-ra-service_1.14.100.3-focal1_amd64.deb"
+

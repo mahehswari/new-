@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022  Intel Corporation
+---
+
+apipass: NgZZdvRShEpyyGrL
+
+homedir: "{{ project_dir }}/intel-fdo"
+destdir: '{{ homedir }}/pri-fidoiot'
+server_ip: "{{ hostvars[inventory_hostname].ansible_host }}" 
+

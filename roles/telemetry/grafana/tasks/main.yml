@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2020-2022 Intel Corporation
+
+---
+- name: check if Grafana release already exists
+  command: helm status grafana -n {{ telemetry_namespace }}
+  failed_when: false
+  register: get_release_grafana
+  changed_when: false
+
+- name: install Grafana
+  include_tasks: install_grafana.yml
+  when: get_release_grafana.rc != 0

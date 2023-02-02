@@ -1,0 +1,34 @@
+---
+- name: Slurp device serial number
+  slurp:
+    src: '{{ homedir }}/device_serial_number'
+  register: serial_number
+
+- name: Echo
+  shell: echo '{{ serial_number["content"] | b64decode }}'
+
+- name: Download extend_voucher.sh
+  delegate_to: localhost
+  get_url:
+    url: 'https://raw.githubusercontent.com/manju956/pri-fidoiot/smartedge_fdo_integration/component-samples/demo/scripts/extend_voucher.sh'
+    dest: './extend_voucher.sh'
+    mode: '0744'
+  environment:
+    SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+
+- name: Update script for ports
+  delegate_to: localhost
+  lineinfile:
+    path: './extend_voucher.sh'
+    regexp: '^mfg_port=\"8039\"$'
+    line: 'mfg_port="30039"'
+
+- name: Extend voucher
+  delegate_to: localhost
+  shell: 'bash ./extend_voucher.sh -m {{ fdo.manufacturer_ip }} -s {{ serial_number["content"] | b64decode }} -u apiUser -k {{ fdo.manufacturer_pass }}'
+  no_log: true
+
+- name: Set ownership voucher filename
+  set_fact:
+    voucher_filename: '{{ serial_number["content"] | b64decode }}_voucher.txt'
+

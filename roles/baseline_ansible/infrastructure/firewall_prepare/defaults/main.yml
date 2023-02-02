@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+fw_open_subnets:
+  - "{{ kube_pods_subnet }}"
+  - "{{ kube_service_addresses }}"
+
+firewall_service:
+  RedHat: firewalld
+  Debian: ufw
+
+use_firewall: false

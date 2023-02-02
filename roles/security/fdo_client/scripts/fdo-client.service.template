@@ -1,0 +1,11 @@
+[Unit]
+Description=FDO client service to perform device onboarding
+
+[Service]
+User=root
+WorkingDirectory=/opt/intel/fdo_client
+ExecStart=/opt/intel/fdo_client/fdo_csdk.sh
+SuccessExitStatus=0
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,49 @@
+ansible-playbook [core 2.13.1]
+  config file = /home/openness/scratch/lp/dek/ansible.cfg
+  configured module search path = ['/home/openness/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /home/openness/.local/share/virtualenvs/dek-t4G_8wwI/lib/python3.9/site-packages/ansible
+  ansible collection location = /home/openness/.ansible/collections:/usr/share/ansible/collections
+  executable location = /home/openness/.local/share/virtualenvs/dek-t4G_8wwI/bin/ansible-playbook
+  python version = 3.9.15 (main, Oct 12 2022, 19:14:24) [GCC 9.4.0]
+  jinja version = 3.0.3
+  libyaml = True
+Using /home/openness/scratch/lp/dek/ansible.cfg as config file
+statically imported: /home/openness/scratch/lp/dek/tasks/reboot_server.yml
+statically imported: /home/openness/scratch/lp/dek/tasks/reboot_server.yml
+redirecting (type: modules) ansible.builtin.docker_image to community.docker.docker_image
+redirecting (type: callback) ansible.builtin.debug to ansible.posix.debug
+redirecting (type: callback) ansible.builtin.debug to ansible.posix.debug
+redirecting (type: callback) ansible.builtin.profile_roles to ansible.posix.profile_roles
+Skipping callback 'default', as we already have a stdout callback.
+Skipping callback 'minimal', as we already have a stdout callback.
+Skipping callback 'oneline', as we already have a stdout callback.
+
+PLAYBOOK: single_node_network_edge.yml *****************************************
+11 plays in /home/openness/scratch/lp/dek/single_node_network_edge.yml
+
+PLAY [edgenode_group] **********************************************************
+
+TASK [Gathering Facts] *********************************************************
+task path: /home/openness/scratch/lp/dek/single_node_network_edge.yml:13
+Thursday 05 January 2023  14:34:50 +0530 (0:00:00.051)       0:00:00.051 ****** 
+[WARNING]: Unhandled error in Python interpreter discovery for host node01:
+Failed to connect to the host via ssh: ubuntu@13.233.138.52: Permission denied
+(publickey).
+fatal: [node01]: UNREACHABLE! => {
+    "changed": false,
+    "unreachable": true
+}
+
+MSG:
+
+Data could not be sent to remote host "13.233.138.52". Make sure this host can be reached over ssh: ubuntu@13.233.138.52: Permission denied (publickey).
+
+
+PLAY RECAP *********************************************************************
+node01                     : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
+
+Thursday 05 January 2023  14:34:52 +0530 (0:00:01.737)       0:00:01.789 ****** 
+=============================================================================== 
+gather_facts ------------------------------------------------------------ 1.74s
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+total ------------------------------------------------------------------- 1.74s

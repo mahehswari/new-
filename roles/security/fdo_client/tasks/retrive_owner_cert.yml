@@ -1,0 +1,9 @@
+---
+- name: Download owner public certificate
+  delegate_to: localhost
+  shell: 'bash {{ role_path }}/scripts/get_owner_cert.sh  -o {{ fdo.owner_ip }} -u apiUser -p {{ fdo.owner_pass }}'
+  register: script_result
+  until: "'Success in downloading' in script_result.stdout"
+  retries: 3
+  delay: 10
+

@@ -1,0 +1,91 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+- block:
+  - name: create dest directory on node
+    file:
+      path: "{{ buildkit.dest | dirname }}/buildkit"
+      owner: "{{ buildkit.owner }}"
+      mode: a=rx,u+w
+      state: directory
+      recurse: yes
+    become: yes
+
+  - name: download item
+    get_url:
+      url: "{{ buildkit.url }}"
+      dest: "{{ buildkit.dest }}"
+      owner: "{{ buildkit.owner }}"
+      mode: "{{ buildkit.mode }}"
+    delegate_to: "{{ inventory_hostname }}"
+    register: get_url_result
+    until: "'OK' in get_url_result.msg or 'file already exists' in get_url_result.msg"
+    retries: 4
+    delay: 5
+    no_log: false
+    become: yes
+
+  - name: unpack archive
+    unarchive:
+      src: "{{ buildkit.dest }}"
+      dest: "{{ buildkit.dest | dirname }}/buildkit"
+      owner: "{{ buildkit.owner }}"
+      mode: "{{ buildkit.mode }}"
+      copy: no
+    become: yes
+
+- name: copy buildctl binary from download dir
+  copy:
+    src: "{{ local_release_dir }}/buildkit/bin/buildctl"
+    dest: "{{ bin_dir }}/buildctl"
+    mode: a=rx,u+w
+    remote_src: true
+  become: yes
+
+- name: copy buildkitd binary from download dir
+  copy:
+    src: "{{ local_release_dir }}/buildkit/bin/buildkitd"
+    dest: "{{ bin_dir }}/buildkitd"
+    mode: a=rx,u+w
+    remote_src: true
+  become: yes
+
+- name: create registry config directory
+  file:
+    path: "{{ buildkit_cfg_dir }}"
+    owner: "{{ buildkit.owner }}"
+    mode: a=rx,u+w
+    state: directory
+    recurse: yes
+  become: yes
+
+- name: copy buildkit config file
+  template:
+    src: buildkitd.toml.j2
+    dest: "{{ buildkit_cfg_dir }}/buildkitd.toml"
+    owner: "root"
+    mode: u=rw,g=r,o=
+  become: yes
+
+- name: install buildkit.socket
+  template:
+    src: buildkit.socket.j2
+    dest: /etc/systemd/system/buildkit.socket
+    owner: root
+    mode: a=r,u+w
+  become: yes
+
+- name: install buildkit.service
+  template:
+    src: buildkit.service.j2
+    dest: /etc/systemd/system/buildkit.service
+    owner: root
+    mode: a=r,u+w
+  become: yes
+
+- name: enable buildkit service
+  service:
+    name: buildkit
+    enabled: true
+    state: started
+  become: yes

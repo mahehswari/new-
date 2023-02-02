@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+
+---
+
+collections:
+  - name: ansible.posix
+    version: 1.4.0
+    source: https://galaxy.ansible.com
+
+  - name: community.docker
+    version: 2.6.0
+    source: https://galaxy.ansible.com
+
+  - name: community.general
+    version: 5.0.2
+    source: https://galaxy.ansible.com

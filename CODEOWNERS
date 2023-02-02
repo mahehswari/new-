@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021-2022 Intel Corporation
+
+/CODEOWNERS @bazko1 @i-wally
+
+# Provisioning Code:
+/*.py @bazko1 @i-wally @sebix112
+/iut/** @bazko1 @i-wally @sebix112
+/scripts/*.py @bazko1 @i-wally @sebix112
+/scripts/deploy_esp/** @bazko1 @i-wally @sebix112
+/scripts/log_all.* @bazko1 @i-wally @sebix112
+/scripts/log_collector* @bazko1 @i-wally @sebix112

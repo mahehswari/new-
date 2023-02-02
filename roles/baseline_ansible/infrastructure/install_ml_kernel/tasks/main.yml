@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+- name: install kernel-ml
+  include_tasks: install_kernel_ml.yml
+  when:
+    - ansible_os_family == 'RedHat'

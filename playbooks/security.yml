@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2021 Intel Corporation
+
+---
+# Playbook for security features
+- hosts: edgenode_group
+  roles:
+    - role: security/isecl/label_node
+      when: platform_attestation_node | default(False)
+
+- hosts: edgenode_group
+  roles:
+    - role: security/mpra
+      when: sgx_enable | default(False)
+
+- hosts: controller_group
+  roles:
+    - role: security/isecl/common
+      when: platform_attestation_controller | default(False) or platform_attestation_node | default(False)
+    - role: security/isecl/verification_controller
+      # Name: Platform Attestation Cloud Verification Controller
+      # Type: Building block
+      # Domain: Zero trust Security
+      # Source: https://github.com/intel-secl/build-manifest.git
+      # IP status: Adopt-Enhance
+      # Description: Intel SecL control plane verification controller deployed in the cloud. 
+      when: platform_attestation_controller | default(False)
+    - role: security/isecl/controlplane
+      # Name: Platform Attestation
+      # Type: Building block
+      # Domain: Zero trust Security
+      # Source: https://github.com/intel-secl/build-manifest.git
+      # IP status: Reuse
+      # Description: Intel Security Libraries for Data Center (Intel SecL-DC) enables security use cases for data center using Intel hardware security technologies.
+      ##
+      # Name: Platform Attestation K8s extensions
+      # Type: Building block
+      # Domain: Zero trust Security
+      # Source: https://github.com/intel-secl/k8s-extensions
+      # IP status: Adopt-Enhance
+      # Description: ISecL K8s Extensions which includes ISecL K8s extended scheduler, ISecL K8s custom controller components and certification generation scripts for trusted launch of containers.
+      when: platform_attestation_node | default(False)
+
+- hosts: controller_group
+  roles:
+    - role: security/pccs
+      # Name: Intel reference SGX PCK Certificate Cache Service (PCCS)
+      # Type: Building block
+      # Domain: Zero trust Security
+      # Source: https://01.org/intel-software-guard-extensions
+      # IP status: Reuse
+      # Description: Intel provides the Provisioning Certification Service allowing a retrieval of necessary collaterals to attest SGX-enabled enclave. To learn more and subscribe to the service, visit our Intel SGX Provisioning Certification Service page.
+      when: pccs_enable | default(False)
+
+- hosts: controller_group
+  roles:
+    - role: security/kmra
+      # Name: Key Management Reference Application (KMRA)
+      # Type: Building block
+      # Domain: Zero trust Security
+      # Source: https://hub.docker.com/r/intel/apphsm
+      # IP status: Reuse
+      # Description: Proof-of-concept software created to demonstrate the integration of SGX asymmetric / symmetric key capability with a third party HSM.
+      when: kmra_enable | default(False)
+
+- hosts: controller_group
+  roles:
+    - role: security/fdo
+      when: fdo_controller | default(False)
+
+- hosts: edgenode_group
+  roles:
+    - role: security/fdo_client
+      when: fdo_node | default(False)
+

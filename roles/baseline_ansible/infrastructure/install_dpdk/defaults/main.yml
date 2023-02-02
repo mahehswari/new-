@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2019-2021 Intel Corporation
+
+---
+
+# dpdk_version: "19.11.1"
+# dpdk_checksum: "43b691f830e47a84b20c716ccc7aff40"
+dpdk_version: "21.05"
+dpdk_checksum: "a78bba290b11d9717d1272cc6bfaf7c3"
+
+dpdk_target: "x86_64-native-linuxapp-gcc"
+
+dpdk_name: "dpdk-{{ dpdk_version }}"
+dpdk_install_dir: "{{ project_dir }}/{{ dpdk_name }}"
+
+dpdk_download_file: "{{ dpdk_name }}.tar.xz"
+dpdk_download_url: "http://fast.dpdk.org/rel/{{ dpdk_download_file }}"
+dpdk_download_tmp_dest: "/tmp/{{ dpdk_download_file }}"
+
+dpdk_kmods_repo: "http://dpdk.org/git/dpdk-kmods"
+dpdk_kmods_dest: "{{ project_dir }}/{{ dpdk_name }}/kmods"

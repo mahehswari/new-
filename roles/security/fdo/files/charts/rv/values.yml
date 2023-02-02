@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022 Intel Corporation
+---
+namespace: fdo 
+
+basename: rv
+
+matchLabels:
+  app: fdo-rv
+
+rv:
+  name: fdo-rv
+  nameSpace: fdo
+  app_data: {{ rv_app_data }}
+
+container:
+  name: fdo-rv
+  image: pri-fdo-rv 
+  pullPolicy: IfNotPresent
+  tag: {{ fdo_version }}
+  http_port: 8041
+  https_port: 8040
+
+initContainer:
+  name: chmod-app-data
+  image: busybox
+  tag: 1.32
+  pullPolicy: IfNotPresent
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+
+secret:
+  name: rv-pass
+
+configmap:
+  name: fdo-rv-cmap
+  port: 8041
+  hosts: "0.0.0.0"
+
+service:
+  type: NodePort
+  https_name: https-port
+  https_port: 8041
+  https_targetPort: 8041
+  https_nodePort: 30041
+  http_name: http-port
+  http_port: 8040
+  http_targetPort: 8040
+  http_nodePort: 30040

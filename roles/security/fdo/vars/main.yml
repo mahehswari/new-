@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2022  Intel Corporation
+---
+
+homedir: '{{ project_dir }}/intel-fdo'
+destdir: '{{ homedir }}/pri-fidoiot'
+server_ip: '{{ hostvars[inventory_hostname].ansible_host }}'
+fdo_namespace: fdo
+user: '{{ ansible_user }}'
+user_group: '{{ ansible_user }}'
+
+rv_app_data: '{{ destdir }}/component-samples/demo/rv/app-data'
+owner_app_data: '{{ destdir }}/component-samples/demo/owner/app-data'
+manufacturer_app_data: '{{ destdir }}/component-samples/demo/manufacturer/app-data'
+pri_repo: 'https://github.com/manju956/pri-fidoiot.git'
+fdo_version: 'smartedge_fdo_integration'
+

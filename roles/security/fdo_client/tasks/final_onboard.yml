@@ -1,0 +1,23 @@
+---
+- name: Copy FDO client service file
+  copy:
+    src: 'scripts/fdo-client.service.template'
+    dest: '/etc/systemd/system/fdo-client.service'
+  become: yes
+
+- name: Create http-proxy.conf for fdo-client service
+  block:
+    - name: Create fdo-client system config directory
+      file:
+        name: /etc/systemd/system/fdo-client.service.d
+        state: directory
+        mode: a=rx,u+w
+      become: yes
+    - name: Create http-proxy.conf from template
+      template:
+        src: http-proxy.conf.j2
+        dest: /etc/systemd/system/fdo-client.service.d/http-proxy.conf
+        mode: preserve
+      become: yes
+      notify: Enable fdo-client service and reboot
+
